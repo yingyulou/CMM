@@ -1,0 +1,33 @@
+/*
+    A program to perform Euclid's
+    Algorithm to compute greatest common divisor.
+*/
+
+/*//////////////////////////////////////////////////////////////////////////////
+// Calc Greatest Common Divisor
+//////////////////////////////////////////////////////////////////////////////*/
+
+int CalcGreatestCommonDivisor(int lhs, int rhs)
+{
+    if (rhs == 0)
+    {
+        return lhs;
+    }
+    else return CalcGreatestCommonDivisor(rhs, lhs - lhs / rhs * rhs);
+}
+
+
+/*//////////////////////////////////////////////////////////////////////////////
+// Main Program Define
+//////////////////////////////////////////////////////////////////////////////*/
+
+void main(void)
+{
+    int lhs;
+    int rhs;
+
+    lhs = input();
+    rhs = input();
+
+    output(CalcGreatestCommonDivisor(lhs, rhs));
+}
