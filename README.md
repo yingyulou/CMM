@@ -342,7 +342,7 @@ Here is the VM model of the CMM language:
 Here is the instruction set and the fake code of each instruction of the CMM language:
 
 | Instruction | Fake Code              |
-| :=========: | :====================: |
+| :---------: | :--------------------: |
 | LDC N       | AX = N                 |
 | LD          | AX = SS[BP - AX]       |
 | ABSLD       | AX = SS[AX]            |
@@ -371,3 +371,4 @@ Here is the instruction set and the fake code of each instruction of the CMM lan
 | INPUT       | scanf("%d", &AX)       |
 | OUTPUT      | printf("%d\n", AX)     |
 | STOP        | exit(0)                |
+
