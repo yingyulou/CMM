@@ -136,7 +136,7 @@ void Parser::__DeclList(AST *&root)
 
     root = new AST(TOKEN_TYPE::DECL_LIST, "DeclList", {nullptr});
 
-    __Decl(root->subList.back());
+    __Decl(root->subList[0]);
 
     while (__tokenPtr->tokenType != TOKEN_TYPE::END_OF_FILE)
     {
