@@ -405,6 +405,15 @@ vector<string> CodeGenerator::__generateSimpleExprCode(AST *root) const
 
 vector<string> CodeGenerator::__generateRelOpCode(AST *root) const
 {
+    /*
+        TOKEN_TYPE::LESS       |
+        TOKEN_TYPE::LESS_EQUAL |
+        GREATER                |
+        GREATER_EQUAL          |
+        EQUAL                  |
+        NOT_EQUAL
+    */
+
     switch (root->tokenType)
     {
         case TOKEN_TYPE::LESS:
