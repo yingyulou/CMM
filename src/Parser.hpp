@@ -937,12 +937,12 @@ void Parser::__RelOp(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::LESS       |
-            TOKEN_TYPE::LESS_EQUAL |
-            GREATER                |
-            GREATER_EQUAL          |
-            EQUAL                  |
-            NOT_EQUAL
+            TOKEN_TYPE::LESS          |
+            TOKEN_TYPE::LESS_EQUAL    |
+            TOKEN_TYPE::GREATER       |
+            TOKEN_TYPE::GREATER_EQUAL |
+            TOKEN_TYPE::EQUAL         |
+            TOKEN_TYPE::NOT_EQUAL
     */
 
     if (__tokenPtr->tokenType == TOKEN_TYPE::LESS ||
