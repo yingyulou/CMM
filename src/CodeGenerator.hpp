@@ -461,11 +461,10 @@ vector<string> CodeGenerator::__generateAddExprCode(AST *root) const
 
     for (int idx = 1; idx < root->subList.size(); idx += 2)
     {
-        codeList.push_back("PUSH");
-
         vector<string> midCodeList = __generateAddOpCode(root->subList[idx]),
             rightCodeList = __generateTermCode(root->subList[idx + 1]);
 
+        codeList.push_back("PUSH");
         codeList.insert(codeList.end(), rightCodeList.begin(), rightCodeList.end());
         codeList.insert(codeList.end(), midCodeList.begin(), midCodeList.end());
         codeList.push_back("POP");
