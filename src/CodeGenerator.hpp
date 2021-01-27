@@ -11,7 +11,6 @@
 #include <vector>
 #include <unordered_map>
 #include <utility>
-#include <algorithm>
 #include "CodeGenerator.h"
 #include "AST.h"
 #include "SemanticAnalyzer.hpp"
@@ -28,7 +27,6 @@ using std::string;
 using std::vector;
 using std::unordered_map;
 using std::pair;
-using std::sort;
 using std::to_string;
 
 
@@ -617,16 +615,13 @@ vector<string> CodeGenerator::__generateCallCode(AST *root) const
     vector<string> codeList;
 
     vector<pair<string, pair<int, int>>> pairList(
-        __symbolTable.at(root->subList[0]->tokenStr).begin(),
-        __symbolTable.at(root->subList[0]->tokenStr).end());
+        __symbolTable.at(root->subList[0]->tokenStr).size());
 
     // ..., Local5, Local4, Local3, Param2, Param1, Param0
-    sort(pairList.begin(), pairList.end(),
-        [] (const pair<string, pair<int, int>> &lhs, const pair<string, pair<int, int>> &rhs)
-        {
-            return lhs.second.first > rhs.second.first;
-        }
-    );
+    for (auto &mapPair: __symbolTable.at(root->subList[0]->tokenStr))
+    {
+        pairList[pairList.size() - mapPair.second.first - 1] = mapPair;
+    }
 
     // We only need local variable here
     int topIdx = pairList.size() - (root->subList.size() == 2 ?
@@ -1032,16 +1027,13 @@ vector<string> CodeGenerator::__generateMainPrepareCode() const
 
     vector<string> codeList;
 
-    vector<pair<string, pair<int, int>>> pairList(
-        __symbolTable.at("main").begin(),
-        __symbolTable.at("main").end());
+    vector<pair<string, pair<int, int>>> pairList(__symbolTable.at("main").size());
 
-    sort(pairList.begin(), pairList.end(),
-        [] (const pair<string, pair<int, int>> &lhs, const pair<string, pair<int, int>> &rhs)
-        {
-            return lhs.second.first > rhs.second.first;
-        }
-    );
+    // ..., Local2, Local1, Local0
+    for (auto &mapPair: __symbolTable.at("main"))
+    {
+        pairList[pairList.size() - mapPair.second.first - 1] = mapPair;
+    }
 
     // "main" function has definitely no params
     for (auto &mapPair: pairList)
