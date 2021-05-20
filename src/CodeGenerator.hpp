@@ -13,7 +13,7 @@
 #include <utility>
 #include "CodeGenerator.h"
 #include "AST.h"
-#include "SemanticAnalyzer.hpp"
+#include "SemanticAnalyzer.h"
 #include "TokenType.hpp"
 
 namespace CMM
@@ -36,7 +36,7 @@ using std::to_string;
 
 CodeGenerator::CodeGenerator(AST *root, const string &outputFilePath):
     __root(root),
-    __symbolTable(SemanticAnalyzer(root)),
+    __symbolTable(SemanticAnalyzer(root).getSymbolTable()),
     __outputFilePath(outputFilePath) {}
 
 

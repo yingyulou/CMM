@@ -1,7 +1,7 @@
 /*
     SemanticAnalyzer.hpp
     ====================
-        Semantic analyzer implementation.
+        Class SemanticAnalyzer  implementation.
 */
 
 #ifndef __CMM_SEMANTIC_ANALYZER_HPP
@@ -10,6 +10,7 @@
 #include <string>
 #include <unordered_map>
 #include <utility>
+#include "SemanticAnalyzer.h"
 #include "AST.h"
 #include "TokenType.hpp"
 
@@ -27,10 +28,18 @@ using std::stoi;
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// SemanticAnalyzer
+// Constructor
 ////////////////////////////////////////////////////////////////////////////////
 
-unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer(AST *root)
+SemanticAnalyzer::SemanticAnalyzer(AST *root):
+    __root(root) {}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Get Symbol Table
+////////////////////////////////////////////////////////////////////////////////
+
+unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::getSymbolTable() const
 {
     /*
         symbolTable: Function Name => Variable Name => (Variable Number, Array Size)
@@ -48,7 +57,7 @@ unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer(AS
             .
             .
     */
-    for (auto declNodePtr: root->subList)
+    for (auto declNodePtr: __root->subList)
     {
         /*
             __VarDecl | __FuncDecl

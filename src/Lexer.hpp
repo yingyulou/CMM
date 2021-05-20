@@ -10,11 +10,11 @@
 #include <string>
 #include <cctype>
 #include <cstdio>
+#include <cstdlib>
 #include "Lexer.h"
 #include "TokenType.hpp"
 #include "LexerStage.hpp"
 #include "Token.h"
-#include "Util.hpp"
 #include "Constants.hpp"
 
 namespace CMM
@@ -110,6 +110,18 @@ Token Lexer::NextToken()
 Lexer::~Lexer()
 {
     fclose(__filePtr);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Invalid Char
+////////////////////////////////////////////////////////////////////////////////
+
+void Lexer::__invalidChar(char invalidChar, int lineNo)
+{
+    printf("Invalid char: %c in line: %d\n", invalidChar, lineNo);
+
+    exit(1);
 }
 
 
@@ -223,7 +235,7 @@ void Lexer::__nextTokenStartStage(int nowChar, bool &saveBool,
                 break;
 
             default:
-                InvalidChar(nowChar, __lineNo);
+                __invalidChar(nowChar, __lineNo);
                 break;
         }
     }
@@ -403,7 +415,7 @@ void Lexer::__nextTokenInNotStage(int nowChar, bool &saveBool,
     }
     else
     {
-        InvalidChar(nowChar, __lineNo);
+        __invalidChar(nowChar, __lineNo);
     }
 }
 

@@ -55,6 +55,10 @@ private:
     AST *__root;
 
 
+    // Invalid Token
+    static void __invalidToken(const Token *invalidTokenPtr);
+
+
     // Match Token
     void __MatchToken(TOKEN_TYPE tokenType);
 

@@ -4,9 +4,6 @@
         CMM header.
 */
 
-#include "ArgumentParser.hpp"
-#include "Constants.hpp"
-#include "Util.hpp"
 #include "TokenType.hpp"
 #include "LexerStage.hpp"
 #include "Lexer.hpp"
@@ -17,3 +14,5 @@
 #include "Instruction.hpp"
 #include "VM.hpp"
 #include "Executor.hpp"
+#include "Core.hpp"
+#include "Constants.hpp"

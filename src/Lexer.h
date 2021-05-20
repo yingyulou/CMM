@@ -48,6 +48,10 @@ private:
     int __lineNo;
 
 
+    // Invalid Char
+    static void __invalidChar(char invalidChar, int lineNo);
+
+
     // NextToken START Stage Dispatch
     void __nextTokenStartStage(int nowChar, bool &saveBool, LEXER_STAGE &lexerStage,
         TOKEN_TYPE &tokenType, string &tokenStr);

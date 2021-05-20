@@ -9,12 +9,13 @@
 
 #include <string>
 #include <vector>
+#include <cstdio>
+#include <cstdlib>
 #include "Parser.h"
 #include "Token.h"
 #include "AST.h"
 #include "TokenType.hpp"
 #include "Lexer.h"
-#include "Util.hpp"
 
 namespace CMM
 {
@@ -63,6 +64,20 @@ Parser::~Parser()
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// Invalid Token
+////////////////////////////////////////////////////////////////////////////////
+
+void Parser::__invalidToken(const Token *invalidTokenPtr)
+{
+    printf("Invalid token: %s in line %d\n",
+        invalidTokenPtr->tokenStr.c_str(),
+        invalidTokenPtr->lineNo);
+
+    exit(1);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // Match Token
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -74,7 +89,7 @@ void Parser::__MatchToken(TOKEN_TYPE tarTokenType)
     }
     else
     {
-        InvalidToken(__tokenPtr);
+        __invalidToken(__tokenPtr);
     }
 }
 
@@ -167,12 +182,12 @@ void Parser::__Decl(AST *&root)
     if (__tokenPtr->tokenType != TOKEN_TYPE::INT &&
         __tokenPtr->tokenType != TOKEN_TYPE::VOID)
     {
-        InvalidToken(__tokenPtr);
+        __invalidToken(__tokenPtr);
     }
 
     if (__tokenPtr[1].tokenType != TOKEN_TYPE::ID)
     {
-        InvalidToken(__tokenPtr + 1);
+        __invalidToken(__tokenPtr + 1);
     }
 
     if (__tokenPtr[2].tokenType == TOKEN_TYPE::LEFT_SQUARE_BRACKET ||
@@ -186,7 +201,7 @@ void Parser::__Decl(AST *&root)
     }
     else
     {
-        InvalidToken(__tokenPtr + 2);
+        __invalidToken(__tokenPtr + 2);
     }
 }
 
@@ -226,7 +241,7 @@ void Parser::__VarDecl(AST *&root)
     }
     else
     {
-        InvalidToken(__tokenPtr);
+        __invalidToken(__tokenPtr);
     }
 
     if (__tokenPtr->tokenType == TOKEN_TYPE::LEFT_SQUARE_BRACKET)
@@ -270,7 +285,7 @@ void Parser::__Type(AST *&root)
     }
     else
     {
-        InvalidToken(__tokenPtr);
+        __invalidToken(__tokenPtr);
     }
 }
 
@@ -312,7 +327,7 @@ void Parser::__FuncDecl(AST *&root)
     }
     else
     {
-        InvalidToken(__tokenPtr);
+        __invalidToken(__tokenPtr);
     }
 
     __MatchToken(TOKEN_TYPE::LEFT_ROUND_BRACKET);
@@ -362,7 +377,7 @@ void Parser::__Params(AST *&root)
     }
     else
     {
-        InvalidToken(__tokenPtr);
+        __invalidToken(__tokenPtr);
     }
 }
 
@@ -439,7 +454,7 @@ void Parser::__Param(AST *&root)
     }
     else
     {
-        InvalidToken(__tokenPtr);
+        __invalidToken(__tokenPtr);
     }
 
     if (__tokenPtr->tokenType == TOKEN_TYPE::LEFT_SQUARE_BRACKET)
@@ -603,7 +618,7 @@ void Parser::__Stmt(AST *&root)
     }
     else
     {
-        InvalidToken(__tokenPtr);
+        __invalidToken(__tokenPtr);
     }
 }
 
@@ -789,7 +804,7 @@ void Parser::__Expr(AST *&root)
     }
     else if (__tokenPtr->tokenType != TOKEN_TYPE::ID)
     {
-        InvalidToken(__tokenPtr);
+        __invalidToken(__tokenPtr);
     }
 
     if (__tokenPtr[1].tokenType == TOKEN_TYPE::LEFT_ROUND_BRACKET)
@@ -857,7 +872,7 @@ void Parser::__Var(AST *&root)
     }
     else
     {
-        InvalidToken(__tokenPtr);
+        __invalidToken(__tokenPtr);
     }
 
     if (__tokenPtr->tokenType == TOKEN_TYPE::LEFT_SQUARE_BRACKET)
@@ -958,7 +973,7 @@ void Parser::__RelOp(AST *&root)
     }
     else
     {
-        InvalidToken(__tokenPtr);
+        __invalidToken(__tokenPtr);
     }
 }
 
@@ -1034,7 +1049,7 @@ void Parser::__AddOp(AST *&root)
     }
     else
     {
-        InvalidToken(__tokenPtr);
+        __invalidToken(__tokenPtr);
     }
 }
 
@@ -1110,7 +1125,7 @@ void Parser::__MulOp(AST *&root)
     }
     else
     {
-        InvalidToken(__tokenPtr);
+        __invalidToken(__tokenPtr);
     }
 }
 
@@ -1162,7 +1177,7 @@ void Parser::__Factor(AST *&root)
     }
     else
     {
-        InvalidToken(__tokenPtr);
+        __invalidToken(__tokenPtr);
     }
 }
 
@@ -1198,7 +1213,7 @@ void Parser::__Call(AST *&root)
     }
     else
     {
-        InvalidToken(__tokenPtr);
+        __invalidToken(__tokenPtr);
     }
 
     __MatchToken(TOKEN_TYPE::LEFT_ROUND_BRACKET);
