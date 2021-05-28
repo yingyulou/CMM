@@ -1,11 +1,11 @@
 /*
-    LexerStage.hpp
-    ==============
-        Enum class LEXER_STAGE implementation.
+    LexerStage.h
+    ============
+        Enum class LEXER_STAGE header.
 */
 
-#ifndef __CMM_LEXER_STAGE_HPP
-#define __CMM_LEXER_STAGE_HPP
+#ifndef __CMM_LEXER_STAGE_H
+#define __CMM_LEXER_STAGE_H
 
 namespace CMM
 {
@@ -63,4 +63,4 @@ enum class LEXER_STAGE
 }  // End namespace CMM
 
 
-#endif  // __CMM_LEXER_STAGE_HPP
+#endif  // __CMM_LEXER_STAGE_H

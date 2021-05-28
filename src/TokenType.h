@@ -1,11 +1,11 @@
 /*
-    TokenType.hpp
-    =============
-        Enum class TOKEN_TYPE implementation.
+    TokenType.h
+    ===========
+        Enum class TOKEN_TYPE header.
 */
 
-#ifndef __CMM_TOKEN_TYPE_HPP
-#define __CMM_TOKEN_TYPE_HPP
+#ifndef __CMM_TOKEN_TYPE_H
+#define __CMM_TOKEN_TYPE_H
 
 namespace CMM
 {
@@ -77,4 +77,4 @@ enum class TOKEN_TYPE
 }  // End namespace CMM
 
 
-#endif  // __CMM_TOKEN_TYPE_HPP
+#endif  // __CMM_TOKEN_TYPE_H

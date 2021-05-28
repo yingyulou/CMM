@@ -12,7 +12,7 @@
 #include <utility>
 #include "SemanticAnalyzer.h"
 #include "AST.h"
-#include "TokenType.hpp"
+#include "TokenType.h"
 
 namespace CMM
 {

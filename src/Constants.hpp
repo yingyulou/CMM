@@ -9,7 +9,7 @@
 
 #include <string>
 #include <unordered_map>
-#include "TokenType.hpp"
+#include "TokenType.h"
 
 namespace CMM
 {

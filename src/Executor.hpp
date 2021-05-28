@@ -12,7 +12,7 @@
 #include <utility>
 #include <fstream>
 #include "Executor.h"
-#include "Instruction.hpp"
+#include "Instruction.h"
 #include "VM.h"
 
 namespace CMM

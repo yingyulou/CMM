@@ -8,7 +8,7 @@
 #define __CMM_TOKEN_H
 
 #include <string>
-#include "TokenType.hpp"
+#include "TokenType.h"
 
 namespace CMM
 {

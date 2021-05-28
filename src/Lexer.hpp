@@ -12,8 +12,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include "Lexer.h"
-#include "TokenType.hpp"
-#include "LexerStage.hpp"
+#include "TokenType.h"
+#include "LexerStage.h"
 #include "Token.h"
 #include "Constants.hpp"
 

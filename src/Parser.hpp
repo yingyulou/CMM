@@ -14,7 +14,7 @@
 #include "Parser.h"
 #include "Token.h"
 #include "AST.h"
-#include "TokenType.hpp"
+#include "TokenType.h"
 #include "Lexer.h"
 
 namespace CMM

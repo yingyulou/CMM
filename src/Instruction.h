@@ -1,11 +1,11 @@
 /*
-    Instruction.hpp
-    ===============
-        Enum class INSTRUCTION implementation.
+    Instruction.h
+    =============
+        Enum class INSTRUCTION header.
 */
 
-#ifndef __CMM_INSTRUCTION_HPP
-#define __CMM_INSTRUCTION_HPP
+#ifndef __CMM_INSTRUCTION_H
+#define __CMM_INSTRUCTION_H
 
 namespace CMM
 {
@@ -65,4 +65,4 @@ enum class INSTRUCTION
 }  // End namespace CMM
 
 
-#endif  // __CMM_INSTRUCTION_HPP
+#endif  // __CMM_INSTRUCTION_H

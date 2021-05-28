@@ -11,7 +11,7 @@
 #include <vector>
 #include "Token.h"
 #include "AST.h"
-#include "TokenType.hpp"
+#include "TokenType.h"
 
 namespace CMM
 {
