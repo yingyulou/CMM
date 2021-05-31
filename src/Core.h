@@ -31,8 +31,8 @@ public:
     explicit Core(int argc, char **argv);
 
 
-    // Run
-    void Run();
+    // Main
+    void main();
 
 
 private:

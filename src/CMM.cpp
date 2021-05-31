@@ -19,5 +19,5 @@ using CMM::Core;
 
 int main(int argc, char **argv)
 {
-    Core(argc, argv).Run();
+    Core(argc, argv).main();
 }
