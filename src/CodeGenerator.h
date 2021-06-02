@@ -4,8 +4,7 @@
         Class CodeGenerator header.
 */
 
-#ifndef __CMM_CODE_GENERATOR_H
-#define __CMM_CODE_GENERATOR_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -156,6 +155,3 @@ private:
 
 
 }  // End namespace CMM
-
-
-#endif  // __CMM_CODE_GENERATOR_H

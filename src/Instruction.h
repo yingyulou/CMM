@@ -4,8 +4,7 @@
         Enum class INSTRUCTION header.
 */
 
-#ifndef __CMM_INSTRUCTION_H
-#define __CMM_INSTRUCTION_H
+#pragma once
 
 namespace CMM
 {
@@ -63,6 +62,3 @@ enum class INSTRUCTION
 
 
 }  // End namespace CMM
-
-
-#endif  // __CMM_INSTRUCTION_H

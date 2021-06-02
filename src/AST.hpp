@@ -4,8 +4,7 @@
         Struct AST implementation.
 */
 
-#ifndef __CMM_AST_HPP
-#define __CMM_AST_HPP
+#pragma once
 
 #include <string>
 #include <vector>
@@ -56,6 +55,3 @@ AST::~AST()
 
 
 }  // End namespace CMM
-
-
-#endif  // __CMM_AST_HPP

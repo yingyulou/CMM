@@ -4,8 +4,7 @@
         Class Executor header.
 */
 
-#ifndef __CMM_EXECUTOR_H
-#define __CMM_EXECUTOR_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -53,6 +52,3 @@ private:
 
 
 }  // End namespace CMM
-
-
-#endif  // __CMM_EXECUTOR_H

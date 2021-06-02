@@ -4,8 +4,7 @@
         Class Core implementation.
 */
 
-#ifndef __CMM_CORE_HPP
-#define __CMM_CORE_HPP
+#pragma once
 
 #include <string>
 #include <iostream>
@@ -111,6 +110,3 @@ void Core::__runExecuter() const
 
 
 }  // End namespace CMM
-
-
-#endif  // __CMM_CORE_HPP

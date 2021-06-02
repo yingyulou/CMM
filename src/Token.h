@@ -4,8 +4,7 @@
         Struct Token header.
 */
 
-#ifndef __CMM_TOKEN_H
-#define __CMM_TOKEN_H
+#pragma once
 
 #include <string>
 #include "TokenType.h"
@@ -34,6 +33,3 @@ struct Token
 
 
 }  // End namespace CMM
-
-
-#endif  // __CMM_TOKEN_H

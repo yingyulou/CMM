@@ -4,8 +4,7 @@
         Struct AST header.
 */
 
-#ifndef __CMM_AST_H
-#define __CMM_AST_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -49,6 +48,3 @@ struct AST
 
 
 }  // End namespace CMM
-
-
-#endif  // __CMM_AST_H

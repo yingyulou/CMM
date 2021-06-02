@@ -4,8 +4,7 @@
         Class Executor implementation.
 */
 
-#ifndef __CMM_EXECUTOR_HPP
-#define __CMM_EXECUTOR_HPP
+#pragma once
 
 #include <string>
 #include <vector>
@@ -183,6 +182,3 @@ vector<pair<INSTRUCTION, int>> Executer::__parseInstructionFile(
 
 
 }  // End namespace CMM
-
-
-#endif  // __CMM_EXECUTOR_HPP

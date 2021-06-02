@@ -4,8 +4,7 @@
         Class Parser implementation.
 */
 
-#ifndef __CMM_PARSER_HPP
-#define __CMM_PARSER_HPP
+#pragma once
 
 #include <string>
 #include <vector>
@@ -1271,6 +1270,3 @@ void Parser::__ArgList(AST *&root)
 
 
 }  // End namespace CMM
-
-
-#endif  // __CMM_PARSER_HPP

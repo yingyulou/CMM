@@ -4,8 +4,7 @@
         Class Lexer implementation.
 */
 
-#ifndef __CMM_LEXER_HPP
-#define __CMM_LEXER_HPP
+#pragma once
 
 #include <string>
 #include <cctype>
@@ -421,6 +420,3 @@ void Lexer::__nextTokenInNotStage(int nowChar, bool &saveBool,
 
 
 }  // End namespace CMM
-
-
-#endif  // __CMM_LEXER_HPP

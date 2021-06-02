@@ -4,8 +4,7 @@
         Class SemanticAnalyzer header.
 */
 
-#ifndef __CMM_SEMANTIC_ANALYZER_H
-#define __CMM_SEMANTIC_ANALYZER_H
+#pragma once
 
 #include <string>
 #include <unordered_map>
@@ -48,6 +47,3 @@ private:
 
 
 }  // End namespace CMM
-
-
-#endif  // __CMM_SEMANTIC_ANALYZER_H

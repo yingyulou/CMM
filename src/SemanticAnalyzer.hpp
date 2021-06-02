@@ -4,8 +4,7 @@
         Class SemanticAnalyzer  implementation.
 */
 
-#ifndef __CMM_SEMANTIC_ANALYZER_HPP
-#define __CMM_SEMANTIC_ANALYZER_HPP
+#pragma once
 
 #include <string>
 #include <unordered_map>
@@ -169,6 +168,3 @@ unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::g
 
 
 }  // End namespace CMM
-
-
-#endif  // __CMM_SEMANTIC_ANALYZER_HPP

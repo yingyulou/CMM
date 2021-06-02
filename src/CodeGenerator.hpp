@@ -4,8 +4,7 @@
         Class CodeGenerator implementation.
 */
 
-#ifndef __CMM_CODE_GENERATOR_HPP
-#define __CMM_CODE_GENERATOR_HPP
+#pragma once
 
 #include <string>
 #include <vector>
@@ -1106,6 +1105,3 @@ void CodeGenerator::__outputCode(
 
 
 }  // End namespace CMM
-
-
-#endif  // __CMM_CODE_GENERATOR_HPP

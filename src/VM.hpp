@@ -4,8 +4,7 @@
         Class VM implementation.
 */
 
-#ifndef __CMM_VM_HPP
-#define __CMM_VM_HPP
+#pragma once
 
 #include <vector>
 #include <utility>
@@ -181,6 +180,3 @@ void VM::__runInstruction(const pair<INSTRUCTION, int> &instructionPair)
 
 
 }  // End namespace CMM
-
-
-#endif  // __CMM_VM_HPP

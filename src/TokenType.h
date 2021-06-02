@@ -4,8 +4,7 @@
         Enum class TOKEN_TYPE header.
 */
 
-#ifndef __CMM_TOKEN_TYPE_H
-#define __CMM_TOKEN_TYPE_H
+#pragma once
 
 namespace CMM
 {
@@ -75,6 +74,3 @@ enum class TOKEN_TYPE
 
 
 }  // End namespace CMM
-
-
-#endif  // __CMM_TOKEN_TYPE_H

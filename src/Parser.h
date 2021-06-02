@@ -4,8 +4,7 @@
         Class Parser header.
 */
 
-#ifndef __CMM_PARSER_H
-#define __CMM_PARSER_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -181,6 +180,3 @@ private:
 
 
 }  // End namespace CMM
-
-
-#endif  // __CMM_PARSER_H

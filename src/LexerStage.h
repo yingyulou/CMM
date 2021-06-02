@@ -4,8 +4,7 @@
         Enum class LEXER_STAGE header.
 */
 
-#ifndef __CMM_LEXER_STAGE_H
-#define __CMM_LEXER_STAGE_H
+#pragma once
 
 namespace CMM
 {
@@ -61,6 +60,3 @@ enum class LEXER_STAGE
 
 
 }  // End namespace CMM
-
-
-#endif  // __CMM_LEXER_STAGE_H

@@ -4,8 +4,7 @@
         Constants define.
 */
 
-#ifndef __CMM_CONSTANTS_HPP
-#define __CMM_CONSTANTS_HPP
+#pragma once
 
 #include <string>
 #include <unordered_map>
@@ -55,6 +54,3 @@ const unordered_map<string, TOKEN_TYPE> KEYWORD_MAP
 
 
 }  // End namespace CMM
-
-
-#endif  // __CMM_CONSTANTS_HPP

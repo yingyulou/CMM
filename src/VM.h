@@ -4,8 +4,7 @@
         Class VM header.
 */
 
-#ifndef __CMM_VM_H
-#define __CMM_VM_H
+#pragma once
 
 #include <vector>
 #include <utility>
@@ -52,6 +51,3 @@ private:
 
 
 }  // End namespace CMM
-
-
-#endif  // __CMM_VM_H

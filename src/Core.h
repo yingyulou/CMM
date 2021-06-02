@@ -4,8 +4,7 @@
         Class Core header.
 */
 
-#ifndef __CMM_CORE_H
-#define __CMM_CORE_H
+#pragma once
 
 #include <string>
 
@@ -59,6 +58,3 @@ private:
 
 
 }  // End namespace CMM
-
-
-#endif  // __CMM_CORE_H

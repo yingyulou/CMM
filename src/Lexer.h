@@ -4,8 +4,7 @@
         Class Lexer header.
 */
 
-#ifndef __CMM_LEXER_H
-#define __CMM_LEXER_H
+#pragma once
 
 #include <cstdio>
 #include <string>
@@ -104,6 +103,3 @@ private:
 
 
 }  // End namespace CMM
-
-
-#endif  // __CMM_LEXER_H
