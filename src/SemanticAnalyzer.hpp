@@ -77,6 +77,8 @@ unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::g
             int varIdx = 0;
             string funcName = declNodePtr->subList[1]->tokenStr;
 
+            symbolTable.emplace(funcName, unordered_map<string, pair<int, int>>());
+
             /*
                 __ParamList | TOKEN_TYPE::VOID
             */
