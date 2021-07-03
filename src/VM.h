@@ -40,8 +40,8 @@ public:
 private:
 
     // Attribute
-    int AX, IP, BP;
     vector<pair<INSTRUCTION, int>> CS;
+    int IP;
     vector<int> SS;
 
 

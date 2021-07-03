@@ -29,10 +29,9 @@ using std::pair;
 ////////////////////////////////////////////////////////////////////////////////
 
 VM::VM(const vector<pair<INSTRUCTION, int>> &instructionList):
-    AX(0),
+    CS(instructionList),
     IP(0),
-    BP(0),
-    CS(instructionList) {}
+    SS(2) {}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -58,31 +57,31 @@ void VM::__runInstruction(const pair<INSTRUCTION, int> &instructionPair)
     switch (instructionPair.first)
     {
         case INSTRUCTION::LDC:
-            AX = instructionPair.second;
+            SS[0] = instructionPair.second;
             break;
 
         case INSTRUCTION::LD:
-            AX = SS[BP - AX - 1];
+            SS[0] = SS[SS[1] - SS[0] - 1];
             break;
 
         case INSTRUCTION::ABSLD:
-            AX = SS[AX];
+            SS[0] = SS[SS[0] + 2];
             break;
 
         case INSTRUCTION::SAV:
-            SS[BP - AX - 1] = SS.back();
+            SS[SS[1] - SS[0] - 1] = SS.back();
             break;
 
         case INSTRUCTION::ABSSAV:
-            SS[AX] = SS.back();
+            SS[SS[0] + 2] = SS.back();
             break;
 
         case INSTRUCTION::SAVSP:
-            BP = SS.size() - 1;
+            SS[1] = SS.size() - 1;
             break;
 
         case INSTRUCTION::PUSH:
-            SS.push_back(AX);
+            SS.push_back(SS[0]);
             break;
 
         case INSTRUCTION::POP:
@@ -90,11 +89,11 @@ void VM::__runInstruction(const pair<INSTRUCTION, int> &instructionPair)
             break;
 
         case INSTRUCTION::PUSHBP:
-            SS.push_back(BP);
+            SS.push_back(SS[1]);
             break;
 
         case INSTRUCTION::POPBP:
-            BP = SS.back();
+            SS[1] = SS.back();
             SS.pop_back();
             break;
 
@@ -117,7 +116,7 @@ void VM::__runInstruction(const pair<INSTRUCTION, int> &instructionPair)
 
         case INSTRUCTION::JZ:
 
-            if (!AX)
+            if (!SS[0])
             {
                 IP += instructionPair.second - 1;
             }
@@ -125,51 +124,51 @@ void VM::__runInstruction(const pair<INSTRUCTION, int> &instructionPair)
             break;
 
         case INSTRUCTION::ADD:
-            AX = SS.back() + AX;
+            SS[0] = SS.back() + SS[0];
             break;
 
         case INSTRUCTION::SUB:
-            AX = SS.back() - AX;
+            SS[0] = SS.back() - SS[0];
             break;
 
         case INSTRUCTION::MUL:
-            AX = SS.back() * AX;
+            SS[0] = SS.back() * SS[0];
             break;
 
         case INSTRUCTION::DIV:
-            AX = SS.back() / AX;
+            SS[0] = SS.back() / SS[0];
             break;
 
         case INSTRUCTION::LT:
-            AX = SS.back() < AX;
+            SS[0] = SS.back() < SS[0];
             break;
 
         case INSTRUCTION::LE:
-            AX = SS.back() <= AX;
+            SS[0] = SS.back() <= SS[0];
             break;
 
         case INSTRUCTION::GT:
-            AX = SS.back() > AX;
+            SS[0] = SS.back() > SS[0];
             break;
 
         case INSTRUCTION::GE:
-            AX = SS.back() >= AX;
+            SS[0] = SS.back() >= SS[0];
             break;
 
         case INSTRUCTION::EQ:
-            AX = SS.back() == AX;
+            SS[0] = SS.back() == SS[0];
             break;
 
         case INSTRUCTION::NE:
-            AX = SS.back() != AX;
+            SS[0] = SS.back() != SS[0];
             break;
 
         case INSTRUCTION::INPUT:
-            scanf("%d", &AX);
+            scanf("%d", &SS[0]);
             break;
 
         case INSTRUCTION::OUTPUT:
-            printf("%d\n", AX);
+            printf("%d\n", SS[0]);
             break;
 
         case INSTRUCTION::STOP:
