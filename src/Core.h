@@ -40,20 +40,21 @@ private:
     int __ARGC;
     char **__ARGV;
     string __cmmFilePath;
-    string __outputFilePath;
-    string __instructionFilePath;
+    string __outputASMCodeFilePath;
+    string __outputByteCodeFilePath;
+    string __inputByteCodeFilePath;
 
 
     // Input Arguments
     void __inputArguments();
 
 
-    // Run Code Generator
-    void __runCodeGenerator() const;
+    // Generate Code
+    void __generateCode() const;
 
 
-    // Run Executer
-    void __runExecuter() const;
+    // Run Code
+    void __runCode() const;
 };
 
 

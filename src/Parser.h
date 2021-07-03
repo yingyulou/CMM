@@ -36,10 +36,7 @@ public:
 
 
     // Getter: __root
-    AST *root() const
-    {
-        return __root;
-    }
+    AST *root() const;
 
 
     // Destructor

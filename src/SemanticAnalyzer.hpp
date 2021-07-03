@@ -43,7 +43,11 @@ unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::g
     /*
         symbolTable: Function Name => Variable Name => (Variable Number, Array Size)
     */
-    unordered_map<string, unordered_map<string, pair<int, int>>> symbolTable {{"__GLOBAL__", {}}};
+    unordered_map<string, unordered_map<string, pair<int, int>>> symbolTable
+    {
+        {"__GLOBAL__", {}}
+    };
+
     int globalIdx = 0;
 
     /*

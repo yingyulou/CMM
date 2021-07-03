@@ -39,6 +39,7 @@ struct AST
     explicit AST(TOKEN_TYPE _tokenType, const string &_tokenStr = "",
         const vector<AST *> &_subList = {}, int _lineNo = 0);
 
+
     explicit AST(const Token *tokenPtr);
 
 

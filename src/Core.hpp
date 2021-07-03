@@ -11,7 +11,7 @@
 #include <boost/program_options.hpp>
 #include "Core.h"
 #include "CodeGenerator.h"
-#include "Executor.h"
+#include "Decoder.h"
 #include "Constants.hpp"
 
 namespace CMM
@@ -42,8 +42,8 @@ Core::Core(int argc, char **argv):
 void Core::main()
 {
     __inputArguments();
-    __runCodeGenerator();
-    __runExecuter();
+    __generateCode();
+    __runCode();
 }
 
 
@@ -64,11 +64,14 @@ void Core::__inputArguments()
         (",c", po::value<string>(&__cmmFilePath),
             "Input CMM File Path")
 
-        (",o", po::value<string>(&__outputFilePath)->default_value("a.out"),
-            "Output Instruction File Path")
+        (",s", po::value<string>(&__outputASMCodeFilePath),
+            "Output ASM File Path")
 
-        (",r", po::value<string>(&__instructionFilePath),
-            "Input Instruction File Path (For Running)");
+        (",o", po::value<string>(&__outputByteCodeFilePath)->default_value("a.out"),
+            "Output Byte Code File Path")
+
+        (",r", po::value<string>(&__inputByteCodeFilePath),
+            "Input Byte Code File Path (For Running)");
 
     po::variables_map vm;
     po::store(po::parse_command_line(__ARGC, __ARGV, desc), vm);
@@ -84,27 +87,28 @@ void Core::__inputArguments()
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Run Code Generator
+// Generate Code
 ////////////////////////////////////////////////////////////////////////////////
 
-void Core::__runCodeGenerator() const
+void Core::__generateCode() const
 {
     if (!__cmmFilePath.empty())
     {
-        CodeGenerator(Parser(__cmmFilePath).root(), __outputFilePath).GenerateCode();
+        CodeGenerator(Parser(__cmmFilePath).root(), __outputASMCodeFilePath,
+            __outputByteCodeFilePath).GenerateCode();
     }
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Run Executer
+// Run Code
 ////////////////////////////////////////////////////////////////////////////////
 
-void Core::__runExecuter() const
+void Core::__runCode() const
 {
-    if (!__instructionFilePath.empty())
+    if (!__inputByteCodeFilePath.empty())
     {
-        Executer(__instructionFilePath).Execute();
+        VM(Decoder(__inputByteCodeFilePath).instructionList()).Run();
     }
 }
 

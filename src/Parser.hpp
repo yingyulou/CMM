@@ -31,7 +31,8 @@ using std::vector;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////////
 
-Parser::Parser(const string &inputFilePath): __root(nullptr)
+Parser::Parser(const string &inputFilePath):
+    __root(nullptr)
 {
     Lexer lexer(inputFilePath);
 
@@ -49,6 +50,16 @@ Parser::Parser(const string &inputFilePath): __root(nullptr)
 
     __tokenPtr = __tokenList.data();
     __Parse(__root);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Getter: __root
+////////////////////////////////////////////////////////////////////////////////
+
+AST *Parser::root() const
+{
+    return __root;
 }
 
 

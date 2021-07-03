@@ -6,7 +6,7 @@ CMM (C Minus Minus) language compiler and VM.
 
 ## Dependencies
 
-* C++11 compiler, such as GCC 4.8+
+* C++17 compiler
 * boost
 
 ## Installation
@@ -51,8 +51,9 @@ CMM
 Usage:
   -h [ --help ]         show this help message and exit
   -c arg                Input CMM File Path
-  -o arg (=a.out)       Output Instruction File Path
-  -r arg                Input Instruction File Path (For Running)
+  -s arg                Output ASM File Path
+  -o arg (=a.out)       Output Byte Code File Path
+  -r arg                Input Byte Code File Path (For Running)
 ```
 
 ## Sample files

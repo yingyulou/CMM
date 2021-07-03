@@ -32,7 +32,7 @@ using std::string;
 
 Lexer::Lexer(const string &inputFilePath):
     __filePtr(fopen(inputFilePath.c_str(), "r")),
-    __lineNo(1) {}
+    __lineNo (1) {}
 
 
 ////////////////////////////////////////////////////////////////////////////////

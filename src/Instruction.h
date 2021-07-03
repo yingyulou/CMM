@@ -56,6 +56,9 @@ enum class INSTRUCTION
     INPUT,
     OUTPUT,
 
+    // Call (Dummy Instruction)
+    CALL,
+
     // Stop
     STOP,
 };

@@ -1,7 +1,7 @@
 /*
-    Executor.h
-    ==========
-        Class Executor header.
+    Decoder.h
+    =========
+        Class Decoder header.
 */
 
 #pragma once
@@ -27,27 +27,27 @@ using std::pair;
 // Class Executer
 ////////////////////////////////////////////////////////////////////////////////
 
-class Executer
+class Decoder
 {
 public:
 
     // Constructor
-    explicit Executer(const string &instructionFilePath);
+    explicit Decoder(const string &byteCodeFilePath);
 
 
-    // Execute
-    void Execute() const;
+    // Getter: __instructionList
+    const vector<pair<INSTRUCTION, int>> &instructionList() const;
 
 
 private:
 
     // Attribute
+    string __byteCodeFilePath;
     vector<pair<INSTRUCTION, int>> __instructionList;
 
 
-    // Parse Instruction File
-    vector<pair<INSTRUCTION, int>> __parseInstructionFile(
-        const string &instructionFilePath) const;
+    // Parse Byte Code File
+    void __parseByteCodeFile();
 };
 
 

@@ -13,6 +13,6 @@
 #include "CodeGenerator.hpp"
 #include "Instruction.h"
 #include "VM.hpp"
-#include "Executor.hpp"
+#include "Decoder.hpp"
 #include "Core.hpp"
 #include "Constants.hpp"
