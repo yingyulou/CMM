@@ -56,7 +56,7 @@ private:
 
 
     // Match Token
-    void __MatchToken(TOKEN_TYPE tokenType);
+    void __MatchToken(TokenType tokenType);
 
 
     // ENBF: Parse

@@ -26,7 +26,7 @@ using std::string;
 struct Token
 {
     // Attribute
-    TOKEN_TYPE tokenType;
+    TokenType tokenType;
     string tokenStr;
     int lineNo;
 };

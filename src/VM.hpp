@@ -28,7 +28,7 @@ using std::pair;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////////
 
-VM::VM(const vector<pair<INSTRUCTION, int>> &instructionList):
+VM::VM(const vector<pair<Instruction, int>> &instructionList):
     CS(instructionList),
     IP(0),
     SS(2) {}
@@ -52,69 +52,69 @@ void VM::Run()
 // Run Instruction
 ////////////////////////////////////////////////////////////////////////////////
 
-void VM::__runInstruction(const pair<INSTRUCTION, int> &instructionPair)
+void VM::__runInstruction(const pair<Instruction, int> &instructionPair)
 {
     switch (instructionPair.first)
     {
-        case INSTRUCTION::LDC:
+        case Instruction::LDC:
             SS[0] = instructionPair.second;
             break;
 
-        case INSTRUCTION::LD:
+        case Instruction::LD:
             SS[0] = SS[SS[1] - SS[0] - 1];
             break;
 
-        case INSTRUCTION::ABSLD:
+        case Instruction::ABSLD:
             SS[0] = SS[SS[0] + 2];
             break;
 
-        case INSTRUCTION::SAV:
+        case Instruction::SAV:
             SS[SS[1] - SS[0] - 1] = SS.back();
             break;
 
-        case INSTRUCTION::ABSSAV:
+        case Instruction::ABSSAV:
             SS[SS[0] + 2] = SS.back();
             break;
 
-        case INSTRUCTION::SAVSP:
+        case Instruction::SAVSP:
             SS[1] = SS.size() - 1;
             break;
 
-        case INSTRUCTION::PUSH:
+        case Instruction::PUSH:
             SS.push_back(SS[0]);
             break;
 
-        case INSTRUCTION::POP:
+        case Instruction::POP:
             SS.pop_back();
             break;
 
-        case INSTRUCTION::PUSHBP:
+        case Instruction::PUSHBP:
             SS.push_back(SS[1]);
             break;
 
-        case INSTRUCTION::POPBP:
+        case Instruction::POPBP:
             SS[1] = SS.back();
             SS.pop_back();
             break;
 
-        case INSTRUCTION::PUSHIP:
+        case Instruction::PUSHIP:
             SS.push_back(IP);
             break;
 
-        case INSTRUCTION::POPIP:
+        case Instruction::POPIP:
             IP = SS.back() + 1;
             SS.pop_back();
             break;
 
-        case INSTRUCTION::PUSHSP:
+        case Instruction::PUSHSP:
             SS.push_back(SS.size() - 1);
             break;
 
-        case INSTRUCTION::JMP:
+        case Instruction::JMP:
             IP += instructionPair.second - 1;
             break;
 
-        case INSTRUCTION::JZ:
+        case Instruction::JZ:
 
             if (!SS[0])
             {
@@ -123,55 +123,55 @@ void VM::__runInstruction(const pair<INSTRUCTION, int> &instructionPair)
 
             break;
 
-        case INSTRUCTION::ADD:
+        case Instruction::ADD:
             SS[0] = SS.back() + SS[0];
             break;
 
-        case INSTRUCTION::SUB:
+        case Instruction::SUB:
             SS[0] = SS.back() - SS[0];
             break;
 
-        case INSTRUCTION::MUL:
+        case Instruction::MUL:
             SS[0] = SS.back() * SS[0];
             break;
 
-        case INSTRUCTION::DIV:
+        case Instruction::DIV:
             SS[0] = SS.back() / SS[0];
             break;
 
-        case INSTRUCTION::LT:
+        case Instruction::LT:
             SS[0] = SS.back() < SS[0];
             break;
 
-        case INSTRUCTION::LE:
+        case Instruction::LE:
             SS[0] = SS.back() <= SS[0];
             break;
 
-        case INSTRUCTION::GT:
+        case Instruction::GT:
             SS[0] = SS.back() > SS[0];
             break;
 
-        case INSTRUCTION::GE:
+        case Instruction::GE:
             SS[0] = SS.back() >= SS[0];
             break;
 
-        case INSTRUCTION::EQ:
+        case Instruction::EQ:
             SS[0] = SS.back() == SS[0];
             break;
 
-        case INSTRUCTION::NE:
+        case Instruction::NE:
             SS[0] = SS.back() != SS[0];
             break;
 
-        case INSTRUCTION::INPUT:
+        case Instruction::INPUT:
             scanf("%d", &SS[0]);
             break;
 
-        case INSTRUCTION::OUTPUT:
+        case Instruction::OUTPUT:
             printf("%d\n", SS[0]);
             break;
 
-        case INSTRUCTION::STOP:
+        case Instruction::STOP:
             exit(0);
             break;
     }

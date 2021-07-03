@@ -1,7 +1,7 @@
 /*
     Instruction.h
     =============
-        Enum class INSTRUCTION header.
+        Enum class Instruction header.
 */
 
 #pragma once
@@ -10,10 +10,10 @@ namespace CMM
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-// Enum Class INSTRUCTION
+// Enum Class Instruction
 ////////////////////////////////////////////////////////////////////////////////
 
-enum class INSTRUCTION
+enum class Instruction: char
 {
     // Load
     LDC,

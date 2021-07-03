@@ -42,14 +42,14 @@ Usage)";
 // Keyword Map
 ////////////////////////////////////////////////////////////////////////////////
 
-const unordered_map<string, TOKEN_TYPE> KEYWORD_MAP
+const unordered_map<string, TokenType> KEYWORD_MAP
 {
-    {"void",   TOKEN_TYPE::VOID},
-    {"int",    TOKEN_TYPE::INT},
-    {"if",     TOKEN_TYPE::IF},
-    {"else",   TOKEN_TYPE::ELSE},
-    {"while",  TOKEN_TYPE::WHILE},
-    {"return", TOKEN_TYPE::RETURN},
+    {"void",   TokenType::Void},
+    {"int",    TokenType::Int},
+    {"if",     TokenType::If},
+    {"else",   TokenType::Else},
+    {"while",  TokenType::While},
+    {"return", TokenType::Return},
 };
 
 

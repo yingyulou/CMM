@@ -1,7 +1,7 @@
 /*
     LexerStage.h
     ============
-        Enum class LEXER_STAGE header.
+        Enum class LexerStage header.
 */
 
 #pragma once
@@ -10,52 +10,52 @@ namespace CMM
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-// Enum Class LEXER_STAGE
+// Enum Class LexerStage
 ////////////////////////////////////////////////////////////////////////////////
 
-enum class LEXER_STAGE
+enum class LexerStage
 {
     // Start
-    START,
+    Start,
 
     // abc...
     //  ^^^^^
-    IN_ID,
+    InId,
 
     // 123...
     //  ^^^^^
-    IN_NUMBER,
+    InNumber,
 
     // /?
     //  ^
-    IN_DIVIDE,
+    InDivide,
 
     // /* ...
     //    ^^^
-    IN_COMMENT,
+    InComment,
 
     // ... */
     //      ^
-    END_COMMENT,
+    EndComment,
 
     // <?
     //  ^
-    IN_LESS,
+    InLess,
 
     // >?
     //  ^
-    IN_GREATER,
+    InGreater,
 
     // =?
     //  ^
-    IN_ASSIGN,
+    InAssign,
 
     // !?
     //  ^
-    IN_NOT,
+    InNot,
 
     // Done
-    DONE,
+    Done,
 };
 
 

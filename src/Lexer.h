@@ -52,53 +52,53 @@ private:
 
 
     // NextToken START Stage Dispatch
-    void __nextTokenStartStage(int nowChar, bool &saveBool, LEXER_STAGE &lexerStage,
-        TOKEN_TYPE &tokenType, string &tokenStr);
+    void __nextTokenStartStage(int nowChar, bool &saveBool, LexerStage &lexerStage,
+        TokenType &tokenType, string &tokenStr);
 
 
     // NextToken IN_ID Stage Dispatch
-    void __nextTokenInIDStage(int nowChar, bool &saveBool, LEXER_STAGE &lexerStage,
-        TOKEN_TYPE &tokenType, string &tokenStr);
+    void __nextTokenInIDStage(int nowChar, bool &saveBool, LexerStage &lexerStage,
+        TokenType &tokenType, string &tokenStr);
 
 
     // NextToken IN_NUMBER Stage Dispatch
-    void __nextTokenInNumberStage(int nowChar, bool &saveBool, LEXER_STAGE &lexerStage,
-        TOKEN_TYPE &tokenType, string &tokenStr);
+    void __nextTokenInNumberStage(int nowChar, bool &saveBool, LexerStage &lexerStage,
+        TokenType &tokenType, string &tokenStr);
 
 
     // NextToken IN_DIVIDE Stage Dispatch
-    void __nextTokenInDivideStage(int nowChar, bool &saveBool, LEXER_STAGE &lexerStage,
-        TOKEN_TYPE &tokenType, string &tokenStr);
+    void __nextTokenInDivideStage(int nowChar, bool &saveBool, LexerStage &lexerStage,
+        TokenType &tokenType, string &tokenStr);
 
 
     // NextToken IN_COMMENT Stage Dispatch
-    void __nextTokenInCommentStage(int nowChar, bool &saveBool, LEXER_STAGE &lexerStage,
-        TOKEN_TYPE &tokenType, string &tokenStr);
+    void __nextTokenInCommentStage(int nowChar, bool &saveBool, LexerStage &lexerStage,
+        TokenType &tokenType, string &tokenStr);
 
 
     // NextToken END_COMMENT Stage Dispatch
-    void __nextTokenEndCommentStage(int nowChar, bool &saveBool, LEXER_STAGE &lexerStage,
-        TOKEN_TYPE &tokenType, string &tokenStr);
+    void __nextTokenEndCommentStage(int nowChar, bool &saveBool, LexerStage &lexerStage,
+        TokenType &tokenType, string &tokenStr);
 
 
     // NextToken IN_LESS Stage Dispatch
-    void __nextTokenInLessStage(int nowChar, bool &saveBool, LEXER_STAGE &lexerStage,
-        TOKEN_TYPE &tokenType, string &tokenStr);
+    void __nextTokenInLessStage(int nowChar, bool &saveBool, LexerStage &lexerStage,
+        TokenType &tokenType, string &tokenStr);
 
 
     // NextToken IN_GREATER Stage Dispatch
-    void __nextTokenInGreaterStage(int nowChar, bool &saveBool, LEXER_STAGE &lexerStage,
-        TOKEN_TYPE &tokenType, string &tokenStr);
+    void __nextTokenInGreaterStage(int nowChar, bool &saveBool, LexerStage &lexerStage,
+        TokenType &tokenType, string &tokenStr);
 
 
     // NextToken IN_ASSIGN Stage Dispatch
-    void __nextTokenInAssignStage(int nowChar, bool &saveBool, LEXER_STAGE &lexerStage,
-        TOKEN_TYPE &tokenType, string &tokenStr);
+    void __nextTokenInAssignStage(int nowChar, bool &saveBool, LexerStage &lexerStage,
+        TokenType &tokenType, string &tokenStr);
 
 
     // NextToken IN_NOT Stage Dispatch
-    void __nextTokenInNotStage(int nowChar, bool &saveBool, LEXER_STAGE &lexerStage,
-        TOKEN_TYPE &tokenType, string &tokenStr);
+    void __nextTokenInNotStage(int nowChar, bool &saveBool, LexerStage &lexerStage,
+        TokenType &tokenType, string &tokenStr);
 };
 
 

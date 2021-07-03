@@ -51,7 +51,7 @@ unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::g
     int globalIdx = 0;
 
     /*
-        TOKEN_TYPE::DECL_LIST
+        TokenType::DeclList
             |
             |---- __Decl
             |
@@ -65,14 +65,14 @@ unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::g
         /*
             __VarDecl | __FuncDecl
         */
-        if (declNodePtr->tokenType == TOKEN_TYPE::FUNC_DECL)
+        if (declNodePtr->tokenType == TokenType::FuncDecl)
         {
             /*
-                TOKEN_TYPE::FUNC_DECL
+                TokenType::FuncDecl
                     |
                     |---- __Type
                     |
-                    |---- TOKEN_TYPE::ID
+                    |---- TokenType::Id
                     |
                     |---- __Params
                     |
@@ -84,12 +84,12 @@ unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::g
             symbolTable[funcName];
 
             /*
-                __ParamList | TOKEN_TYPE::VOID
+                __ParamList | TokenType::Void
             */
-            if (declNodePtr->subList[2]->tokenType == TOKEN_TYPE::PARAM_LIST)
+            if (declNodePtr->subList[2]->tokenType == TokenType::ParamList)
             {
                 /*
-                    TOKEN_TYPE::PARAM_LIST
+                    TokenType::ParamList
                         |
                         |---- __Param
                         |
@@ -101,11 +101,11 @@ unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::g
                 for (auto paramPtr: declNodePtr->subList[2]->subList)
                 {
                     /*
-                        TOKEN_TYPE::PARAM
+                        TokenType::Param
                             |
                             |---- __Type
                             |
-                            |---- TOKEN_TYPE::ID
+                            |---- TokenType::Id
                     */
                     string varName = paramPtr->subList[1]->tokenStr;
 
@@ -114,14 +114,14 @@ unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::g
             }
 
             /*
-                TOKEN_TYPE::COMPOUND_STMT
+                TokenType::CompoundStmt
                     |
                     |---- __LocalDecl
                     |
                     |---- __StmtList
 
 
-                TOKEN_TYPE::LOCAL_DECL
+                TokenType::LocalDecl
                     |
                     |---- [__VarDecl]
                     .
@@ -131,13 +131,13 @@ unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::g
             for (auto varDeclPtr: declNodePtr->subList[3]->subList[0]->subList)
             {
                 /*
-                    TOKEN_TYPE::VAR_DECL
+                    TokenType::VarDecl
                         |
                         |---- __Type
                         |
-                        |---- TOKEN_TYPE::ID
+                        |---- TokenType::Id
                         |
-                        |---- [TOKEN_TYPE::NUMBER]
+                        |---- [TokenType::Number]
                 */
                 string varName = varDeclPtr->subList[1]->tokenStr;
 
@@ -151,13 +151,13 @@ unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::g
         else
         {
             /*
-                TOKEN_TYPE::VAR_DECL
+                TokenType::VarDecl
                     |
                     |---- __Type
                     |
-                    |---- TOKEN_TYPE::ID
+                    |---- TokenType::Id
                     |
-                    |---- [TOKEN_TYPE::NUMBER]
+                    |---- [TokenType::Number]
             */
             string varName = declNodePtr->subList[1]->tokenStr;
 

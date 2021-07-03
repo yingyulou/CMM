@@ -29,14 +29,14 @@ using std::vector;
 struct AST
 {
     // Attribute
-    TOKEN_TYPE tokenType;
+    TokenType tokenType;
     string tokenStr;
     vector<AST *> subList;
     int lineNo;
 
 
     // Constructor
-    explicit AST(TOKEN_TYPE _tokenType, const string &_tokenStr = "",
+    explicit AST(TokenType _tokenType, const string &_tokenStr = "",
         const vector<AST *> &_subList = {}, int _lineNo = 0);
 
 

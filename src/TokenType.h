@@ -1,7 +1,7 @@
 /*
     TokenType.h
     ===========
-        Enum class TOKEN_TYPE header.
+        Enum class TokenType header.
 */
 
 #pragma once
@@ -10,66 +10,66 @@ namespace CMM
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-// Enum Class TOKEN_TYPE
+// Enum Class TokenType
 ////////////////////////////////////////////////////////////////////////////////
 
-enum class TOKEN_TYPE
+enum class TokenType
 {
     // Word
-    ID,                    // ID
-    NUMBER,                // Number
+    Id,                  // Id
+    Number,              // Number
 
     // Keyword
-    VOID,                  // void
-    INT,                   // int
-    IF,                    // if
-    ELSE,                  // else
-    WHILE,                 // while
-    RETURN,                // return
+    Void,                // void
+    Int,                 // int
+    If,                  // if
+    Else,                // else
+    While,               // while
+    Return,              // return
 
     // Operator
-    PLUS,                  // +
-    MINUS,                 // -
-    MULTIPLY,              // *
-    DIVIDE,                // /
-    LESS,                  // <
-    LESS_EQUAL,            // <=
-    GREATER,               // >
-    GREATER_EQUAL,         // >=
-    EQUAL,                 // ==
-    NOT_EQUAL,             // !=
-    ASSIGN,                // =
-    SEMICOLON,             // ;
-    COMMA,                 // ,
-    LEFT_ROUND_BRACKET,    // (
-    RIGHT_ROUND_BRACKET,   // )
-    LEFT_SQUARE_BRACKET,   // [
-    RIGHT_SQUARE_BRACKET,  // ]
-    LEFT_CURLY_BRACKET,    // {
-    RIGHT_CURLY_BRACKET,   // }
+    Plus,                // +
+    Minus,               // -
+    Multiply,            // *
+    Divide,              // /
+    Less,                // <
+    LessEqual,           // <=
+    Greater,             // >
+    GreaterEqual,        // >=
+    Equal,               // ==
+    NotEqual,            // !=
+    Assign,              // =
+    Semicolon,           // ;
+    Comma,               // ,
+    LeftRoundBracket,    // (
+    RightRoundBracket,   // )
+    LeftSquareBracket,   // [
+    RightSquareBracket,  // ]
+    LeftCurlyBracket,    // {
+    RightCurlyBracket,   // }
 
-    // EOF
-    END_OF_FILE,           // EOF
+    // Eof
+    EndOfFile,           // EOF
 
-    // AST
-    DECL_LIST,             // AST: DeclList
-    VAR_DECL,              // AST: VarDecl
-    FUNC_DECL,             // AST: FuncDecl
-    PARAM_LIST,            // AST: ParamList
-    PARAM,                 // AST: Param
-    COMPOUND_STMT,         // AST: CompoundStmt
-    LOCAL_DECL,            // AST: LocalDecl
-    STMT_LIST,             // AST: StmtList
-    IF_STMT,               // AST: IfStmt
-    WHILE_STMT,            // AST: WhileStmt
-    RETURN_STMT,           // AST: ReturnStmt
-    EXPR,                  // AST: Expr
-    VAR,                   // AST: Var
-    SIMPLE_EXPR,           // AST: SimpleExpr
-    ADD_EXPR,              // AST: AddExpr
-    TERM,                  // AST: Term
-    CALL,                  // AST: Call
-    ARG_LIST,              // AST: ArgList
+    // Ast
+    DeclList,            // AST: DeclList
+    VarDecl,             // AST: VarDecl
+    FuncDecl,            // AST: FuncDecl
+    ParamList,           // AST: ParamList
+    Param,               // AST: Param
+    CompoundStmt,        // AST: CompoundStmt
+    LocalDecl,           // AST: LocalDecl
+    StmtList,            // AST: StmtList
+    IfStmt,              // AST: IfStmt
+    WhileStmt,           // AST: WhileStmt
+    ReturnStmt,          // AST: ReturnStmt
+    Expr,                // AST: Expr
+    Var,                 // AST: Var
+    SimpleExpr,          // AST: SimpleExpr
+    AddExpr,             // AST: AddExpr
+    Term,                // AST: Term
+    Call,                // AST: Call
+    ArgList,             // AST: ArgList
 };
 
 

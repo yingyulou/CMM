@@ -27,7 +27,7 @@ using std::vector;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////////
 
-AST::AST(TOKEN_TYPE _tokenType, const string &_tokenStr,
+AST::AST(TokenType _tokenType, const string &_tokenStr,
     const vector<AST *> &_subList, int _lineNo):
     tokenType(_tokenType),
     tokenStr (_tokenStr),

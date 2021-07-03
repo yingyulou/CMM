@@ -30,7 +30,7 @@ class VM
 public:
 
     // Constructor
-    explicit VM(const vector<pair<INSTRUCTION, int>> &instructionList);
+    explicit VM(const vector<pair<Instruction, int>> &instructionList);
 
 
     // Run VM
@@ -40,13 +40,13 @@ public:
 private:
 
     // Attribute
-    vector<pair<INSTRUCTION, int>> CS;
+    vector<pair<Instruction, int>> CS;
     int IP;
     vector<int> SS;
 
 
     // Run Instruction
-    void __runInstruction(const pair<INSTRUCTION, int> &instructionPair);
+    void __runInstruction(const pair<Instruction, int> &instructionPair);
 };
 
 

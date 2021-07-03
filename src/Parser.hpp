@@ -42,7 +42,7 @@ Parser::Parser(const string &inputFilePath):
     {
         __tokenList.push_back(nowToken);
 
-        if (nowToken.tokenType == TOKEN_TYPE::END_OF_FILE)
+        if (nowToken.tokenType == TokenType::EndOfFile)
         {
             break;
         }
@@ -91,7 +91,7 @@ void Parser::__invalidToken(const Token *invalidTokenPtr)
 // Match Token
 ////////////////////////////////////////////////////////////////////////////////
 
-void Parser::__MatchToken(TOKEN_TYPE tarTokenType)
+void Parser::__MatchToken(TokenType tarTokenType)
 {
     if (__tokenPtr->tokenType == tarTokenType)
     {
@@ -149,7 +149,7 @@ void Parser::__DeclList(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::DECL_LIST
+            TokenType::DeclList
                 |
                 |---- __Decl
                 |
@@ -159,11 +159,11 @@ void Parser::__DeclList(AST *&root)
                 .
     */
 
-    root = new AST(TOKEN_TYPE::DECL_LIST, "DeclList", {nullptr});
+    root = new AST(TokenType::DeclList, "DeclList", {nullptr});
 
     __Decl(root->subList[0]);
 
-    while (__tokenPtr->tokenType != TOKEN_TYPE::END_OF_FILE)
+    while (__tokenPtr->tokenType != TokenType::EndOfFile)
     {
         root->subList.push_back(nullptr);
         __Decl(root->subList.back());
@@ -189,23 +189,23 @@ void Parser::__Decl(AST *&root)
             __VarDecl | __FuncDecl
     */
 
-    if (__tokenPtr->tokenType != TOKEN_TYPE::INT &&
-        __tokenPtr->tokenType != TOKEN_TYPE::VOID)
+    if (__tokenPtr->tokenType != TokenType::Int &&
+        __tokenPtr->tokenType != TokenType::Void)
     {
         __invalidToken(__tokenPtr);
     }
 
-    if (__tokenPtr[1].tokenType != TOKEN_TYPE::ID)
+    if (__tokenPtr[1].tokenType != TokenType::Id)
     {
         __invalidToken(__tokenPtr + 1);
     }
 
-    if (__tokenPtr[2].tokenType == TOKEN_TYPE::LEFT_SQUARE_BRACKET ||
-        __tokenPtr[2].tokenType == TOKEN_TYPE::SEMICOLON)
+    if (__tokenPtr[2].tokenType == TokenType::LeftSquareBracket ||
+        __tokenPtr[2].tokenType == TokenType::Semicolon)
     {
         __VarDecl(root);
     }
-    else if (__tokenPtr[2].tokenType == TOKEN_TYPE::LEFT_ROUND_BRACKET)
+    else if (__tokenPtr[2].tokenType == TokenType::LeftRoundBracket)
     {
         __FuncDecl(root);
     }
@@ -230,41 +230,41 @@ void Parser::__VarDecl(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::VAR_DECL
+            TokenType::VarDecl
                 |
                 |---- __Type
                 |
-                |---- TOKEN_TYPE::ID
+                |---- TokenType::Id
                 |
-                |---- [TOKEN_TYPE::NUMBER]
+                |---- [TokenType::Number]
     */
 
-    root = new AST(TOKEN_TYPE::VAR_DECL, "VarDecl", {nullptr, nullptr});
+    root = new AST(TokenType::VarDecl, "VarDecl", {nullptr, nullptr});
 
     __Type(root->subList[0]);
 
-    if (__tokenPtr->tokenType == TOKEN_TYPE::ID)
+    if (__tokenPtr->tokenType == TokenType::Id)
     {
         root->subList[1] = new AST(__tokenPtr);
 
-        __MatchToken(TOKEN_TYPE::ID);
+        __MatchToken(TokenType::Id);
     }
     else
     {
         __invalidToken(__tokenPtr);
     }
 
-    if (__tokenPtr->tokenType == TOKEN_TYPE::LEFT_SQUARE_BRACKET)
+    if (__tokenPtr->tokenType == TokenType::LeftSquareBracket)
     {
-        __MatchToken(TOKEN_TYPE::LEFT_SQUARE_BRACKET);
+        __MatchToken(TokenType::LeftSquareBracket);
 
         root->subList.push_back(new AST(__tokenPtr));
 
-        __MatchToken(TOKEN_TYPE::NUMBER);
-        __MatchToken(TOKEN_TYPE::RIGHT_SQUARE_BRACKET);
+        __MatchToken(TokenType::Number);
+        __MatchToken(TokenType::RightSquareBracket);
     }
 
-    __MatchToken(TOKEN_TYPE::SEMICOLON);
+    __MatchToken(TokenType::Semicolon);
 }
 
 
@@ -283,11 +283,11 @@ void Parser::__Type(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::INT | TOKEN_TYPE::VOID
+            TokenType::Int | TokenType::Void
     */
 
-    if (__tokenPtr->tokenType == TOKEN_TYPE::INT ||
-        __tokenPtr->tokenType == TOKEN_TYPE::VOID)
+    if (__tokenPtr->tokenType == TokenType::Int ||
+        __tokenPtr->tokenType == TokenType::Void)
     {
         root = new AST(__tokenPtr);
 
@@ -314,37 +314,37 @@ void Parser::__FuncDecl(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::FUNC_DECL
+            TokenType::FuncDecl
                 |
                 |---- __Type
                 |
-                |---- TOKEN_TYPE::ID
+                |---- TokenType::Id
                 |
                 |---- __Params
                 |
                 |---- __CompoundStmt
     */
 
-    root = new AST(TOKEN_TYPE::FUNC_DECL, "FuncDecl", {nullptr, nullptr, nullptr, nullptr});
+    root = new AST(TokenType::FuncDecl, "FuncDecl", {nullptr, nullptr, nullptr, nullptr});
 
     __Type(root->subList[0]);
 
-    if (__tokenPtr->tokenType == TOKEN_TYPE::ID)
+    if (__tokenPtr->tokenType == TokenType::Id)
     {
         root->subList[1] = new AST(__tokenPtr);
 
-        __MatchToken(TOKEN_TYPE::ID);
+        __MatchToken(TokenType::Id);
     }
     else
     {
         __invalidToken(__tokenPtr);
     }
 
-    __MatchToken(TOKEN_TYPE::LEFT_ROUND_BRACKET);
+    __MatchToken(TokenType::LeftRoundBracket);
 
     __Params(root->subList[2]);
 
-    __MatchToken(TOKEN_TYPE::RIGHT_ROUND_BRACKET);
+    __MatchToken(TokenType::RightRoundBracket);
 
     __CompoundStmt(root->subList[3]);
 }
@@ -365,16 +365,16 @@ void Parser::__Params(AST *&root)
 
         AST:
 
-            __ParamList | TOKEN_TYPE::VOID
+            __ParamList | TokenType::Void
     */
 
-    if (__tokenPtr->tokenType == TOKEN_TYPE::INT)
+    if (__tokenPtr->tokenType == TokenType::Int)
     {
         __ParamList(root);
     }
-    else if (__tokenPtr->tokenType == TOKEN_TYPE::VOID)
+    else if (__tokenPtr->tokenType == TokenType::Void)
     {
-        if (__tokenPtr[1].tokenType == TOKEN_TYPE::ID)
+        if (__tokenPtr[1].tokenType == TokenType::Id)
         {
             __ParamList(root);
         }
@@ -382,7 +382,7 @@ void Parser::__Params(AST *&root)
         {
             root = new AST(__tokenPtr);
 
-            __MatchToken(TOKEN_TYPE::VOID);
+            __MatchToken(TokenType::Void);
         }
     }
     else
@@ -406,7 +406,7 @@ void Parser::__ParamList(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::PARAM_LIST
+            TokenType::ParamList
                 |
                 |---- __Param
                 |
@@ -416,13 +416,13 @@ void Parser::__ParamList(AST *&root)
                 .
     */
 
-    root = new AST(TOKEN_TYPE::PARAM_LIST, "ParamList", {nullptr});
+    root = new AST(TokenType::ParamList, "ParamList", {nullptr});
 
     __Param(root->subList[0]);
 
-    while (__tokenPtr->tokenType == TOKEN_TYPE::COMMA)
+    while (__tokenPtr->tokenType == TokenType::Comma)
     {
-        __MatchToken(TOKEN_TYPE::COMMA);
+        __MatchToken(TokenType::Comma);
 
         root->subList.push_back(nullptr);
 
@@ -445,32 +445,32 @@ void Parser::__Param(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::PARAM
+            TokenType::Param
                 |
                 |---- __Type
                 |
-                |---- TOKEN_TYPE::ID
+                |---- TokenType::Id
     */
 
-    root = new AST(TOKEN_TYPE::PARAM, "Param", {nullptr, nullptr});
+    root = new AST(TokenType::Param, "Param", {nullptr, nullptr});
 
     __Type(root->subList[0]);
 
-    if (__tokenPtr->tokenType == TOKEN_TYPE::ID)
+    if (__tokenPtr->tokenType == TokenType::Id)
     {
         root->subList[1] = new AST(__tokenPtr);
 
-        __MatchToken(TOKEN_TYPE::ID);
+        __MatchToken(TokenType::Id);
     }
     else
     {
         __invalidToken(__tokenPtr);
     }
 
-    if (__tokenPtr->tokenType == TOKEN_TYPE::LEFT_SQUARE_BRACKET)
+    if (__tokenPtr->tokenType == TokenType::LeftSquareBracket)
     {
-        __MatchToken(TOKEN_TYPE::LEFT_SQUARE_BRACKET);
-        __MatchToken(TOKEN_TYPE::RIGHT_SQUARE_BRACKET);
+        __MatchToken(TokenType::LeftSquareBracket);
+        __MatchToken(TokenType::RightSquareBracket);
     }
 }
 
@@ -489,22 +489,22 @@ void Parser::__CompoundStmt(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::COMPOUND_STMT
+            TokenType::CompoundStmt
                 |
                 |---- __LocalDecl
                 |
                 |---- __StmtList
     */
 
-    root = new AST(TOKEN_TYPE::COMPOUND_STMT, "CompoundStmt", {nullptr, nullptr});
+    root = new AST(TokenType::CompoundStmt, "CompoundStmt", {nullptr, nullptr});
 
-    __MatchToken(TOKEN_TYPE::LEFT_CURLY_BRACKET);
+    __MatchToken(TokenType::LeftCurlyBracket);
 
     __LocalDecl(root->subList[0]);
 
     __StmtList(root->subList[1]);
 
-    __MatchToken(TOKEN_TYPE::RIGHT_CURLY_BRACKET);
+    __MatchToken(TokenType::RightCurlyBracket);
 }
 
 
@@ -522,7 +522,7 @@ void Parser::__LocalDecl(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::LOCAL_DECL
+            TokenType::LocalDecl
                 |
                 |---- [__VarDecl]
                 .
@@ -530,10 +530,10 @@ void Parser::__LocalDecl(AST *&root)
                 .
     */
 
-    root = new AST(TOKEN_TYPE::LOCAL_DECL, "LocalDecl");
+    root = new AST(TokenType::LocalDecl, "LocalDecl");
 
-    while (__tokenPtr->tokenType == TOKEN_TYPE::INT ||
-        __tokenPtr->tokenType == TOKEN_TYPE::VOID)
+    while (__tokenPtr->tokenType == TokenType::Int ||
+        __tokenPtr->tokenType == TokenType::Void)
     {
         root->subList.push_back(nullptr);
 
@@ -556,7 +556,7 @@ void Parser::__StmtList(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::STMT_LIST
+            TokenType::StmtList
                 |
                 |---- [__Stmt]
                 .
@@ -564,16 +564,16 @@ void Parser::__StmtList(AST *&root)
                 .
     */
 
-    root = new AST(TOKEN_TYPE::STMT_LIST, "StmtList");
+    root = new AST(TokenType::StmtList, "StmtList");
 
-    while (__tokenPtr->tokenType == TOKEN_TYPE::SEMICOLON ||
-        __tokenPtr->tokenType == TOKEN_TYPE::ID ||
-        __tokenPtr->tokenType == TOKEN_TYPE::LEFT_ROUND_BRACKET ||
-        __tokenPtr->tokenType == TOKEN_TYPE::NUMBER ||
-        __tokenPtr->tokenType == TOKEN_TYPE::LEFT_CURLY_BRACKET ||
-        __tokenPtr->tokenType == TOKEN_TYPE::IF ||
-        __tokenPtr->tokenType == TOKEN_TYPE::WHILE ||
-        __tokenPtr->tokenType == TOKEN_TYPE::RETURN)
+    while (__tokenPtr->tokenType == TokenType::Semicolon ||
+        __tokenPtr->tokenType == TokenType::Id ||
+        __tokenPtr->tokenType == TokenType::LeftRoundBracket ||
+        __tokenPtr->tokenType == TokenType::Number ||
+        __tokenPtr->tokenType == TokenType::LeftCurlyBracket ||
+        __tokenPtr->tokenType == TokenType::If ||
+        __tokenPtr->tokenType == TokenType::While ||
+        __tokenPtr->tokenType == TokenType::Return)
     {
         root->subList.push_back(nullptr);
 
@@ -603,26 +603,26 @@ void Parser::__Stmt(AST *&root)
             __ExprStmt | __CompoundStmt | __IfStmt | __WhileStmt | __ReturnStmt
     */
 
-    if (__tokenPtr->tokenType == TOKEN_TYPE::SEMICOLON ||
-        __tokenPtr->tokenType == TOKEN_TYPE::ID ||
-        __tokenPtr->tokenType == TOKEN_TYPE::LEFT_ROUND_BRACKET ||
-        __tokenPtr->tokenType == TOKEN_TYPE::NUMBER)
+    if (__tokenPtr->tokenType == TokenType::Semicolon ||
+        __tokenPtr->tokenType == TokenType::Id ||
+        __tokenPtr->tokenType == TokenType::LeftRoundBracket ||
+        __tokenPtr->tokenType == TokenType::Number)
     {
         __ExprStmt(root);
     }
-    else if (__tokenPtr->tokenType == TOKEN_TYPE::LEFT_CURLY_BRACKET)
+    else if (__tokenPtr->tokenType == TokenType::LeftCurlyBracket)
     {
         __CompoundStmt(root);
     }
-    else if (__tokenPtr->tokenType == TOKEN_TYPE::IF)
+    else if (__tokenPtr->tokenType == TokenType::If)
     {
         __IfStmt(root);
     }
-    else if (__tokenPtr->tokenType == TOKEN_TYPE::WHILE)
+    else if (__tokenPtr->tokenType == TokenType::While)
     {
         __WhileStmt(root);
     }
-    else if (__tokenPtr->tokenType == TOKEN_TYPE::RETURN)
+    else if (__tokenPtr->tokenType == TokenType::Return)
     {
         __ReturnStmt(root);
     }
@@ -650,14 +650,14 @@ void Parser::__ExprStmt(AST *&root)
             __Expr | nullptr
     */
 
-    if (__tokenPtr->tokenType == TOKEN_TYPE::ID ||
-        __tokenPtr->tokenType == TOKEN_TYPE::LEFT_ROUND_BRACKET ||
-        __tokenPtr->tokenType == TOKEN_TYPE::NUMBER)
+    if (__tokenPtr->tokenType == TokenType::Id ||
+        __tokenPtr->tokenType == TokenType::LeftRoundBracket ||
+        __tokenPtr->tokenType == TokenType::Number)
     {
         __Expr(root);
     }
 
-    __MatchToken(TOKEN_TYPE::SEMICOLON);
+    __MatchToken(TokenType::Semicolon);
 }
 
 
@@ -675,7 +675,7 @@ void Parser::__IfStmt(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::IF_STMT
+            TokenType::If_STMT
                 |
                 |---- __Expr
                 |
@@ -684,20 +684,20 @@ void Parser::__IfStmt(AST *&root)
                 |---- [__Stmt]
     */
 
-    root = new AST(TOKEN_TYPE::IF_STMT, "IfStmt", {nullptr, nullptr});
+    root = new AST(TokenType::IfStmt, "IfStmt", {nullptr, nullptr});
 
-    __MatchToken(TOKEN_TYPE::IF);
-    __MatchToken(TOKEN_TYPE::LEFT_ROUND_BRACKET);
+    __MatchToken(TokenType::If);
+    __MatchToken(TokenType::LeftRoundBracket);
 
     __Expr(root->subList[0]);
 
-    __MatchToken(TOKEN_TYPE::RIGHT_ROUND_BRACKET);
+    __MatchToken(TokenType::RightRoundBracket);
 
     __Stmt(root->subList[1]);
 
-    if (__tokenPtr->tokenType == TOKEN_TYPE::ELSE)
+    if (__tokenPtr->tokenType == TokenType::Else)
     {
-        __MatchToken(TOKEN_TYPE::ELSE);
+        __MatchToken(TokenType::Else);
 
         root->subList.push_back(nullptr);
 
@@ -720,21 +720,21 @@ void Parser::__WhileStmt(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::WHILE_STMT
+            TokenType::While_STMT
                 |
                 |---- __Expr
                 |
                 |---- __Stmt
     */
 
-    root = new AST(TOKEN_TYPE::WHILE_STMT, "WhileStmt", {nullptr, nullptr});
+    root = new AST(TokenType::WhileStmt, "WhileStmt", {nullptr, nullptr});
 
-    __MatchToken(TOKEN_TYPE::WHILE);
-    __MatchToken(TOKEN_TYPE::LEFT_ROUND_BRACKET);
+    __MatchToken(TokenType::While);
+    __MatchToken(TokenType::LeftRoundBracket);
 
     __Expr(root->subList[0]);
 
-    __MatchToken(TOKEN_TYPE::RIGHT_ROUND_BRACKET);
+    __MatchToken(TokenType::RightRoundBracket);
 
     __Stmt(root->subList[1]);
 }
@@ -754,24 +754,24 @@ void Parser::__ReturnStmt(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::RETURN_STMT
+            TokenType::Return_STMT
                 |
                 |---- [__Expr]
     */
 
-    root = new AST(TOKEN_TYPE::RETURN_STMT, "ReturnStmt");
+    root = new AST(TokenType::ReturnStmt, "ReturnStmt");
 
-    __MatchToken(TOKEN_TYPE::RETURN);
+    __MatchToken(TokenType::Return);
 
-    if (__tokenPtr->tokenType == TOKEN_TYPE::ID ||
-        __tokenPtr->tokenType == TOKEN_TYPE::LEFT_ROUND_BRACKET ||
-        __tokenPtr->tokenType == TOKEN_TYPE::NUMBER)
+    if (__tokenPtr->tokenType == TokenType::Id ||
+        __tokenPtr->tokenType == TokenType::LeftRoundBracket ||
+        __tokenPtr->tokenType == TokenType::Number)
     {
         root->subList.push_back(nullptr);
         __Expr(root->subList.back());
     }
 
-    __MatchToken(TOKEN_TYPE::SEMICOLON);
+    __MatchToken(TokenType::Semicolon);
 }
 
 
@@ -790,7 +790,7 @@ void Parser::__Expr(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::EXPR
+            TokenType::Expr
                 |
                 |---- __Var
                 |
@@ -798,26 +798,26 @@ void Parser::__Expr(AST *&root)
 
             ----------------------
 
-            TOKEN_TYPE::EXPR
+            TokenType::Expr
                 |
                 |---- __SimpleExpr
     */
 
-    root = new AST(TOKEN_TYPE::EXPR, "Expr", {nullptr});
+    root = new AST(TokenType::Expr, "Expr", {nullptr});
 
-    if (__tokenPtr->tokenType == TOKEN_TYPE::LEFT_ROUND_BRACKET ||
-        __tokenPtr->tokenType == TOKEN_TYPE::NUMBER)
+    if (__tokenPtr->tokenType == TokenType::LeftRoundBracket ||
+        __tokenPtr->tokenType == TokenType::Number)
     {
         __SimpleExpr(root->subList[0]);
 
         return;
     }
-    else if (__tokenPtr->tokenType != TOKEN_TYPE::ID)
+    else if (__tokenPtr->tokenType != TokenType::Id)
     {
         __invalidToken(__tokenPtr);
     }
 
-    if (__tokenPtr[1].tokenType == TOKEN_TYPE::LEFT_ROUND_BRACKET)
+    if (__tokenPtr[1].tokenType == TokenType::LeftRoundBracket)
     {
         __SimpleExpr(root->subList[0]);
     }
@@ -827,7 +827,7 @@ void Parser::__Expr(AST *&root)
 
         __Var(root->subList[0]);
 
-        bool isAssignBool = __tokenPtr->tokenType == TOKEN_TYPE::ASSIGN;
+        bool isAssignBool = __tokenPtr->tokenType == TokenType::Assign;
 
         delete root->subList[0];
 
@@ -839,7 +839,7 @@ void Parser::__Expr(AST *&root)
 
             __Var(root->subList[0]);
 
-            __MatchToken(TOKEN_TYPE::ASSIGN);
+            __MatchToken(TokenType::Assign);
 
             __Expr(root->subList[1]);
         }
@@ -865,35 +865,35 @@ void Parser::__Var(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::VAR
+            TokenType::Var
                 |
-                |---- TOKEN_TYPE::ID
+                |---- TokenType::Id
                 |
                 |---- [__Expr]
     */
 
-    root = new AST(TOKEN_TYPE::VAR, "Var", {nullptr});
+    root = new AST(TokenType::Var, "Var", {nullptr});
 
-    if (__tokenPtr->tokenType == TOKEN_TYPE::ID)
+    if (__tokenPtr->tokenType == TokenType::Id)
     {
         root->subList[0] = new AST(__tokenPtr);
 
-        __MatchToken(TOKEN_TYPE::ID);
+        __MatchToken(TokenType::Id);
     }
     else
     {
         __invalidToken(__tokenPtr);
     }
 
-    if (__tokenPtr->tokenType == TOKEN_TYPE::LEFT_SQUARE_BRACKET)
+    if (__tokenPtr->tokenType == TokenType::LeftSquareBracket)
     {
-        __MatchToken(TOKEN_TYPE::LEFT_SQUARE_BRACKET);
+        __MatchToken(TokenType::LeftSquareBracket);
 
         root->subList.push_back(nullptr);
 
         __Expr(root->subList[1]);
 
-        __MatchToken(TOKEN_TYPE::RIGHT_SQUARE_BRACKET);
+        __MatchToken(TokenType::RightSquareBracket);
     }
 }
 
@@ -912,7 +912,7 @@ void Parser::__SimpleExpr(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::SIMPLE_EXPR
+            TokenType::SimpleExpr
                 |
                 |---- __AddExpr
                 |
@@ -921,16 +921,16 @@ void Parser::__SimpleExpr(AST *&root)
                 |---- [__AddExpr]
     */
 
-    root = new AST(TOKEN_TYPE::SIMPLE_EXPR, "SimpleExpr", {nullptr});
+    root = new AST(TokenType::SimpleExpr, "SimpleExpr", {nullptr});
 
     __AddExpr(root->subList[0]);
 
-    if (__tokenPtr->tokenType == TOKEN_TYPE::LESS ||
-        __tokenPtr->tokenType == TOKEN_TYPE::LESS_EQUAL ||
-        __tokenPtr->tokenType == TOKEN_TYPE::GREATER ||
-        __tokenPtr->tokenType == TOKEN_TYPE::GREATER_EQUAL ||
-        __tokenPtr->tokenType == TOKEN_TYPE::EQUAL ||
-        __tokenPtr->tokenType == TOKEN_TYPE::NOT_EQUAL)
+    if (__tokenPtr->tokenType == TokenType::Less ||
+        __tokenPtr->tokenType == TokenType::LessEqual ||
+        __tokenPtr->tokenType == TokenType::Greater ||
+        __tokenPtr->tokenType == TokenType::GreaterEqual ||
+        __tokenPtr->tokenType == TokenType::Equal ||
+        __tokenPtr->tokenType == TokenType::NotEqual)
     {
         root->subList.push_back(nullptr);
 
@@ -962,20 +962,20 @@ void Parser::__RelOp(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::LESS          |
-            TOKEN_TYPE::LESS_EQUAL    |
-            TOKEN_TYPE::GREATER       |
-            TOKEN_TYPE::GREATER_EQUAL |
-            TOKEN_TYPE::EQUAL         |
-            TOKEN_TYPE::NOT_EQUAL
+            TokenType::Less          |
+            TokenType::Less_EQUAL    |
+            TokenType::Greater       |
+            TokenType::Greater_EQUAL |
+            TokenType::Equal         |
+            TokenType::NotEqual
     */
 
-    if (__tokenPtr->tokenType == TOKEN_TYPE::LESS ||
-        __tokenPtr->tokenType == TOKEN_TYPE::LESS_EQUAL ||
-        __tokenPtr->tokenType == TOKEN_TYPE::GREATER ||
-        __tokenPtr->tokenType == TOKEN_TYPE::GREATER_EQUAL ||
-        __tokenPtr->tokenType == TOKEN_TYPE::EQUAL ||
-        __tokenPtr->tokenType == TOKEN_TYPE::NOT_EQUAL)
+    if (__tokenPtr->tokenType == TokenType::Less ||
+        __tokenPtr->tokenType == TokenType::LessEqual ||
+        __tokenPtr->tokenType == TokenType::Greater ||
+        __tokenPtr->tokenType == TokenType::GreaterEqual ||
+        __tokenPtr->tokenType == TokenType::Equal ||
+        __tokenPtr->tokenType == TokenType::NotEqual)
     {
         root = new AST(__tokenPtr);
 
@@ -1002,7 +1002,7 @@ void Parser::__AddExpr(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::ADD_EXPR
+            TokenType::AddExpr
                 |
                 |---- __Term
                 |
@@ -1014,12 +1014,12 @@ void Parser::__AddExpr(AST *&root)
                 .
     */
 
-    root = new AST(TOKEN_TYPE::ADD_EXPR, "AddExpr", {nullptr});
+    root = new AST(TokenType::AddExpr, "AddExpr", {nullptr});
 
     __Term(root->subList[0]);
 
-    while (__tokenPtr->tokenType == TOKEN_TYPE::PLUS ||
-        __tokenPtr->tokenType == TOKEN_TYPE::MINUS)
+    while (__tokenPtr->tokenType == TokenType::Plus ||
+        __tokenPtr->tokenType == TokenType::Minus)
     {
         root->subList.push_back(nullptr);
 
@@ -1047,11 +1047,11 @@ void Parser::__AddOp(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::PLUS | TOKEN_TYPE::MINUS
+            TokenType::Plus | TokenType::Minus
     */
 
-    if (__tokenPtr->tokenType == TOKEN_TYPE::PLUS ||
-        __tokenPtr->tokenType == TOKEN_TYPE::MINUS)
+    if (__tokenPtr->tokenType == TokenType::Plus ||
+        __tokenPtr->tokenType == TokenType::Minus)
     {
         root = new AST(__tokenPtr);
 
@@ -1078,7 +1078,7 @@ void Parser::__Term(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::TERM
+            TokenType::Term
                 |
                 |---- __Factor
                 |
@@ -1090,12 +1090,12 @@ void Parser::__Term(AST *&root)
                 .
     */
 
-    root = new AST(TOKEN_TYPE::TERM, "Term", {nullptr});
+    root = new AST(TokenType::Term, "Term", {nullptr});
 
     __Factor(root->subList[0]);
 
-    while (__tokenPtr->tokenType == TOKEN_TYPE::MULTIPLY ||
-        __tokenPtr->tokenType == TOKEN_TYPE::DIVIDE)
+    while (__tokenPtr->tokenType == TokenType::Multiply ||
+        __tokenPtr->tokenType == TokenType::Divide)
     {
         root->subList.push_back(nullptr);
 
@@ -1123,11 +1123,11 @@ void Parser::__MulOp(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::MULTIPLY | TOKEN_TYPE::DIVIDE
+            TokenType::Multiply | TokenType::Divide
     */
 
-    if (__tokenPtr->tokenType == TOKEN_TYPE::MULTIPLY ||
-        __tokenPtr->tokenType == TOKEN_TYPE::DIVIDE)
+    if (__tokenPtr->tokenType == TokenType::Multiply ||
+        __tokenPtr->tokenType == TokenType::Divide)
     {
         root = new AST(__tokenPtr);
 
@@ -1157,26 +1157,26 @@ void Parser::__Factor(AST *&root)
 
         AST:
 
-            __Expr | TOKEN_TYPE::NUMBER | __Call | __Var
+            __Expr | TokenType::Number | __Call | __Var
     */
 
-    if (__tokenPtr->tokenType == TOKEN_TYPE::LEFT_ROUND_BRACKET)
+    if (__tokenPtr->tokenType == TokenType::LeftRoundBracket)
     {
-        __MatchToken(TOKEN_TYPE::LEFT_ROUND_BRACKET);
+        __MatchToken(TokenType::LeftRoundBracket);
 
         __Expr(root);
 
-        __MatchToken(TOKEN_TYPE::RIGHT_ROUND_BRACKET);
+        __MatchToken(TokenType::RightRoundBracket);
     }
-    else if (__tokenPtr->tokenType == TOKEN_TYPE::NUMBER)
+    else if (__tokenPtr->tokenType == TokenType::Number)
     {
         root = new AST(__tokenPtr);
 
         __MatchToken(__tokenPtr->tokenType);
     }
-    else if (__tokenPtr->tokenType == TOKEN_TYPE::ID)
+    else if (__tokenPtr->tokenType == TokenType::Id)
     {
-        if (__tokenPtr[1].tokenType == TOKEN_TYPE::LEFT_ROUND_BRACKET)
+        if (__tokenPtr[1].tokenType == TokenType::LeftRoundBracket)
         {
             __Call(root);
         }
@@ -1206,38 +1206,38 @@ void Parser::__Call(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::CALL
+            TokenType::Call
                 |
-                |---- TOKEN_TYPE::ID
+                |---- TokenType::Id
                 |
                 |---- [__ArgList]
     */
 
-    root = new AST(TOKEN_TYPE::CALL, "Call", {nullptr});
+    root = new AST(TokenType::Call, "Call", {nullptr});
 
-    if (__tokenPtr->tokenType == TOKEN_TYPE::ID)
+    if (__tokenPtr->tokenType == TokenType::Id)
     {
         root->subList[0] = new AST(__tokenPtr);
 
-        __MatchToken(TOKEN_TYPE::ID);
+        __MatchToken(TokenType::Id);
     }
     else
     {
         __invalidToken(__tokenPtr);
     }
 
-    __MatchToken(TOKEN_TYPE::LEFT_ROUND_BRACKET);
+    __MatchToken(TokenType::LeftRoundBracket);
 
-    if (__tokenPtr->tokenType == TOKEN_TYPE::ID ||
-        __tokenPtr->tokenType == TOKEN_TYPE::LEFT_ROUND_BRACKET ||
-        __tokenPtr->tokenType == TOKEN_TYPE::NUMBER)
+    if (__tokenPtr->tokenType == TokenType::Id ||
+        __tokenPtr->tokenType == TokenType::LeftRoundBracket ||
+        __tokenPtr->tokenType == TokenType::Number)
     {
         root->subList.push_back(nullptr);
 
         __ArgList(root->subList[1]);
     }
 
-    __MatchToken(TOKEN_TYPE::RIGHT_ROUND_BRACKET);
+    __MatchToken(TokenType::RightRoundBracket);
 }
 
 
@@ -1255,7 +1255,7 @@ void Parser::__ArgList(AST *&root)
 
         AST:
 
-            TOKEN_TYPE::ARG_LIST
+            TokenType::ArgList
                 |
                 |---- __Expr
                 |
@@ -1265,13 +1265,13 @@ void Parser::__ArgList(AST *&root)
                 .
     */
 
-    root = new AST(TOKEN_TYPE::ARG_LIST, "ArgList", {nullptr});
+    root = new AST(TokenType::ArgList, "ArgList", {nullptr});
 
     __Expr(root->subList[0]);
 
-    while (__tokenPtr->tokenType == TOKEN_TYPE::COMMA)
+    while (__tokenPtr->tokenType == TokenType::Comma)
     {
-        __MatchToken(TOKEN_TYPE::COMMA);
+        __MatchToken(TokenType::Comma);
 
         root->subList.push_back(nullptr);
 

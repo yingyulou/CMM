@@ -41,54 +41,54 @@ Lexer::Lexer(const string &inputFilePath):
 
 Token Lexer::NextToken()
 {
-    LEXER_STAGE lexerStage = LEXER_STAGE::START;
-    TOKEN_TYPE tokenType;
+    LexerStage lexerStage = LexerStage::Start;
+    TokenType tokenType;
     string tokenStr;
 
-    while (lexerStage != LEXER_STAGE::DONE)
+    while (lexerStage != LexerStage::Done)
     {
         int nowChar = fgetc(__filePtr);
         bool saveBool = true;
 
         switch (lexerStage)
         {
-            case LEXER_STAGE::START:
+            case LexerStage::Start:
                 __nextTokenStartStage(nowChar, saveBool, lexerStage, tokenType, tokenStr);
                 break;
 
-            case LEXER_STAGE::IN_ID:
+            case LexerStage::InId:
                 __nextTokenInIDStage(nowChar, saveBool, lexerStage, tokenType, tokenStr);
                 break;
 
-            case LEXER_STAGE::IN_NUMBER:
+            case LexerStage::InNumber:
                 __nextTokenInNumberStage(nowChar, saveBool, lexerStage, tokenType, tokenStr);
                 break;
 
-            case LEXER_STAGE::IN_DIVIDE:
+            case LexerStage::InDivide:
                 __nextTokenInDivideStage(nowChar, saveBool, lexerStage, tokenType, tokenStr);
                 break;
 
-            case LEXER_STAGE::IN_COMMENT:
+            case LexerStage::InComment:
                 __nextTokenInCommentStage(nowChar, saveBool, lexerStage, tokenType, tokenStr);
                 break;
 
-            case LEXER_STAGE::END_COMMENT:
+            case LexerStage::EndComment:
                 __nextTokenEndCommentStage(nowChar, saveBool, lexerStage, tokenType, tokenStr);
                 break;
 
-            case LEXER_STAGE::IN_LESS:
+            case LexerStage::InLess:
                 __nextTokenInLessStage(nowChar, saveBool, lexerStage, tokenType, tokenStr);
                 break;
 
-            case LEXER_STAGE::IN_GREATER:
+            case LexerStage::InGreater:
                 __nextTokenInGreaterStage(nowChar, saveBool, lexerStage, tokenType, tokenStr);
                 break;
 
-            case LEXER_STAGE::IN_ASSIGN:
+            case LexerStage::InAssign:
                 __nextTokenInAssignStage(nowChar, saveBool, lexerStage, tokenType, tokenStr);
                 break;
 
-            case LEXER_STAGE::IN_NOT:
+            case LexerStage::InNot:
                 __nextTokenInNotStage(nowChar, saveBool, lexerStage, tokenType, tokenStr);
                 break;
         }
@@ -130,15 +130,15 @@ void Lexer::__invalidChar(char invalidChar, int lineNo)
 ////////////////////////////////////////////////////////////////////////////////
 
 void Lexer::__nextTokenStartStage(int nowChar, bool &saveBool,
-    LEXER_STAGE &lexerStage, TOKEN_TYPE &tokenType, string &tokenStr)
+    LexerStage &lexerStage, TokenType &tokenType, string &tokenStr)
 {
     if (isalpha(nowChar))
     {
-        lexerStage = LEXER_STAGE::IN_ID;
+        lexerStage = LexerStage::InId;
     }
     else if (isdigit(nowChar))
     {
-        lexerStage = LEXER_STAGE::IN_NUMBER;
+        lexerStage = LexerStage::InNumber;
     }
     else if (isspace(nowChar))
     {
@@ -154,84 +154,84 @@ void Lexer::__nextTokenStartStage(int nowChar, bool &saveBool,
         switch (nowChar)
         {
             case '+':
-                lexerStage = LEXER_STAGE::DONE;
-                tokenType = TOKEN_TYPE::PLUS;
+                lexerStage = LexerStage::Done;
+                tokenType = TokenType::Plus;
                 break;
 
             case '-':
-                lexerStage = LEXER_STAGE::DONE;
-                tokenType = TOKEN_TYPE::MINUS;
+                lexerStage = LexerStage::Done;
+                tokenType = TokenType::Minus;
                 break;
 
             case '*':
-                lexerStage = LEXER_STAGE::DONE;
-                tokenType = TOKEN_TYPE::MULTIPLY;
+                lexerStage = LexerStage::Done;
+                tokenType = TokenType::Multiply;
                 break;
 
             case '/':
                 saveBool = false;
-                lexerStage = LEXER_STAGE::IN_DIVIDE;
+                lexerStage = LexerStage::InDivide;
                 break;
 
             case '<':
-                lexerStage = LEXER_STAGE::IN_LESS;
+                lexerStage = LexerStage::InLess;
                 break;
 
             case '>':
-                lexerStage = LEXER_STAGE::IN_GREATER;
+                lexerStage = LexerStage::InGreater;
                 break;
 
             case '=':
-                lexerStage = LEXER_STAGE::IN_ASSIGN;
+                lexerStage = LexerStage::InAssign;
                 break;
 
             case '!':
-                lexerStage = LEXER_STAGE::IN_NOT;
+                lexerStage = LexerStage::InNot;
                 break;
 
             case ';':
-                lexerStage = LEXER_STAGE::DONE;
-                tokenType = TOKEN_TYPE::SEMICOLON;
+                lexerStage = LexerStage::Done;
+                tokenType = TokenType::Semicolon;
                 break;
 
             case ',':
-                lexerStage = LEXER_STAGE::DONE;
-                tokenType = TOKEN_TYPE::COMMA;
+                lexerStage = LexerStage::Done;
+                tokenType = TokenType::Comma;
                 break;
 
             case '(':
-                lexerStage = LEXER_STAGE::DONE;
-                tokenType = TOKEN_TYPE::LEFT_ROUND_BRACKET;
+                lexerStage = LexerStage::Done;
+                tokenType = TokenType::LeftRoundBracket;
                 break;
 
             case ')':
-                lexerStage = LEXER_STAGE::DONE;
-                tokenType = TOKEN_TYPE::RIGHT_ROUND_BRACKET;
+                lexerStage = LexerStage::Done;
+                tokenType = TokenType::RightRoundBracket;
                 break;
 
             case '[':
-                lexerStage = LEXER_STAGE::DONE;
-                tokenType = TOKEN_TYPE::LEFT_SQUARE_BRACKET;
+                lexerStage = LexerStage::Done;
+                tokenType = TokenType::LeftSquareBracket;
                 break;
 
             case ']':
-                lexerStage = LEXER_STAGE::DONE;
-                tokenType = TOKEN_TYPE::RIGHT_SQUARE_BRACKET;
+                lexerStage = LexerStage::Done;
+                tokenType = TokenType::RightSquareBracket;
                 break;
 
             case '{':
-                lexerStage = LEXER_STAGE::DONE;
-                tokenType = TOKEN_TYPE::LEFT_CURLY_BRACKET;
+                lexerStage = LexerStage::Done;
+                tokenType = TokenType::LeftCurlyBracket;
                 break;
 
             case '}':
-                lexerStage = LEXER_STAGE::DONE;
-                tokenType = TOKEN_TYPE::RIGHT_CURLY_BRACKET;
+                lexerStage = LexerStage::Done;
+                tokenType = TokenType::RightCurlyBracket;
                 break;
 
             case EOF:
-                lexerStage = LEXER_STAGE::DONE;
-                tokenType = TOKEN_TYPE::END_OF_FILE;
+                lexerStage = LexerStage::Done;
+                tokenType = TokenType::EndOfFile;
                 break;
 
             default:
@@ -247,14 +247,14 @@ void Lexer::__nextTokenStartStage(int nowChar, bool &saveBool,
 ////////////////////////////////////////////////////////////////////////////////
 
 void Lexer::__nextTokenInIDStage(int nowChar, bool &saveBool,
-    LEXER_STAGE &lexerStage, TOKEN_TYPE &tokenType, string &tokenStr)
+    LexerStage &lexerStage, TokenType &tokenType, string &tokenStr)
 {
     if (!isalpha(nowChar))
     {
         saveBool = false;
         ungetc(nowChar, __filePtr);
-        lexerStage = LEXER_STAGE::DONE;
-        tokenType = KEYWORD_MAP.count(tokenStr) ? KEYWORD_MAP.at(tokenStr) : TOKEN_TYPE::ID;
+        lexerStage = LexerStage::Done;
+        tokenType = KEYWORD_MAP.count(tokenStr) ? KEYWORD_MAP.at(tokenStr) : TokenType::Id;
     }
 }
 
@@ -264,14 +264,14 @@ void Lexer::__nextTokenInIDStage(int nowChar, bool &saveBool,
 ////////////////////////////////////////////////////////////////////////////////
 
 void Lexer::__nextTokenInNumberStage(int nowChar, bool &saveBool,
-    LEXER_STAGE &lexerStage, TOKEN_TYPE &tokenType, string &tokenStr)
+    LexerStage &lexerStage, TokenType &tokenType, string &tokenStr)
 {
     if (!isdigit(nowChar))
     {
         saveBool = false;
         ungetc(nowChar, __filePtr);
-        lexerStage = LEXER_STAGE::DONE;
-        tokenType = TOKEN_TYPE::NUMBER;
+        lexerStage = LexerStage::Done;
+        tokenType = TokenType::Number;
     }
 }
 
@@ -281,19 +281,19 @@ void Lexer::__nextTokenInNumberStage(int nowChar, bool &saveBool,
 ////////////////////////////////////////////////////////////////////////////////
 
 void Lexer::__nextTokenInDivideStage(int nowChar, bool &saveBool,
-    LEXER_STAGE &lexerStage, TOKEN_TYPE &tokenType, string &tokenStr)
+    LexerStage &lexerStage, TokenType &tokenType, string &tokenStr)
 {
     if (nowChar == '*')
     {
         saveBool = false;
-        lexerStage = LEXER_STAGE::IN_COMMENT;
+        lexerStage = LexerStage::InComment;
     }
     else
     {
         saveBool = false;
         ungetc(nowChar, __filePtr);
-        lexerStage = LEXER_STAGE::DONE;
-        tokenType = TOKEN_TYPE::DIVIDE;
+        lexerStage = LexerStage::Done;
+        tokenType = TokenType::Divide;
         tokenStr = "/";
     }
 }
@@ -304,13 +304,13 @@ void Lexer::__nextTokenInDivideStage(int nowChar, bool &saveBool,
 ////////////////////////////////////////////////////////////////////////////////
 
 void Lexer::__nextTokenInCommentStage(int nowChar, bool &saveBool,
-    LEXER_STAGE &lexerStage, TOKEN_TYPE &tokenType, string &tokenStr)
+    LexerStage &lexerStage, TokenType &tokenType, string &tokenStr)
 {
     saveBool = false;
 
     if (nowChar == '*')
     {
-        lexerStage = LEXER_STAGE::END_COMMENT;
+        lexerStage = LexerStage::EndComment;
     }
 }
 
@@ -320,17 +320,17 @@ void Lexer::__nextTokenInCommentStage(int nowChar, bool &saveBool,
 ////////////////////////////////////////////////////////////////////////////////
 
 void Lexer::__nextTokenEndCommentStage(int nowChar, bool &saveBool,
-    LEXER_STAGE &lexerStage, TOKEN_TYPE &tokenType, string &tokenStr)
+    LexerStage &lexerStage, TokenType &tokenType, string &tokenStr)
 {
     saveBool = false;
 
     if (nowChar == '/')
     {
-        lexerStage = LEXER_STAGE::START;
+        lexerStage = LexerStage::Start;
     }
     else if (nowChar != '*')
     {
-        lexerStage = LEXER_STAGE::IN_COMMENT;
+        lexerStage = LexerStage::InComment;
     }
 }
 
@@ -340,19 +340,19 @@ void Lexer::__nextTokenEndCommentStage(int nowChar, bool &saveBool,
 ////////////////////////////////////////////////////////////////////////////////
 
 void Lexer::__nextTokenInLessStage(int nowChar, bool &saveBool,
-    LEXER_STAGE &lexerStage, TOKEN_TYPE &tokenType, string &tokenStr)
+    LexerStage &lexerStage, TokenType &tokenType, string &tokenStr)
 {
-    lexerStage = LEXER_STAGE::DONE;
+    lexerStage = LexerStage::Done;
 
     if (nowChar == '=')
     {
-        tokenType = TOKEN_TYPE::LESS_EQUAL;
+        tokenType = TokenType::LessEqual;
     }
     else
     {
         saveBool = false;
         ungetc(nowChar, __filePtr);
-        tokenType = TOKEN_TYPE::LESS;
+        tokenType = TokenType::Less;
     }
 }
 
@@ -362,19 +362,19 @@ void Lexer::__nextTokenInLessStage(int nowChar, bool &saveBool,
 ////////////////////////////////////////////////////////////////////////////////
 
 void Lexer::__nextTokenInGreaterStage(int nowChar, bool &saveBool,
-    LEXER_STAGE &lexerStage, TOKEN_TYPE &tokenType, string &tokenStr)
+    LexerStage &lexerStage, TokenType &tokenType, string &tokenStr)
 {
-    lexerStage = LEXER_STAGE::DONE;
+    lexerStage = LexerStage::Done;
 
     if (nowChar == '=')
     {
-        tokenType = TOKEN_TYPE::GREATER_EQUAL;
+        tokenType = TokenType::GreaterEqual;
     }
     else
     {
         saveBool = false;
         ungetc(nowChar, __filePtr);
-        tokenType = TOKEN_TYPE::GREATER;
+        tokenType = TokenType::Greater;
     }
 }
 
@@ -384,19 +384,19 @@ void Lexer::__nextTokenInGreaterStage(int nowChar, bool &saveBool,
 ////////////////////////////////////////////////////////////////////////////////
 
 void Lexer::__nextTokenInAssignStage(int nowChar, bool &saveBool,
-    LEXER_STAGE &lexerStage, TOKEN_TYPE &tokenType, string &tokenStr)
+    LexerStage &lexerStage, TokenType &tokenType, string &tokenStr)
 {
-    lexerStage = LEXER_STAGE::DONE;
+    lexerStage = LexerStage::Done;
 
     if (nowChar == '=')
     {
-        tokenType = TOKEN_TYPE::EQUAL;
+        tokenType = TokenType::Equal;
     }
     else
     {
         saveBool = false;
         ungetc(nowChar, __filePtr);
-        tokenType = TOKEN_TYPE::ASSIGN;
+        tokenType = TokenType::Assign;
     }
 }
 
@@ -406,12 +406,12 @@ void Lexer::__nextTokenInAssignStage(int nowChar, bool &saveBool,
 ////////////////////////////////////////////////////////////////////////////////
 
 void Lexer::__nextTokenInNotStage(int nowChar, bool &saveBool,
-    LEXER_STAGE &lexerStage, TOKEN_TYPE &tokenType, string &tokenStr)
+    LexerStage &lexerStage, TokenType &tokenType, string &tokenStr)
 {
     if (nowChar == '=')
     {
-        lexerStage = LEXER_STAGE::DONE;
-        tokenType = TOKEN_TYPE::NOT_EQUAL;
+        lexerStage = LexerStage::Done;
+        tokenType = TokenType::NotEqual;
     }
     else
     {

@@ -36,14 +36,14 @@ public:
 
 
     // Getter: __instructionList
-    const vector<pair<INSTRUCTION, int>> &instructionList() const;
+    const vector<pair<Instruction, int>> &instructionList() const;
 
 
 private:
 
     // Attribute
     string __byteCodeFilePath;
-    vector<pair<INSTRUCTION, int>> __instructionList;
+    vector<pair<Instruction, int>> __instructionList;
 
 
     // Parse Byte Code File

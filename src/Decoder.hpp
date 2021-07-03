@@ -40,7 +40,7 @@ Decoder::Decoder(const string &byteCodeFilePath):
 // Getter: __instructionList
 ////////////////////////////////////////////////////////////////////////////////
 
-const vector<pair<INSTRUCTION, int>> &Decoder::instructionList() const
+const vector<pair<Instruction, int>> &Decoder::instructionList() const
 {
     return __instructionList;
 }
@@ -52,18 +52,18 @@ const vector<pair<INSTRUCTION, int>> &Decoder::instructionList() const
 
 void Decoder::__parseByteCodeFile()
 {
-    INSTRUCTION codeEnum;
+    Instruction codeEnum;
     int codeVal;
 
     FILE *f = fopen(__byteCodeFilePath.c_str(), "rb");
 
-    while (fread(&codeEnum, sizeof(char), 1, f))
+    while (fread(&codeEnum, sizeof(Instruction), 1, f))
     {
         switch (codeEnum)
         {
-            case INSTRUCTION::LDC:
-            case INSTRUCTION::JMP:
-            case INSTRUCTION::JZ:
+            case Instruction::LDC:
+            case Instruction::JMP:
+            case Instruction::JZ:
                 fread(&codeVal, sizeof(int), 1, f);
                 break;
 
