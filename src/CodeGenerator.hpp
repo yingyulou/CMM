@@ -12,6 +12,7 @@
 #include <utility>
 #include <stdexcept>
 #include <cstdio>
+#include <cctype>
 #include "CodeGenerator.h"
 #include "AST.h"
 #include "SemanticAnalyzer.h"
@@ -53,14 +54,14 @@ CodeGenerator::CodeGenerator(AST *root, const string &asmCodeFilePath,
 void CodeGenerator::GenerateCode()
 {
     auto codeMap = __createCodeMap();
+    auto funcJmpMap = __createFuncJmpMap(codeMap);
 
-    __translateCall(codeMap);
+    __translateCall(codeMap, funcJmpMap);
 
-    auto globalVariableCodeList = __generateGlobalVariableCode(),
-        mainPrepareCodeList = __generateMainPrepareCode();
+    auto globalCodeList = __generateGlobalCode(funcJmpMap);
 
-    __outputASMCode(codeMap, globalVariableCodeList, mainPrepareCodeList);
-    __outputByteCode(codeMap, globalVariableCodeList, mainPrepareCodeList);
+    __outputASMCode(globalCodeList, codeMap);
+    __outputByteCode(globalCodeList, codeMap);
 }
 
 
@@ -115,7 +116,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateStmtListCode(AST *roo
 
     for (auto stmtPtr: root->subList)
     {
-        vector<pair<Instruction, string>> stmtCodeList = __generateStmtCode(stmtPtr);
+        auto stmtCodeList = __generateStmtCode(stmtPtr);
 
         codeList.insert(codeList.end(), stmtCodeList.begin(), stmtCodeList.end());
     }
@@ -180,7 +181,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateIfStmtCode(AST *root)
             |---- [__Stmt]
     */
 
-    vector<pair<Instruction, string>> codeList = __generateExprCode(root->subList[0]),
+    auto codeList = __generateExprCode(root->subList[0]),
         ifCodeList = __generateStmtCode(root->subList[1]);
 
     if (root->subList.size() == 2)
@@ -214,7 +215,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateIfStmtCode(AST *root)
 
             END: ...
         */
-        vector<pair<Instruction, string>> elseCodeList = __generateStmtCode(root->subList[2]);
+        auto elseCodeList = __generateStmtCode(root->subList[2]);
 
         ifCodeList.emplace_back(Instruction::JMP, to_string(elseCodeList.size() + 1));
         codeList.emplace_back(Instruction::JZ, to_string(ifCodeList.size() + 1));
@@ -240,7 +241,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateWhileStmtCode(AST *ro
             |---- __Stmt
     */
 
-    vector<pair<Instruction, string>> codeList = __generateExprCode(root->subList[0]),
+    auto codeList = __generateExprCode(root->subList[0]),
         stmtCodeList = __generateStmtCode(root->subList[1]);
 
     /*
@@ -311,7 +312,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateExprCode(AST *root) c
     }
     else
     {
-        vector<pair<Instruction, string>> codeList = __generateExprCode(root->subList[1]),
+        auto codeList = __generateExprCode(root->subList[1]),
             assignCodeList = __generateAssignCode(root->subList[0]);
 
         codeList.insert(codeList.end(), assignCodeList.begin(), assignCodeList.end());
@@ -351,19 +352,19 @@ vector<pair<Instruction, string>> CodeGenerator::__generateVarCode(AST *root) co
         codeList.emplace_back(Instruction::LDC,
             to_string(__symbolTable.at("__GLOBAL__").at(root->subList[0]->tokenStr).first));
 
-        codeList.emplace_back(Instruction::ABSLD, "");
+        codeList.emplace_back(Instruction::ALD, "");
     }
 
     // Array
     if (root->subList.size() == 2)
     {
-        vector<pair<Instruction, string>> exprCodeList = __generateExprCode(root->subList[1]);
+        auto exprCodeList = __generateExprCode(root->subList[1]);
 
         codeList.emplace_back(Instruction::PUSH, "");
         codeList.insert(codeList.end(), exprCodeList.begin(), exprCodeList.end());
         codeList.emplace_back(Instruction::ADD, "");
         codeList.emplace_back(Instruction::POP, "");
-        codeList.emplace_back(Instruction::ABSLD, "");
+        codeList.emplace_back(Instruction::ALD, "");
     }
 
     return codeList;
@@ -392,7 +393,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateSimpleExprCode(AST *r
     }
     else
     {
-        vector<pair<Instruction, string>> codeList = __generateAddExprCode(root->subList[0]),
+        auto codeList = __generateAddExprCode(root->subList[0]),
             midCodeList = __generateRelOpCode(root->subList[1]),
             rightCodeList = __generateAddExprCode(root->subList[2]);
 
@@ -466,11 +467,11 @@ vector<pair<Instruction, string>> CodeGenerator::__generateAddExprCode(AST *root
             .
     */
 
-    vector<pair<Instruction, string>> codeList = __generateTermCode(root->subList[0]);
+    auto codeList = __generateTermCode(root->subList[0]);
 
     for (int idx = 1; idx < root->subList.size(); idx += 2)
     {
-        vector<pair<Instruction, string>> midCodeList = __generateAddOpCode(root->subList[idx]),
+        auto midCodeList = __generateAddOpCode(root->subList[idx]),
             rightCodeList = __generateTermCode(root->subList[idx + 1]);
 
         codeList.emplace_back(Instruction::PUSH, "");
@@ -523,11 +524,11 @@ vector<pair<Instruction, string>> CodeGenerator::__generateTermCode(AST *root) c
             .
     */
 
-    vector<pair<Instruction, string>> codeList = __generateFactorCode(root->subList[0]);
+    auto codeList = __generateFactorCode(root->subList[0]);
 
     for (int idx = 1; idx < root->subList.size(); idx += 2)
     {
-        vector<pair<Instruction, string>> midCodeList = __generateMulOpCode(root->subList[idx]),
+        auto midCodeList = __generateMulOpCode(root->subList[idx]),
             rightCodeList = __generateFactorCode(root->subList[idx + 1]);
 
         codeList.emplace_back(Instruction::PUSH, "");
@@ -608,7 +609,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateCallCode(AST *root) c
     // xxx = input();
     if (root->subList[0]->tokenStr == "input")
     {
-        return {{Instruction::INPUT, ""}};
+        return {{Instruction::IN, ""}};
     }
     // output(xxx);
     else if (root->subList[0]->tokenStr == "output")
@@ -618,9 +619,9 @@ vector<pair<Instruction, string>> CodeGenerator::__generateCallCode(AST *root) c
                 |
                 |---- __Expr
         */
-        vector<pair<Instruction, string>> codeList = __generateExprCode(root->subList[1]->subList[0]);
+        auto codeList = __generateExprCode(root->subList[1]->subList[0]);
 
-        codeList.emplace_back(Instruction::OUTPUT, "");
+        codeList.emplace_back(Instruction::OUT, "");
 
         return codeList;
     }
@@ -651,27 +652,24 @@ vector<pair<Instruction, string>> CodeGenerator::__generateCallCode(AST *root) c
         // Array
         if (pairList[idx].second.second)
         {
-            // Push array content (By array size times)
+            // Push array content (by array size times)
             for (int _ = 0; _ < pairList[idx].second.second; _++)
             {
                 codeList.emplace_back(Instruction::PUSH, "");
             }
 
             /*
-                The following code calc the array start pointer (Absolute index in SS).
+                The instruction "ADDR N" calculate the array start pointer (absolute index in SS).
 
                 SS:
 
-                    ... X X X X X X X X X X  PUSH
-                        ^^^^^^^^^^^^^^^^^^^   ^
-                        |    Size = 10    |   |
-                        |                 SP  |
-                  SP - (10 - 1) ---------------
+                    ... X X X X X X X X X $
+                        ^     Size = N    ^
+                        |                 |
+                        |                 SP
+                      SP - N
             */
-            codeList.emplace_back(Instruction::PUSHSP, "");
-            codeList.emplace_back(Instruction::LDC, to_string(pairList[idx].second.second - 1));
-            codeList.emplace_back(Instruction::SUB, "");
-            codeList.emplace_back(Instruction::POP, "");
+            codeList.emplace_back(Instruction::ADDR, to_string(pairList[idx].second.second));
             codeList.emplace_back(Instruction::PUSH, "");
         }
         // Scalar
@@ -684,67 +682,52 @@ vector<pair<Instruction, string>> CodeGenerator::__generateCallCode(AST *root) c
     // Push parameter
     if (root->subList.size() == 2)
     {
-        vector<pair<Instruction, string>> argListCodeList = __generateArgListCode(root->subList[1]);
+        auto argListCodeList = __generateArgListCode(root->subList[1]);
 
         codeList.insert(codeList.end(), argListCodeList.begin(), argListCodeList.end());
     }
 
     /*
-        The following code prepare for CALL.
+        The instruction "CALL N" perform multiple actions:
 
-        1. PUSHBP
-        2. SAVSP
+        1. SS.PUSH(BP)
 
-        Now the SS is like:
+            Now the SS is like:
 
-        ... Local5 Local4 Local3 Param2 Param1 Param0 OldBP
-                                                      ^^^^^
-                                                       BP (So LD needs "-1")
+            ... Local5 Local4 Local3 Param2 Param1 Param0 OldBP
 
-        3. PUSHIP
+        2. BP = SS.SIZE() - 2
 
-        Now the SS is like:
+            Now the SS is like:
 
-        ... Local5 Local4 Local3 Param2 Param1 Param0 OldBP OldIP
-                                                      ^^^^^
-                                                       BP
+            ... Local5 Local4 Local3 Param2 Param1 Param0 OldBP
+                                                     ^
+                                                     |
+                                                     BP
+
+        3. SS.PUSH(IP)
+
+            Now the SS is like:
+
+            ... Local5 Local4 Local3 Param2 Param1 Param0 OldBP OldIP
+                                                     ^
+                                                     |
+                                                     BP
+
+        4. IP += N
+
+        In addition, the "N" of the "CALL N" is only a function name right now,
+        it will be translated to a number later. (See the function: __translateCall)
     */
-    codeList.emplace_back(Instruction::PUSHBP, "");
-    codeList.emplace_back(Instruction::SAVSP, "");
-    codeList.emplace_back(Instruction::PUSHIP, "");
-
-    // CALL will be translated to a JMP later (See function: __translateCall)
     codeList.emplace_back(Instruction::CALL, root->subList[0]->tokenStr);
 
-    /*
-        After call, POPIP will be executed.
-
-        POPIP must use IP++ (don't forget the IP++ in VM) to overgo the PUSHIP and JMP(CALL):
-
-        ... PUSHIP JMP(CALL) POPBP ...
-            ^^^^^^ ^^^^^^^^^ ^^^^^
-            OldIP      |       |
-                       |       |
-                 IP++ by POPIP |
-                               |
-                           IP++ by VM
-
-
-        After POPIP, the SS is like:
-
-        ... Local5 Local4 Local3 Param2 Param1 Param0 OldBP
-
-        So we need POPBP to restore BP, then several POP to pop all variables.
-    */
-    codeList.emplace_back(Instruction::POPBP, "");
-
-    // Pop all variables
+    // After call, we need several "POP" to pop all variables.
     for (auto &[_, mapVal]: __symbolTable.at(root->subList[0]->tokenStr))
     {
-        // Any variable needs a POP
+        // Any variable needs a "POP"
         codeList.emplace_back(Instruction::POP, "");
 
-        // Pop array content (By array size times)
+        // Pop array content (by array size times)
         for (int _ = 0; _ < mapVal.second; _++)
         {
             codeList.emplace_back(Instruction::POP, "");
@@ -776,7 +759,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateArgListCode(AST *root
 
     for (int idx = root->subList.size() - 1; idx >= 0; idx--)
     {
-        vector<pair<Instruction, string>> exprCodeList = __generateExprCode(root->subList[idx]);
+        auto exprCodeList = __generateExprCode(root->subList[idx]);
 
         codeList.insert(codeList.end(), exprCodeList.begin(), exprCodeList.end());
         codeList.emplace_back(Instruction::PUSH, "");
@@ -795,11 +778,9 @@ vector<pair<Instruction, string>> CodeGenerator::__generateAssignCode(AST *root)
     /*
         TokenType::Expr
             |
-            |---- __Var
-            |     ^^^^^  -> Root
+            |---- __Var  -> Root
             |
-            |---- __Expr
-                  ^^^^^^ -> AX
+            |---- __Expr -> AX
     */
 
     vector<pair<Instruction, string>> codeList {{Instruction::PUSH, ""}};
@@ -813,14 +794,14 @@ vector<pair<Instruction, string>> CodeGenerator::__generateAssignCode(AST *root)
         // Scalar
         if (root->subList.size() == 1)
         {
-            codeList.emplace_back(Instruction::SAV, "");
+            codeList.emplace_back(Instruction::ST, "");
         }
         // Array
         else
         {
-            vector<pair<Instruction, string>> exprCodeList = __generateExprCode(root->subList[1]);
+            auto exprCodeList = __generateExprCode(root->subList[1]);
 
-            // Get the (start) pointer (Is already an absolute address)
+            // Get the (start) pointer (is already an absolute address)
             codeList.emplace_back(Instruction::LD, "");
             codeList.emplace_back(Instruction::PUSH, "");
             codeList.insert(codeList.end(), exprCodeList.begin(), exprCodeList.end());
@@ -830,7 +811,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateAssignCode(AST *root)
             codeList.emplace_back(Instruction::POP, "");
 
             // Save by absolute address
-            codeList.emplace_back(Instruction::ABSSAV, "");
+            codeList.emplace_back(Instruction::AST, "");
         }
     }
     // Global variable
@@ -842,15 +823,15 @@ vector<pair<Instruction, string>> CodeGenerator::__generateAssignCode(AST *root)
         // Scalar
         if (root->subList.size() == 1)
         {
-            codeList.emplace_back(Instruction::ABSSAV, "");
+            codeList.emplace_back(Instruction::AST, "");
         }
         // Array
         else
         {
-            vector<pair<Instruction, string>> exprCodeList = __generateExprCode(root->subList[1]);
+            auto exprCodeList = __generateExprCode(root->subList[1]);
 
-            // Absolute get the (start) pointer (Is already an absolute address)
-            codeList.emplace_back(Instruction::ABSLD, "");
+            // Absolute get the (start) pointer (is already an absolute address)
+            codeList.emplace_back(Instruction::ALD, "");
             codeList.emplace_back(Instruction::PUSH, "");
             codeList.insert(codeList.end(), exprCodeList.begin(), exprCodeList.end());
 
@@ -859,11 +840,58 @@ vector<pair<Instruction, string>> CodeGenerator::__generateAssignCode(AST *root)
             codeList.emplace_back(Instruction::POP, "");
 
             // Save by absolute address
-            codeList.emplace_back(Instruction::ABSSAV, "");
+            codeList.emplace_back(Instruction::AST, "");
         }
     }
 
     codeList.emplace_back(Instruction::POP, "");
+
+    return codeList;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Generate Main Prepare Code
+////////////////////////////////////////////////////////////////////////////////
+
+vector<pair<Instruction, string>> CodeGenerator::__generateMainPrepareCode() const
+{
+    /*
+        The "main" function is a special function, so the following code is
+        similar with the function: __generateCallCode
+    */
+
+    vector<pair<Instruction, string>> codeList;
+
+    vector<pair<string, pair<int, int>>> pairList(__symbolTable.at("main").size());
+
+    // ..., Local2, Local1, Local0
+    for (auto &mapPair: __symbolTable.at("main"))
+    {
+        pairList[pairList.size() - mapPair.second.first - 1] = mapPair;
+    }
+
+    // The "main" function has definitely no params
+    for (auto &[_, infoPair]: pairList)
+    {
+        if (infoPair.second)
+        {
+            for (int _ = 0; _ < infoPair.second; _++)
+            {
+                codeList.emplace_back(Instruction::PUSH, "");
+            }
+
+            codeList.emplace_back(Instruction::ADDR, to_string(infoPair.second));
+            codeList.emplace_back(Instruction::PUSH, "");
+        }
+        else
+        {
+            codeList.emplace_back(Instruction::PUSH, "");
+        }
+    }
+
+    // Obviously, we just need "CALL 1" here
+    codeList.emplace_back(Instruction::CALL, "1");
 
     return codeList;
 }
@@ -894,6 +922,8 @@ unordered_map<string, vector<pair<Instruction, string>>> CodeGenerator::__create
         */
         if (declPtr->tokenType == TokenType::FuncDecl)
         {
+            vector<pair<Instruction, string>> codeList;
+
             /*
                 TokenType::FuncDecl
                     |
@@ -914,15 +944,38 @@ unordered_map<string, vector<pair<Instruction, string>>> CodeGenerator::__create
                     |
                     |---- __StmtList
             */
-            vector<pair<Instruction, string>> codeList = __generateStmtListCode(declPtr->subList[3]->subList[1]);
+            auto stmtListCodeList = __generateStmtListCode(declPtr->subList[3]->subList[1]);
 
             if (__nowFuncName == "main")
             {
-                codeList.emplace_back(Instruction::STOP, "");
+                auto mainPrepareCodeList = __generateMainPrepareCode();
+
+                codeList.insert(codeList.end(), mainPrepareCodeList.begin(), mainPrepareCodeList.end());
+                codeList.insert(codeList.end(), stmtListCodeList.begin(), stmtListCodeList.end());
             }
             else
             {
-                codeList.emplace_back(Instruction::POPIP, "");
+                codeList.insert(codeList.end(), stmtListCodeList.begin(), stmtListCodeList.end());
+
+                /*
+                    The instruction "RET" perform multiple actions:
+
+                    1. IP = SS.POP()
+
+                        Now the SS is like:
+
+                        ... Local5 Local4 Local3 Param2 Param1 Param0 OldBP
+
+                    2. BP = SS.POP()
+
+                        Now the SS is like:
+
+                        ... Local5 Local4 Local3 Param2 Param1 Param0
+
+                    So we still need several "POP" to pop all variables.
+                    (See the function: __generateCallCode)
+                */
+                codeList.emplace_back(Instruction::RET, "");
             }
 
             codeMap[__nowFuncName] = codeList;
@@ -943,10 +996,9 @@ unordered_map<string, int> CodeGenerator::__createFuncJmpMap(
     // funcJmpMap: Function name => Function start IP
     unordered_map<string, int> funcJmpMap;
 
-    // "main" function must be the first function
-    int jmpNum = codeMap.at("main").size();
+    int jmpNum = 0;
 
-    // Other function
+    // Other functions
     for (auto &[funcName, codeList]: codeMap)
     {
         if (funcName != "main")
@@ -955,6 +1007,9 @@ unordered_map<string, int> CodeGenerator::__createFuncJmpMap(
             jmpNum += codeList.size();
         }
     }
+
+    // The "main" function must be the last function
+    funcJmpMap["main"] = jmpNum;
 
     return funcJmpMap;
 }
@@ -965,28 +1020,13 @@ unordered_map<string, int> CodeGenerator::__createFuncJmpMap(
 ////////////////////////////////////////////////////////////////////////////////
 
 void CodeGenerator::__translateCall(
-    unordered_map<string, vector<pair<Instruction, string>>> &codeMap) const
+    unordered_map<string, vector<pair<Instruction, string>>> &codeMap,
+    const unordered_map<string, int> &funcJmpMap) const
 {
-    auto funcJmpMap = __createFuncJmpMap(codeMap);
-
     // A virtual "IP"
     int IP = 0;
 
-    // "main" function must be the first function
-    for (auto &[codeEnum, codeValStr]: codeMap.at("main"))
-    {
-        if (codeEnum == Instruction::CALL)
-        {
-            codeEnum = Instruction::JMP;
-
-            // Function start IP - IP => Jump distance
-            codeValStr = to_string(funcJmpMap.at(codeValStr) - IP);
-        }
-
-        IP++;
-    }
-
-    // Other function
+    // Other functions
     for (auto &[funcName, codeList]: codeMap)
     {
         if (funcName != "main")
@@ -995,7 +1035,6 @@ void CodeGenerator::__translateCall(
             {
                 if (codeEnum == Instruction::CALL)
                 {
-                    codeEnum   = Instruction::JMP;
                     codeValStr = to_string(funcJmpMap.at(codeValStr) - IP);
                 }
 
@@ -1003,14 +1042,29 @@ void CodeGenerator::__translateCall(
             }
         }
     }
+
+    // The "main" function must be the last function
+    for (auto &[codeEnum, codeValStr]: codeMap.at("main"))
+    {
+        if (codeEnum == Instruction::CALL)
+        {
+            if (!isdigit(codeValStr[0]))
+            {
+                codeValStr = to_string(funcJmpMap.at(codeValStr) - IP);
+            }
+        }
+
+        IP++;
+    }
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Generate Global Variable Code
+// Generate Global Code
 ////////////////////////////////////////////////////////////////////////////////
 
-vector<pair<Instruction, string>> CodeGenerator::__generateGlobalVariableCode() const
+vector<pair<Instruction, string>> CodeGenerator::__generateGlobalCode(
+    const unordered_map<string, int> &funcJmpMap) const
 {
     vector<pair<Instruction, string>> codeList;
 
@@ -1019,7 +1073,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateGlobalVariableCode() 
         // Array
         if (infoPair.second)
         {
-            // Calc the array start address (Variable number + 1)
+            // Calc the array start address (variable number + 1)
             codeList.emplace_back(Instruction::LDC, to_string(infoPair.first + 1));
         }
 
@@ -1027,62 +1081,16 @@ vector<pair<Instruction, string>> CodeGenerator::__generateGlobalVariableCode() 
         // (Or only a meaningless int for global scalar memeory)
         codeList.emplace_back(Instruction::PUSH, "");
 
-        // Push array content (By array size times)
+        // Push array content (by array size times)
         for (int _ = 0; _ < infoPair.second; _++)
         {
             codeList.emplace_back(Instruction::PUSH, "");
         }
     }
 
-    return codeList;
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Generate Main Prepare Code
-////////////////////////////////////////////////////////////////////////////////
-
-vector<pair<Instruction, string>> CodeGenerator::__generateMainPrepareCode() const
-{
-    /*
-        "main" function is a special function, so the following code is similar
-        with the function: __generateCallCode
-    */
-
-    vector<pair<Instruction, string>> codeList;
-
-    vector<pair<string, pair<int, int>>> pairList(__symbolTable.at("main").size());
-
-    // ..., Local2, Local1, Local0
-    for (auto &mapPair: __symbolTable.at("main"))
-    {
-        pairList[pairList.size() - mapPair.second.first - 1] = mapPair;
-    }
-
-    // "main" function has definitely no params
-    for (auto &[_, infoPair]: pairList)
-    {
-        if (infoPair.second)
-        {
-            for (int _ = 0; _ < infoPair.second; _++)
-            {
-                codeList.emplace_back(Instruction::PUSH, "");
-            }
-
-            codeList.emplace_back(Instruction::PUSHSP, "");
-            codeList.emplace_back(Instruction::LDC, to_string(infoPair.second - 1));
-            codeList.emplace_back(Instruction::SUB, "");
-            codeList.emplace_back(Instruction::POP, "");
-            codeList.emplace_back(Instruction::PUSH, "");
-        }
-        else
-        {
-            codeList.emplace_back(Instruction::PUSH, "");
-        }
-    }
-
-    codeList.emplace_back(Instruction::PUSH, "");
-    codeList.emplace_back(Instruction::SAVSP, "");
+    // JMP to the "main"
+    // funcJmpMap.at("main") - (-1) => funcJmpMap.at("main") + 1
+    codeList.emplace_back(Instruction::JMP, to_string(funcJmpMap.at("main") + 1));
 
     return codeList;
 }
@@ -1105,20 +1113,16 @@ void CodeGenerator::__outputASMCodeHelper(FILE *fo, Instruction codeEnum,
             fprintf(fo, "LD\n");
             break;
 
-        case Instruction::ABSLD:
-            fprintf(fo, "ABSLD\n");
+        case Instruction::ALD:
+            fprintf(fo, "ALD\n");
             break;
 
-        case Instruction::SAV:
-            fprintf(fo, "SAV\n");
+        case Instruction::ST:
+            fprintf(fo, "ST\n");
             break;
 
-        case Instruction::ABSSAV:
-            fprintf(fo, "ABSSAV\n");
-            break;
-
-        case Instruction::SAVSP:
-            fprintf(fo, "SAVSP\n");
+        case Instruction::AST:
+            fprintf(fo, "AST\n");
             break;
 
         case Instruction::PUSH:
@@ -1127,26 +1131,6 @@ void CodeGenerator::__outputASMCodeHelper(FILE *fo, Instruction codeEnum,
 
         case Instruction::POP:
             fprintf(fo, "POP\n");
-            break;
-
-        case Instruction::PUSHBP:
-            fprintf(fo, "PUSHBP\n");
-            break;
-
-        case Instruction::POPBP:
-            fprintf(fo, "POPBP\n");
-            break;
-
-        case Instruction::PUSHIP:
-            fprintf(fo, "PUSHIP\n");
-            break;
-
-        case Instruction::POPIP:
-            fprintf(fo, "POPIP\n");
-            break;
-
-        case Instruction::PUSHSP:
-            fprintf(fo, "PUSHSP\n");
             break;
 
         case Instruction::JMP:
@@ -1197,20 +1181,28 @@ void CodeGenerator::__outputASMCodeHelper(FILE *fo, Instruction codeEnum,
             fprintf(fo, "NE\n");
             break;
 
-        case Instruction::INPUT:
-            fprintf(fo, "INPUT\n");
+        case Instruction::IN:
+            fprintf(fo, "IN\n");
             break;
 
-        case Instruction::OUTPUT:
-            fprintf(fo, "OUTPUT\n");
+        case Instruction::OUT:
+            fprintf(fo, "OUT\n");
             break;
 
-        case Instruction::STOP:
-            fprintf(fo, "STOP\n");
+        case Instruction::ADDR:
+            fprintf(fo, "ADDR %s\n", codeValStr.c_str());
+            break;
+
+        case Instruction::CALL:
+            fprintf(fo, "CALL %s\n", codeValStr.c_str());
+            break;
+
+        case Instruction::RET:
+            fprintf(fo, "RET\n");
             break;
 
         default:
-            throw runtime_error("Invalid Instruction");;
+            throw runtime_error("Invalid Instruction");
     }
 }
 
@@ -1220,9 +1212,8 @@ void CodeGenerator::__outputASMCodeHelper(FILE *fo, Instruction codeEnum,
 ////////////////////////////////////////////////////////////////////////////////
 
 void CodeGenerator::__outputASMCode(
-    const unordered_map<string, vector<pair<Instruction, string>>> &codeMap,
-    const vector<pair<Instruction, string>> &globalVariableCodeList,
-    const vector<pair<Instruction, string>> &mainPrepareCodeList) const
+    const vector<pair<Instruction, string>> &globalCodeList,
+    const unordered_map<string, vector<pair<Instruction, string>>> &codeMap) const
 {
     if (__asmCodeFilePath.empty())
     {
@@ -1231,17 +1222,7 @@ void CodeGenerator::__outputASMCode(
 
     FILE *fo = fopen(__asmCodeFilePath.c_str(), "w");
 
-    for (auto &[codeEnum, codeValStr]: globalVariableCodeList)
-    {
-        __outputASMCodeHelper(fo, codeEnum, codeValStr);
-    }
-
-    for (auto &[codeEnum, codeValStr]: mainPrepareCodeList)
-    {
-        __outputASMCodeHelper(fo, codeEnum, codeValStr);
-    }
-
-    for (auto &[codeEnum, codeValStr]: codeMap.at("main"))
+    for (auto &[codeEnum, codeValStr]: globalCodeList)
     {
         __outputASMCodeHelper(fo, codeEnum, codeValStr);
     }
@@ -1255,6 +1236,11 @@ void CodeGenerator::__outputASMCode(
                 __outputASMCodeHelper(fo, codeEnum, codeValStr);
             }
         }
+    }
+
+    for (auto &[codeEnum, codeValStr]: codeMap.at("main"))
+    {
+        __outputASMCodeHelper(fo, codeEnum, codeValStr);
     }
 
     fclose(fo);
@@ -1272,17 +1258,14 @@ void CodeGenerator::__outputByteCodeHelper(FILE *fo, Instruction codeEnum,
 
     fwrite(&codeEnum, sizeof(Instruction), 1, fo);
 
-    switch (codeEnum)
+    if (codeEnum == Instruction::LDC  ||
+        codeEnum == Instruction::JMP  ||
+        codeEnum == Instruction::JZ   ||
+        codeEnum == Instruction::ADDR ||
+        codeEnum == Instruction::CALL)
     {
-        case Instruction::LDC:
-        case Instruction::JMP:
-        case Instruction::JZ:
-            codeVal = stoi(codeValStr);
-            fwrite(&codeVal, sizeof(int), 1, fo);
-            break;
-
-        default:
-            break;
+        codeVal = stoi(codeValStr);
+        fwrite(&codeVal, sizeof(int), 1, fo);
     }
 }
 
@@ -1292,9 +1275,8 @@ void CodeGenerator::__outputByteCodeHelper(FILE *fo, Instruction codeEnum,
 ////////////////////////////////////////////////////////////////////////////////
 
 void CodeGenerator::__outputByteCode(
-    const unordered_map<string, vector<pair<Instruction, string>>> &codeMap,
-    const vector<pair<Instruction, string>> &globalVariableCodeList,
-    const vector<pair<Instruction, string>> &mainPrepareCodeList) const
+    const vector<pair<Instruction, string>> &globalCodeList,
+    const unordered_map<string, vector<pair<Instruction, string>>> &codeMap) const
 {
     if (__byteCodeFilePath.empty())
     {
@@ -1303,17 +1285,7 @@ void CodeGenerator::__outputByteCode(
 
     FILE *fo = fopen(__byteCodeFilePath.c_str(), "wb");
 
-    for (auto &[codeEnum, codeValStr]: globalVariableCodeList)
-    {
-        __outputByteCodeHelper(fo, codeEnum, codeValStr);
-    }
-
-    for (auto &[codeEnum, codeValStr]: mainPrepareCodeList)
-    {
-        __outputByteCodeHelper(fo, codeEnum, codeValStr);
-    }
-
-    for (auto &[codeEnum, codeValStr]: codeMap.at("main"))
+    for (auto &[codeEnum, codeValStr]: globalCodeList)
     {
         __outputByteCodeHelper(fo, codeEnum, codeValStr);
     }
@@ -1327,6 +1299,11 @@ void CodeGenerator::__outputByteCode(
                 __outputByteCodeHelper(fo, codeEnum, codeValStr);
             }
         }
+    }
+
+    for (auto &[codeEnum, codeValStr]: codeMap.at("main"))
+    {
+        __outputByteCodeHelper(fo, codeEnum, codeValStr);
     }
 
     fclose(fo);

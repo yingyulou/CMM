@@ -53,8 +53,8 @@ private:
     void __generateCode() const;
 
 
-    // Run Code
-    void __runCode() const;
+    // Exec Code
+    void __execCode() const;
 };
 
 

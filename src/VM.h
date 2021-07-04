@@ -33,20 +33,20 @@ public:
     explicit VM(const vector<pair<Instruction, int>> &instructionList);
 
 
-    // Run VM
-    void Run();
+    // Start
+    void Start();
 
 
 private:
 
     // Attribute
-    vector<pair<Instruction, int>> CS;
-    int IP;
-    vector<int> SS;
+    vector<pair<Instruction, int>> __CS;
+    int __IP;
+    vector<int> __SS;
 
 
-    // Run Instruction
-    void __runInstruction(const pair<Instruction, int> &instructionPair);
+    // Exec Instruction
+    void __execInstruction(const pair<Instruction, int> &instructionPair);
 };
 
 

@@ -43,7 +43,7 @@ void Core::main()
 {
     __inputArguments();
     __generateCode();
-    __runCode();
+    __execCode();
 }
 
 
@@ -101,14 +101,14 @@ void Core::__generateCode() const
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Run Code
+// Exec Code
 ////////////////////////////////////////////////////////////////////////////////
 
-void Core::__runCode() const
+void Core::__execCode() const
 {
     if (!__inputByteCodeFilePath.empty())
     {
-        VM(Decoder(__inputByteCodeFilePath).instructionList()).Run();
+        VM(Decoder(__inputByteCodeFilePath).instructionList()).Start();
     }
 }
 

@@ -129,6 +129,10 @@ private:
     vector<pair<Instruction, string>> __generateAssignCode(AST *root) const;
 
 
+    // Generate Main Prepare Code
+    vector<pair<Instruction, string>> __generateMainPrepareCode() const;
+
+
     // Create CodeMap
     unordered_map<string, vector<pair<Instruction, string>>> __createCodeMap();
 
@@ -140,15 +144,13 @@ private:
 
     // Translate Call
     void __translateCall(
-        unordered_map<string, vector<pair<Instruction, string>>> &codeMap) const;
+        unordered_map<string, vector<pair<Instruction, string>>> &codeMap,
+        const unordered_map<string, int> &funcJmpMap) const;
 
 
-    // Generate Global Variable Code
-    vector<pair<Instruction, string>> __generateGlobalVariableCode() const;
-
-
-    // Generate Main Prepare Code
-    vector<pair<Instruction, string>> __generateMainPrepareCode() const;
+    // Generate Global Code
+    vector<pair<Instruction, string>> __generateGlobalCode(
+        const unordered_map<string, int> &funcJmpMap) const;
 
 
     // Output ASM Code Helper
@@ -157,10 +159,8 @@ private:
 
 
     // Output ASM Code
-    void __outputASMCode(
-        const unordered_map<string, vector<pair<Instruction, string>>> &codeMap,
-        const vector<pair<Instruction, string>> &globalVariableCodeList,
-        const vector<pair<Instruction, string>> &mainPrepareCodeList) const;
+    void __outputASMCode(const vector<pair<Instruction, string>> &globalCodeList,
+        const unordered_map<string, vector<pair<Instruction, string>>> &codeMap) const;
 
 
     // Output Byte Code Helper
@@ -169,10 +169,8 @@ private:
 
 
     // Output Byte Code
-    void __outputByteCode(
-        const unordered_map<string, vector<pair<Instruction, string>>> &codeMap,
-        const vector<pair<Instruction, string>> &globalVariableCodeList,
-        const vector<pair<Instruction, string>> &mainPrepareCodeList) const;
+    void __outputByteCode(const vector<pair<Instruction, string>> &globalCodeList,
+        const unordered_map<string, vector<pair<Instruction, string>>> &codeMap) const;
 };
 
 

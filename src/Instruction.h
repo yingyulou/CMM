@@ -18,21 +18,15 @@ enum class Instruction: char
     // Load
     LDC,
     LD,
-    ABSLD,
+    ALD,
 
-    // Save
-    SAV,
-    ABSSAV,
-    SAVSP,
+    // Store
+    ST,
+    AST,
 
     // Push, Pop
     PUSH,
     POP,
-    PUSHBP,
-    POPBP,
-    PUSHIP,
-    POPIP,
-    PUSHSP,
 
     // Jump
     JMP,
@@ -53,14 +47,15 @@ enum class Instruction: char
     NE,
 
     // I/O
-    INPUT,
-    OUTPUT,
+    IN,
+    OUT,
 
-    // Call (Dummy Instruction)
+    // Address
+    ADDR,
+
+    // Functional
     CALL,
-
-    // Stop
-    STOP,
+    RET,
 };
 
 

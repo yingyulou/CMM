@@ -31,150 +31,134 @@ using std::runtime_error;
 ////////////////////////////////////////////////////////////////////////////////
 
 VM::VM(const vector<pair<Instruction, int>> &instructionList):
-    CS(instructionList),
-    IP(0),
-    SS(2) {}
+    __CS(instructionList),
+    __IP(0),
+    __SS(2) {}
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Run
+// Start
 ////////////////////////////////////////////////////////////////////////////////
 
-void VM::Run()
+void VM::Start()
 {
-    while (true)
-    {
-        __runInstruction(CS[IP]);
-        IP++;
-    }
+    for (; __IP < __CS.size(); __execInstruction(__CS[__IP]), __IP++);
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Run Instruction
+// Exec Instruction
 ////////////////////////////////////////////////////////////////////////////////
 
-void VM::__runInstruction(const pair<Instruction, int> &instructionPair)
+void VM::__execInstruction(const pair<Instruction, int> &instructionPair)
 {
     switch (instructionPair.first)
     {
         case Instruction::LDC:
-            SS[0] = instructionPair.second;
+            __SS[0] = instructionPair.second;
             break;
 
         case Instruction::LD:
-            SS[0] = SS[SS[1] - SS[0] - 1];
+            __SS[0] = __SS[__SS[1] - __SS[0]];
             break;
 
-        case Instruction::ABSLD:
-            SS[0] = SS[SS[0] + 2];
+        case Instruction::ALD:
+            __SS[0] = __SS[__SS[0] + 2];
             break;
 
-        case Instruction::SAV:
-            SS[SS[1] - SS[0] - 1] = SS.back();
+        case Instruction::ST:
+            __SS[__SS[1] - __SS[0]] = __SS.back();
             break;
 
-        case Instruction::ABSSAV:
-            SS[SS[0] + 2] = SS.back();
-            break;
-
-        case Instruction::SAVSP:
-            SS[1] = SS.size() - 1;
+        case Instruction::AST:
+            __SS[__SS[0] + 2] = __SS.back();
             break;
 
         case Instruction::PUSH:
-            SS.push_back(SS[0]);
+            __SS.push_back(__SS[0]);
             break;
 
         case Instruction::POP:
-            SS.pop_back();
-            break;
-
-        case Instruction::PUSHBP:
-            SS.push_back(SS[1]);
-            break;
-
-        case Instruction::POPBP:
-            SS[1] = SS.back();
-            SS.pop_back();
-            break;
-
-        case Instruction::PUSHIP:
-            SS.push_back(IP);
-            break;
-
-        case Instruction::POPIP:
-            IP = SS.back() + 1;
-            SS.pop_back();
-            break;
-
-        case Instruction::PUSHSP:
-            SS.push_back(SS.size() - 1);
+            __SS.pop_back();
             break;
 
         case Instruction::JMP:
-            IP += instructionPair.second - 1;
+            __IP += instructionPair.second - 1;
             break;
 
         case Instruction::JZ:
 
-            if (!SS[0])
+            if (!__SS[0])
             {
-                IP += instructionPair.second - 1;
+                __IP += instructionPair.second - 1;
             }
 
             break;
 
         case Instruction::ADD:
-            SS[0] = SS.back() + SS[0];
+            __SS[0] = __SS.back() + __SS[0];
             break;
 
         case Instruction::SUB:
-            SS[0] = SS.back() - SS[0];
+            __SS[0] = __SS.back() - __SS[0];
             break;
 
         case Instruction::MUL:
-            SS[0] = SS.back() * SS[0];
+            __SS[0] = __SS.back() * __SS[0];
             break;
 
         case Instruction::DIV:
-            SS[0] = SS.back() / SS[0];
+            __SS[0] = __SS.back() / __SS[0];
             break;
 
         case Instruction::LT:
-            SS[0] = SS.back() < SS[0];
+            __SS[0] = __SS.back() < __SS[0];
             break;
 
         case Instruction::LE:
-            SS[0] = SS.back() <= SS[0];
+            __SS[0] = __SS.back() <= __SS[0];
             break;
 
         case Instruction::GT:
-            SS[0] = SS.back() > SS[0];
+            __SS[0] = __SS.back() > __SS[0];
             break;
 
         case Instruction::GE:
-            SS[0] = SS.back() >= SS[0];
+            __SS[0] = __SS.back() >= __SS[0];
             break;
 
         case Instruction::EQ:
-            SS[0] = SS.back() == SS[0];
+            __SS[0] = __SS.back() == __SS[0];
             break;
 
         case Instruction::NE:
-            SS[0] = SS.back() != SS[0];
+            __SS[0] = __SS.back() != __SS[0];
             break;
 
-        case Instruction::INPUT:
-            scanf("%d", &SS[0]);
+        case Instruction::IN:
+            scanf("%d", &__SS[0]);
             break;
 
-        case Instruction::OUTPUT:
-            printf("%d\n", SS[0]);
+        case Instruction::OUT:
+            printf("%d\n", __SS[0]);
             break;
 
-        case Instruction::STOP:
-            exit(0);
+        case Instruction::ADDR:
+            __SS[0] = __SS.size() - instructionPair.second;
+            break;
+
+        case Instruction::CALL:
+            __SS.push_back(__SS[1]);
+            __SS[1] = __SS.size() - 2;
+            __SS.push_back(__IP);
+            __IP += instructionPair.second - 1;
+            break;
+
+        case Instruction::RET:
+            __IP = __SS.back();
+            __SS.pop_back();
+            __SS[1] = __SS.back();
+            __SS.pop_back();
             break;
 
         default:

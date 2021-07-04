@@ -158,34 +158,30 @@ CMM VM use only one SS to store all the data.
 
 Here is the instruction set and the fake code of each instruction of the CMM language:
 
-| Instruction | Fake Code                    |
-| :---------: | :--------------------------: |
-| LDC N       | SS[0] = N                    |
-| LD          | SS[0] = SS[SS[1] - SS[0]]    |
-| ABSLD       | SS[0] = SS[SS[0]]            |
-| SAV         | SS[SS[1] - SS[0]] = SS.TOP() |
-| ABSSAV      | SS[SS[0]] = SS.TOP()         |
-| SAVSP       | SS[1] = SS.SIZE()            |
-| PUSH        | SS.PUSH(SS[0])               |
-| POP         | SS.POP()                     |
-| PUSHBP      | SS.PUSH(SS[1])               |
-| POPBP       | SS[1] = SS.POP()             |
-| PUSHIP      | SS.PUSH(IP)                  |
-| POPIP       | IP = SS.POP()                |
-| PUSHSP      | SS.PUSH(SS.SIZE())           |
-| JMP N       | IP += N                      |
-| JZ N        | if (SS[0] == 0) IP += N      |
-| ADD         | SS[0] = SS.TOP() + SS[0]     |
-| SUB         | SS[0] = SS.TOP() - SS[0]     |
-| MUL         | SS[0] = SS.TOP() * SS[0]     |
-| DIV         | SS[0] = SS.TOP() / SS[0]     |
-| LT          | SS[0] = SS.TOP() < SS[0]     |
-| LE          | SS[0] = SS.TOP() <= SS[0]    |
-| GT          | SS[0] = SS.TOP() > SS[0]     |
-| GE          | SS[0] = SS.TOP() >= SS[0]    |
-| EQ          | SS[0] = SS.TOP() == SS[0]    |
-| NE          | SS[0] = SS.TOP() != SS[0]    |
-| INPUT       | scanf("%d", &SS[0])          |
-| OUTPUT      | printf("%d\n", SS[0])        |
-| STOP        | exit(0)                      |
+| Instruction | Fake Code                                               |
+| :---------: | :-----------------------------------------------------: |
+| LDC N       | SS[0] = N                                               |
+| LD          | SS[0] = SS[SS[1] - SS[0]]                               |
+| ALD         | SS[0] = SS[SS[0]]                                       |
+| ST          | SS[SS[1] - SS[0]] = SS.TOP()                            |
+| AST         | SS[SS[0]] = SS.TOP()                                    |
+| PUSH        | SS.PUSH(SS[0])                                          |
+| POP         | SS.POP()                                                |
+| JMP N       | IP += N                                                 |
+| JZ N        | if (SS[0] == 0) IP += N                                 |
+| ADD         | SS[0] = SS.TOP() + SS[0]                                |
+| SUB         | SS[0] = SS.TOP() - SS[0]                                |
+| MUL         | SS[0] = SS.TOP() * SS[0]                                |
+| DIV         | SS[0] = SS.TOP() / SS[0]                                |
+| LT          | SS[0] = SS.TOP() < SS[0]                                |
+| LE          | SS[0] = SS.TOP() <= SS[0]                               |
+| GT          | SS[0] = SS.TOP() > SS[0]                                |
+| GE          | SS[0] = SS.TOP() >= SS[0]                               |
+| EQ          | SS[0] = SS.TOP() == SS[0]                               |
+| NE          | SS[0] = SS.TOP() != SS[0]                               |
+| IN          | scanf("%d", &SS[0])                                     |
+| OUT         | printf("%d\n", SS[0])                                   |
+| ADDR N      | SS[0] = SS.SIZE() - N                                   |
+| CALL N      | SS.PUSH(SS[1]); SS[1] = SS.SIZE(); SS.PUSH(IP); IP += N |
+| RET         | IP = SS.POP(); SS[1] = SS.POP()                         |
 

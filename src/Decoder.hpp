@@ -59,16 +59,13 @@ void Decoder::__parseByteCodeFile()
 
     while (fread(&codeEnum, sizeof(Instruction), 1, f))
     {
-        switch (codeEnum)
+        if (codeEnum == Instruction::LDC  ||
+            codeEnum == Instruction::JMP  ||
+            codeEnum == Instruction::JZ   ||
+            codeEnum == Instruction::ADDR ||
+            codeEnum == Instruction::CALL)
         {
-            case Instruction::LDC:
-            case Instruction::JMP:
-            case Instruction::JZ:
-                fread(&codeVal, sizeof(int), 1, f);
-                break;
-
-            default:
-                break;
+            fread(&codeVal, sizeof(int), 1, f);
         }
 
         __instructionList.emplace_back(codeEnum, codeVal);
