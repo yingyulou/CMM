@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <utility>
+#include <stdexcept>
 #include <cstdio>
 #include <cstdlib>
 #include "VM.h"
@@ -22,6 +23,7 @@ namespace CMM
 
 using std::vector;
 using std::pair;
+using std::runtime_error;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -174,6 +176,9 @@ void VM::__runInstruction(const pair<Instruction, int> &instructionPair)
         case Instruction::STOP:
             exit(0);
             break;
+
+        default:
+            throw runtime_error("Invalid Instruction");
     }
 }
 

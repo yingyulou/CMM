@@ -7,6 +7,7 @@
 #pragma once
 
 #include <string>
+#include <stdexcept>
 #include <cctype>
 #include <cstdio>
 #include <cstdlib>
@@ -24,6 +25,7 @@ namespace CMM
 ////////////////////////////////////////////////////////////////////////////////
 
 using std::string;
+using std::runtime_error;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -91,6 +93,9 @@ Token Lexer::NextToken()
             case LexerStage::InNot:
                 __nextTokenInNotStage(nowChar, saveBool, lexerStage, tokenType, tokenStr);
                 break;
+
+            default:
+                throw runtime_error("Invalid LexerStage");
         }
 
         if (saveBool)
