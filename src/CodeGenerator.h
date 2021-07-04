@@ -129,8 +129,16 @@ private:
     vector<pair<Instruction, string>> __generateAssignCode(AST *root) const;
 
 
+    // Generate Global Variable Code
+    vector<pair<Instruction, string>> __generateGlobalVariableCode() const;
+
+
     // Generate Main Prepare Code
     vector<pair<Instruction, string>> __generateMainPrepareCode() const;
+
+
+    // Generate Global Code
+    vector<pair<Instruction, string>> __generateGlobalCode() const;
 
 
     // Create CodeMap
@@ -142,14 +150,14 @@ private:
         const unordered_map<string, vector<pair<Instruction, string>>> &codeMap) const;
 
 
-    // Translate Call
-    void __translateCall(
-        unordered_map<string, vector<pair<Instruction, string>>> &codeMap,
+    // Translate Call Helper
+    void __translateCallHelper(vector<pair<Instruction, string>> &codeList, int &IP,
         const unordered_map<string, int> &funcJmpMap) const;
 
 
-    // Generate Global Code
-    vector<pair<Instruction, string>> __generateGlobalCode(
+    // Translate Call
+    void __translateCall(
+        unordered_map<string, vector<pair<Instruction, string>>> &codeMap,
         const unordered_map<string, int> &funcJmpMap) const;
 
 
@@ -159,7 +167,7 @@ private:
 
 
     // Output ASM Code
-    void __outputASMCode(const vector<pair<Instruction, string>> &globalCodeList,
+    void __outputASMCode(
         const unordered_map<string, vector<pair<Instruction, string>>> &codeMap) const;
 
 
@@ -169,7 +177,7 @@ private:
 
 
     // Output Byte Code
-    void __outputByteCode(const vector<pair<Instruction, string>> &globalCodeList,
+    void __outputByteCode(
         const unordered_map<string, vector<pair<Instruction, string>>> &codeMap) const;
 };
 

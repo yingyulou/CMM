@@ -58,10 +58,8 @@ void CodeGenerator::GenerateCode()
 
     __translateCall(codeMap, funcJmpMap);
 
-    auto globalCodeList = __generateGlobalCode(funcJmpMap);
-
-    __outputASMCode(globalCodeList, codeMap);
-    __outputByteCode(globalCodeList, codeMap);
+    __outputASMCode(codeMap);
+    __outputByteCode(codeMap);
 }
 
 
@@ -851,6 +849,38 @@ vector<pair<Instruction, string>> CodeGenerator::__generateAssignCode(AST *root)
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// Generate Global Variable Code
+////////////////////////////////////////////////////////////////////////////////
+
+vector<pair<Instruction, string>> CodeGenerator::__generateGlobalVariableCode() const
+{
+    vector<pair<Instruction, string>> codeList;
+
+    for (auto &[_, infoPair]: __symbolTable.at("__GLOBAL__"))
+    {
+        // Array
+        if (infoPair.second)
+        {
+            // Calc the array start address (variable number + 1)
+            codeList.emplace_back(Instruction::LDC, to_string(infoPair.first + 1));
+        }
+
+        // Push the array start address
+        // (Or only a meaningless int for global scalar memeory)
+        codeList.emplace_back(Instruction::PUSH, "");
+
+        // Push array content (by array size times)
+        for (int _ = 0; _ < infoPair.second; _++)
+        {
+            codeList.emplace_back(Instruction::PUSH, "");
+        }
+    }
+
+    return codeList;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // Generate Main Prepare Code
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -890,8 +920,23 @@ vector<pair<Instruction, string>> CodeGenerator::__generateMainPrepareCode() con
         }
     }
 
-    // Obviously, we just need "CALL 1" here
-    codeList.emplace_back(Instruction::CALL, "1");
+    // Call the "main" function automatically
+    codeList.emplace_back(Instruction::CALL, "main");
+
+    return codeList;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Generate Global Code
+////////////////////////////////////////////////////////////////////////////////
+
+vector<pair<Instruction, string>> CodeGenerator::__generateGlobalCode() const
+{
+    auto codeList = __generateGlobalVariableCode(),
+        mainPrepareCodeList = __generateMainPrepareCode();
+
+    codeList.insert(codeList.end(), mainPrepareCodeList.begin(), mainPrepareCodeList.end());
 
     return codeList;
 }
@@ -903,7 +948,10 @@ vector<pair<Instruction, string>> CodeGenerator::__generateMainPrepareCode() con
 
 unordered_map<string, vector<pair<Instruction, string>>> CodeGenerator::__createCodeMap()
 {
-    unordered_map<string, vector<pair<Instruction, string>>> codeMap;
+    unordered_map<string, vector<pair<Instruction, string>>> codeMap
+    {
+        {"__GLOBAL__", __generateGlobalCode()},
+    };
 
     /*
         TokenType::DeclList
@@ -922,8 +970,6 @@ unordered_map<string, vector<pair<Instruction, string>>> CodeGenerator::__create
         */
         if (declPtr->tokenType == TokenType::FuncDecl)
         {
-            vector<pair<Instruction, string>> codeList;
-
             /*
                 TokenType::FuncDecl
                     |
@@ -944,19 +990,10 @@ unordered_map<string, vector<pair<Instruction, string>>> CodeGenerator::__create
                     |
                     |---- __StmtList
             */
-            auto stmtListCodeList = __generateStmtListCode(declPtr->subList[3]->subList[1]);
+            auto codeList = __generateStmtListCode(declPtr->subList[3]->subList[1]);
 
-            if (__nowFuncName == "main")
+            if (__nowFuncName != "main")
             {
-                auto mainPrepareCodeList = __generateMainPrepareCode();
-
-                codeList.insert(codeList.end(), mainPrepareCodeList.begin(), mainPrepareCodeList.end());
-                codeList.insert(codeList.end(), stmtListCodeList.begin(), stmtListCodeList.end());
-            }
-            else
-            {
-                codeList.insert(codeList.end(), stmtListCodeList.begin(), stmtListCodeList.end());
-
                 /*
                     The instruction "RET" perform multiple actions:
 
@@ -994,14 +1031,15 @@ unordered_map<string, int> CodeGenerator::__createFuncJmpMap(
     const unordered_map<string, vector<pair<Instruction, string>>> &codeMap) const
 {
     // funcJmpMap: Function name => Function start IP
-    unordered_map<string, int> funcJmpMap;
+    unordered_map<string, int> funcJmpMap {{"__GLOBAL__", 0}};
 
-    int jmpNum = 0;
+    // Global code must be the first part
+    int jmpNum = codeMap.at("__GLOBAL__").size();
 
     // Other functions
     for (auto &[funcName, codeList]: codeMap)
     {
-        if (funcName != "main")
+        if (funcName != "__GLOBAL__" && funcName != "main")
         {
             funcJmpMap[funcName] = jmpNum;
             jmpNum += codeList.size();
@@ -1016,6 +1054,26 @@ unordered_map<string, int> CodeGenerator::__createFuncJmpMap(
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// Translate Call Helper
+////////////////////////////////////////////////////////////////////////////////
+
+void CodeGenerator::__translateCallHelper(
+    vector<pair<Instruction, string>> &codeList, int &IP,
+    const unordered_map<string, int> &funcJmpMap) const
+{
+    for (auto &[codeEnum, codeValStr]: codeList)
+    {
+        if (codeEnum == Instruction::CALL)
+        {
+            codeValStr = to_string(funcJmpMap.at(codeValStr) - IP);
+        }
+
+        IP++;
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // Translate Call
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1026,73 +1084,20 @@ void CodeGenerator::__translateCall(
     // A virtual "IP"
     int IP = 0;
 
+    // Global code must be the first part
+    __translateCallHelper(codeMap.at("__GLOBAL__"), IP, funcJmpMap);
+
     // Other functions
     for (auto &[funcName, codeList]: codeMap)
     {
-        if (funcName != "main")
+        if (funcName != "__GLOBAL__" && funcName != "main")
         {
-            for (auto &[codeEnum, codeValStr]: codeList)
-            {
-                if (codeEnum == Instruction::CALL)
-                {
-                    codeValStr = to_string(funcJmpMap.at(codeValStr) - IP);
-                }
-
-                IP++;
-            }
+            __translateCallHelper(codeList, IP, funcJmpMap);
         }
     }
 
     // The "main" function must be the last function
-    for (auto &[codeEnum, codeValStr]: codeMap.at("main"))
-    {
-        if (codeEnum == Instruction::CALL)
-        {
-            if (!isdigit(codeValStr[0]))
-            {
-                codeValStr = to_string(funcJmpMap.at(codeValStr) - IP);
-            }
-        }
-
-        IP++;
-    }
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Generate Global Code
-////////////////////////////////////////////////////////////////////////////////
-
-vector<pair<Instruction, string>> CodeGenerator::__generateGlobalCode(
-    const unordered_map<string, int> &funcJmpMap) const
-{
-    vector<pair<Instruction, string>> codeList;
-
-    for (auto &[_, infoPair]: __symbolTable.at("__GLOBAL__"))
-    {
-        // Array
-        if (infoPair.second)
-        {
-            // Calc the array start address (variable number + 1)
-            codeList.emplace_back(Instruction::LDC, to_string(infoPair.first + 1));
-        }
-
-        // Push the array start address
-        // (Or only a meaningless int for global scalar memeory)
-        codeList.emplace_back(Instruction::PUSH, "");
-
-        // Push array content (by array size times)
-        for (int _ = 0; _ < infoPair.second; _++)
-        {
-            codeList.emplace_back(Instruction::PUSH, "");
-        }
-    }
-
-    // JMP to the "main"
-    // funcJmpMap.at("main") - (-1) => funcJmpMap.at("main") + 1
-    codeList.emplace_back(Instruction::JMP, to_string(funcJmpMap.at("main") + 1));
-
-    return codeList;
+    __translateCallHelper(codeMap.at("main"), IP, funcJmpMap);
 }
 
 
@@ -1212,7 +1217,6 @@ void CodeGenerator::__outputASMCodeHelper(FILE *fo, Instruction codeEnum,
 ////////////////////////////////////////////////////////////////////////////////
 
 void CodeGenerator::__outputASMCode(
-    const vector<pair<Instruction, string>> &globalCodeList,
     const unordered_map<string, vector<pair<Instruction, string>>> &codeMap) const
 {
     if (__asmCodeFilePath.empty())
@@ -1222,14 +1226,14 @@ void CodeGenerator::__outputASMCode(
 
     FILE *fo = fopen(__asmCodeFilePath.c_str(), "w");
 
-    for (auto &[codeEnum, codeValStr]: globalCodeList)
+    for (auto &[codeEnum, codeValStr]: codeMap.at("__GLOBAL__"))
     {
         __outputASMCodeHelper(fo, codeEnum, codeValStr);
     }
 
     for (auto &[funcName, codeList]: codeMap)
     {
-        if (funcName != "main")
+        if (funcName != "__GLOBAL__" && funcName != "main")
         {
             for (auto &[codeEnum, codeValStr]: codeList)
             {
@@ -1275,7 +1279,6 @@ void CodeGenerator::__outputByteCodeHelper(FILE *fo, Instruction codeEnum,
 ////////////////////////////////////////////////////////////////////////////////
 
 void CodeGenerator::__outputByteCode(
-    const vector<pair<Instruction, string>> &globalCodeList,
     const unordered_map<string, vector<pair<Instruction, string>>> &codeMap) const
 {
     if (__byteCodeFilePath.empty())
@@ -1285,14 +1288,14 @@ void CodeGenerator::__outputByteCode(
 
     FILE *fo = fopen(__byteCodeFilePath.c_str(), "wb");
 
-    for (auto &[codeEnum, codeValStr]: globalCodeList)
+    for (auto &[codeEnum, codeValStr]: codeMap.at("__GLOBAL__"))
     {
         __outputByteCodeHelper(fo, codeEnum, codeValStr);
     }
 
     for (auto &[funcName, codeList]: codeMap)
     {
-        if (funcName != "main")
+        if (funcName != "__GLOBAL__" && funcName != "main")
         {
             for (auto &[codeEnum, codeValStr]: codeList)
             {
