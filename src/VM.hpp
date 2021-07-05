@@ -10,7 +10,6 @@
 #include <utility>
 #include <stdexcept>
 #include <cstdio>
-#include <cstdlib>
 #include "VM.h"
 #include "Instruction.h"
 
