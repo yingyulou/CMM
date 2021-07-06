@@ -76,8 +76,7 @@ Here is the CMM language grammar in EBNF format:
 
 6. FuncDecl ::= Type ID '(' Params ')' CompoundStmt
 
-7. Params ::= ParamList
-            | void
+7. Params ::= [ ParamList ]
 
 8. ParamList ::= Param { ',' Param }
 

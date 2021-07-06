@@ -21,7 +21,7 @@ int CalcGreatestCommonDivisor(int lhs, int rhs)
 // Main Program Define
 //////////////////////////////////////////////////////////////////////////////*/
 
-void main(void)
+void main()
 {
     int lhs;
     int rhs;

@@ -84,9 +84,9 @@ unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::g
             symbolTable[funcName];
 
             /*
-                __ParamList | TokenType::Void
+                __ParamList | nullptr
             */
-            if (declNodePtr->subList[2]->tokenType == TokenType::ParamList)
+            if (declNodePtr->subList[2])
             {
                 /*
                     TokenType::ParamList

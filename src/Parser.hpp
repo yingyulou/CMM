@@ -359,35 +359,18 @@ void Parser::__Params(AST *&root)
     /*
         EBNF:
 
-            Params ::= ParamList
-                     | void
+            Params ::= [ ParamList ]
 
 
         AST:
 
-            __ParamList | TokenType::Void
+            __ParamList | nullptr
     */
 
-    if (__tokenPtr->tokenType == TokenType::Int)
+    if (__tokenPtr->tokenType == TokenType::Int ||
+        __tokenPtr->tokenType == TokenType::Void)
     {
         __ParamList(root);
-    }
-    else if (__tokenPtr->tokenType == TokenType::Void)
-    {
-        if (__tokenPtr[1].tokenType == TokenType::Id)
-        {
-            __ParamList(root);
-        }
-        else
-        {
-            root = new AST(__tokenPtr);
-
-            __MatchToken(TokenType::Void);
-        }
-    }
-    else
-    {
-        __invalidToken(__tokenPtr);
     }
 }
 
