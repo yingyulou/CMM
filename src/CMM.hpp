@@ -4,14 +4,15 @@
         CMM header.
 */
 
-#include "TokenType.h"
-#include "LexerStage.h"
+#include "TokenType.hpp"
+#include "LexerStage.hpp"
+#include "Token.hpp"
 #include "Lexer.hpp"
 #include "AST.hpp"
 #include "Parser.hpp"
 #include "SemanticAnalyzer.hpp"
 #include "CodeGenerator.hpp"
-#include "Instruction.h"
+#include "Instruction.hpp"
 #include "VM.hpp"
 #include "Decoder.hpp"
 #include "Core.hpp"

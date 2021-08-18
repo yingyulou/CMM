@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 #include <utility>
-#include "Instruction.h"
+#include "Instruction.hpp"
 
 namespace CMM
 {

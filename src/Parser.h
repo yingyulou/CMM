@@ -10,7 +10,7 @@
 #include <vector>
 #include "Token.h"
 #include "AST.h"
-#include "TokenType.h"
+#include "TokenType.hpp"
 
 namespace CMM
 {
@@ -46,9 +46,13 @@ public:
 private:
 
     // Attribute
+    AST *__root;
     vector<Token> __tokenList;
     Token *__tokenPtr;
-    AST *__root;
+
+
+    // Get Token List
+    static vector<Token> __getTokenList(const string &inputFilePath);
 
 
     // Invalid Token

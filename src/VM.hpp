@@ -11,7 +11,7 @@
 #include <stdexcept>
 #include <cstdio>
 #include "VM.h"
-#include "Instruction.h"
+#include "Instruction.hpp"
 
 namespace CMM
 {

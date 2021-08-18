@@ -8,7 +8,7 @@
 
 #include <string>
 #include <vector>
-#include "TokenType.h"
+#include "TokenType.hpp"
 #include "Token.h"
 
 namespace CMM
@@ -23,28 +23,51 @@ using std::vector;
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// struct AST
+// Class AST
 ////////////////////////////////////////////////////////////////////////////////
 
-struct AST
+class AST
 {
-    // Attribute
-    TokenType tokenType;
-    string tokenStr;
-    vector<AST *> subList;
-    int lineNo;
-
+public:
 
     // Constructor
-    explicit AST(TokenType _tokenType, const string &_tokenStr = "",
-        const vector<AST *> &_subList = {}, int _lineNo = 0);
+    explicit AST(TokenType tokenType, const string &tokenStr = "",
+        const vector<AST *> &subList = {}, int lineNo = 0);
 
 
+    // Constructor (With tokenPtr)
     explicit AST(const Token *tokenPtr);
+
+
+    // Getter: __tokenType
+    TokenType tokenType() const;
+
+
+    // Getter: __tokenStr
+    string &tokenStr();
+    const string &tokenStr() const;
+
+
+    // Getter: __subList
+    vector<AST *> &subList();
+    const vector<AST *> &subList() const;
+
+
+    // Getter: __lineNo
+    int lineNo() const;
 
 
     // Destructor
     ~AST();
+
+
+private:
+
+    // Attribute
+    TokenType __tokenType;
+    string __tokenStr;
+    vector<AST *> __subList;
+    int __lineNo;
 };
 
 

@@ -1,7 +1,7 @@
 /*
-    TokenType.h
-    ===========
-        Enum class TokenType header.
+    TokenType.hpp
+    =============
+        Enum class TokenType implementation.
 */
 
 #pragma once

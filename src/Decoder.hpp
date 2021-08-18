@@ -11,7 +11,7 @@
 #include <utility>
 #include <cstdio>
 #include "Decoder.h"
-#include "Instruction.h"
+#include "Instruction.hpp"
 
 namespace CMM
 {

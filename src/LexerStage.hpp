@@ -1,7 +1,7 @@
 /*
-    LexerStage.h
-    ============
-        Enum class LexerStage header.
+    LexerStage.hpp
+    ==============
+        Enum class LexerStage implementation.
 */
 
 #pragma once

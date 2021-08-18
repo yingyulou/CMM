@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 #include "AST.h"
-#include "TokenType.h"
+#include "TokenType.hpp"
 #include "Token.h"
 
 namespace CMM
@@ -27,18 +27,74 @@ using std::vector;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////////
 
-AST::AST(TokenType _tokenType, const string &_tokenStr,
-    const vector<AST *> &_subList, int _lineNo):
-    tokenType(_tokenType),
-    tokenStr (_tokenStr),
-    subList  (_subList),
-    lineNo   (_lineNo) {}
+AST::AST(TokenType tokenType, const string &tokenStr,
+    const vector<AST *> &subList, int lineNo):
+    __tokenType(tokenType),
+    __tokenStr (tokenStr),
+    __subList  (subList),
+    __lineNo   (lineNo) {}
 
+
+////////////////////////////////////////////////////////////////////////////////
+// Constructor (With tokenPtr)
+////////////////////////////////////////////////////////////////////////////////
 
 AST::AST(const Token *tokenPtr):
-    tokenType(tokenPtr->tokenType),
-    tokenStr (tokenPtr->tokenStr),
-    lineNo   (tokenPtr->lineNo) {}
+    __tokenType(tokenPtr->tokenType()),
+    __tokenStr (tokenPtr->tokenStr()),
+    __lineNo   (tokenPtr->lineNo()) {}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Getter: __tokenType
+////////////////////////////////////////////////////////////////////////////////
+
+TokenType AST::tokenType() const
+{
+    return __tokenType;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Getter: __tokenStr
+////////////////////////////////////////////////////////////////////////////////
+
+string &AST::tokenStr()
+{
+    return __tokenStr;
+}
+
+
+const string &AST::tokenStr() const
+{
+    return __tokenStr;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Getter: __subList
+////////////////////////////////////////////////////////////////////////////////
+
+vector<AST *> &AST::subList()
+{
+    return __subList;
+}
+
+
+const vector<AST *> &AST::subList() const
+{
+    return __subList;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Getter: __lineNo
+////////////////////////////////////////////////////////////////////////////////
+
+int AST::lineNo() const
+{
+    return __lineNo;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -47,7 +103,7 @@ AST::AST(const Token *tokenPtr):
 
 AST::~AST()
 {
-    for (auto subPtr: subList)
+    for (auto subPtr: __subList)
     {
         delete subPtr;
     }

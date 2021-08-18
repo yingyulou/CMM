@@ -1,7 +1,7 @@
 /*
-    Instruction.h
-    =============
-        Enum class Instruction header.
+    Instruction.hpp
+    ===============
+        Enum class Instruction implementation.
 */
 
 #pragma once

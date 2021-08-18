@@ -12,9 +12,9 @@
 #include <cstdio>
 #include <cstdlib>
 #include "Lexer.h"
-#include "TokenType.h"
-#include "LexerStage.h"
 #include "Token.h"
+#include "TokenType.hpp"
+#include "LexerStage.hpp"
 #include "Constants.hpp"
 
 namespace CMM
@@ -38,10 +38,10 @@ Lexer::Lexer(const string &inputFilePath):
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// NextToken
+// Next Token
 ////////////////////////////////////////////////////////////////////////////////
 
-Token Lexer::NextToken()
+Token Lexer::nextToken()
 {
     LexerStage lexerStage = LexerStage::Start;
     TokenType tokenType;
@@ -104,7 +104,7 @@ Token Lexer::NextToken()
         }
     }
 
-    return {tokenType, tokenStr, __lineNo};
+    return Token(tokenType, tokenStr, __lineNo);
 }
 
 

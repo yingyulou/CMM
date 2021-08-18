@@ -11,7 +11,7 @@
 #include <utility>
 #include "SemanticAnalyzer.h"
 #include "AST.h"
-#include "TokenType.h"
+#include "TokenType.hpp"
 
 namespace CMM
 {
@@ -60,12 +60,12 @@ unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::g
             .
             .
     */
-    for (auto declNodePtr: __root->subList)
+    for (auto declNodePtr: __root->subList())
     {
         /*
             __VarDecl | __FuncDecl
         */
-        if (declNodePtr->tokenType == TokenType::FuncDecl)
+        if (declNodePtr->tokenType() == TokenType::FuncDecl)
         {
             /*
                 TokenType::FuncDecl
@@ -79,14 +79,14 @@ unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::g
                     |---- __CompoundStmt
             */
             int varIdx = 0;
-            string funcName = declNodePtr->subList[1]->tokenStr;
+            string funcName = declNodePtr->subList()[1]->tokenStr();
 
             symbolTable[funcName];
 
             /*
                 __ParamList | nullptr
             */
-            if (declNodePtr->subList[2])
+            if (declNodePtr->subList()[2])
             {
                 /*
                     TokenType::ParamList
@@ -98,7 +98,7 @@ unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::g
                         .
                         .
                 */
-                for (auto paramPtr: declNodePtr->subList[2]->subList)
+                for (auto paramPtr: declNodePtr->subList()[2]->subList())
                 {
                     /*
                         TokenType::Param
@@ -107,7 +107,7 @@ unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::g
                             |
                             |---- TokenType::Id
                     */
-                    string varName = paramPtr->subList[1]->tokenStr;
+                    string varName = paramPtr->subList()[1]->tokenStr();
 
                     symbolTable[funcName][varName] = {varIdx++, 0};
                 }
@@ -128,7 +128,7 @@ unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::g
                     .
                     .
             */
-            for (auto varDeclPtr: declNodePtr->subList[3]->subList[0]->subList)
+            for (auto varDeclPtr: declNodePtr->subList()[3]->subList()[0]->subList())
             {
                 /*
                     TokenType::VarDecl
@@ -139,10 +139,10 @@ unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::g
                         |
                         |---- [TokenType::Number]
                 */
-                string varName = varDeclPtr->subList[1]->tokenStr;
+                string varName = varDeclPtr->subList()[1]->tokenStr();
 
-                int varSize = varDeclPtr->subList.size() == 2 ? 0 :
-                    stoi(varDeclPtr->subList[2]->tokenStr);
+                int varSize = varDeclPtr->subList().size() == 2 ? 0 :
+                    stoi(varDeclPtr->subList()[2]->tokenStr());
 
                 symbolTable[funcName][varName] = {varIdx, varSize};
                 varIdx += varSize + 1;
@@ -159,10 +159,10 @@ unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::g
                     |
                     |---- [TokenType::Number]
             */
-            string varName = declNodePtr->subList[1]->tokenStr;
+            string varName = declNodePtr->subList()[1]->tokenStr();
 
-            int varSize = declNodePtr->subList.size() == 2 ? 0 :
-                stoi(declNodePtr->subList[2]->tokenStr);
+            int varSize = declNodePtr->subList().size() == 2 ? 0 :
+                stoi(declNodePtr->subList()[2]->tokenStr());
 
             symbolTable["__GLOBAL__"][varName] = {globalIdx, varSize};
             globalIdx += varSize + 1;

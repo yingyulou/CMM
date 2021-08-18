@@ -7,7 +7,7 @@
 #pragma once
 
 #include <string>
-#include "TokenType.h"
+#include "TokenType.hpp"
 
 namespace CMM
 {
@@ -20,15 +20,36 @@ using std::string;
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Struct Token
+// Class Token
 ////////////////////////////////////////////////////////////////////////////////
 
-struct Token
+class Token
 {
+public:
+
+    // Constructor
+    explicit Token(TokenType tokenType, const string &tokenStr, int lineNo);
+
+
+    // Getter: __tokenType
+    TokenType tokenType() const;
+
+
+    // Getter: __tokenStr
+    string &tokenStr();
+    const string &tokenStr() const;
+
+
+    // Getter: __lineNo
+    int lineNo() const;
+
+
+private:
+
     // Attribute
-    TokenType tokenType;
-    string tokenStr;
-    int lineNo;
+    TokenType __tokenType;
+    string __tokenStr;
+    int __lineNo;
 };
 
 

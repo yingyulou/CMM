@@ -12,7 +12,7 @@
 #include <utility>
 #include <cstdio>
 #include "AST.h"
-#include "Instruction.h"
+#include "Instruction.hpp"
 
 namespace CMM
 {

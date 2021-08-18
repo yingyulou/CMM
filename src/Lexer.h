@@ -32,8 +32,8 @@ public:
     explicit Lexer(const string &inputFilePath);
 
 
-    // NextToken
-    Token NextToken();
+    // Next Token
+    Token nextToken();
 
 
     // Destructor
