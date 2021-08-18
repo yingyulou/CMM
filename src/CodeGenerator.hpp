@@ -51,7 +51,7 @@ CodeGenerator::CodeGenerator(AST *root, const string &asmCodeFilePath,
 // Generate Code
 ////////////////////////////////////////////////////////////////////////////////
 
-void CodeGenerator::GenerateCode()
+void CodeGenerator::generateCode()
 {
     auto codeMap = __createCodeMap();
     auto funcJmpMap = __createFuncJmpMap(codeMap);

@@ -33,8 +33,8 @@ public:
     explicit VM(const vector<pair<Instruction, int>> &instructionList);
 
 
-    // Start
-    void Start();
+    // Run
+    void run();
 
 
 private:

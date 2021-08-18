@@ -95,7 +95,7 @@ void Core::__generateCode() const
     if (!__cmmFilePath.empty())
     {
         CodeGenerator(Parser(__cmmFilePath).root(), __outputASMCodeFilePath,
-            __outputByteCodeFilePath).GenerateCode();
+            __outputByteCodeFilePath).generateCode();
     }
 }
 
@@ -108,7 +108,7 @@ void Core::__execCode() const
 {
     if (!__inputByteCodeFilePath.empty())
     {
-        VM(Decoder(__inputByteCodeFilePath).instructionList()).Start();
+        VM(Decoder(__inputByteCodeFilePath).instructionList()).run();
     }
 }
 

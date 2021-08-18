@@ -41,7 +41,7 @@ public:
 
 
     // Generate Code
-    void GenerateCode();
+    void generateCode();
 
 
 private:
