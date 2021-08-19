@@ -60,7 +60,7 @@ private:
 
 
     // Match Token
-    void __MatchToken(TokenType tokenType);
+    void __matchToken(TokenType tokenType);
 
 
     // ENBF: Parse

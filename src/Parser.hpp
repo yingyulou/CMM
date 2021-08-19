@@ -104,7 +104,7 @@ void Parser::__invalidToken(const Token *invalidTokenPtr)
 // Match Token
 ////////////////////////////////////////////////////////////////////////////////
 
-void Parser::__MatchToken(TokenType tarTokenType)
+void Parser::__matchToken(TokenType tarTokenType)
 {
     if (__tokenPtr->tokenType() == tarTokenType)
     {
@@ -260,7 +260,7 @@ void Parser::__VarDecl(AST *&root)
     {
         root->subList()[1] = new AST(__tokenPtr);
 
-        __MatchToken(TokenType::Id);
+        __matchToken(TokenType::Id);
     }
     else
     {
@@ -269,15 +269,15 @@ void Parser::__VarDecl(AST *&root)
 
     if (__tokenPtr->tokenType() == TokenType::LeftSquareBracket)
     {
-        __MatchToken(TokenType::LeftSquareBracket);
+        __matchToken(TokenType::LeftSquareBracket);
 
         root->subList().push_back(new AST(__tokenPtr));
 
-        __MatchToken(TokenType::Number);
-        __MatchToken(TokenType::RightSquareBracket);
+        __matchToken(TokenType::Number);
+        __matchToken(TokenType::RightSquareBracket);
     }
 
-    __MatchToken(TokenType::Semicolon);
+    __matchToken(TokenType::Semicolon);
 }
 
 
@@ -304,7 +304,7 @@ void Parser::__Type(AST *&root)
     {
         root = new AST(__tokenPtr);
 
-        __MatchToken(__tokenPtr->tokenType());
+        __matchToken(__tokenPtr->tokenType());
     }
     else
     {
@@ -346,18 +346,18 @@ void Parser::__FuncDecl(AST *&root)
     {
         root->subList()[1] = new AST(__tokenPtr);
 
-        __MatchToken(TokenType::Id);
+        __matchToken(TokenType::Id);
     }
     else
     {
         __invalidToken(__tokenPtr);
     }
 
-    __MatchToken(TokenType::LeftRoundBracket);
+    __matchToken(TokenType::LeftRoundBracket);
 
     __Params(root->subList()[2]);
 
-    __MatchToken(TokenType::RightRoundBracket);
+    __matchToken(TokenType::RightRoundBracket);
 
     __CompoundStmt(root->subList()[3]);
 }
@@ -418,7 +418,7 @@ void Parser::__ParamList(AST *&root)
 
     while (__tokenPtr->tokenType() == TokenType::Comma)
     {
-        __MatchToken(TokenType::Comma);
+        __matchToken(TokenType::Comma);
 
         root->subList().push_back(nullptr);
 
@@ -456,7 +456,7 @@ void Parser::__Param(AST *&root)
     {
         root->subList()[1] = new AST(__tokenPtr);
 
-        __MatchToken(TokenType::Id);
+        __matchToken(TokenType::Id);
     }
     else
     {
@@ -465,8 +465,8 @@ void Parser::__Param(AST *&root)
 
     if (__tokenPtr->tokenType() == TokenType::LeftSquareBracket)
     {
-        __MatchToken(TokenType::LeftSquareBracket);
-        __MatchToken(TokenType::RightSquareBracket);
+        __matchToken(TokenType::LeftSquareBracket);
+        __matchToken(TokenType::RightSquareBracket);
     }
 }
 
@@ -494,13 +494,13 @@ void Parser::__CompoundStmt(AST *&root)
 
     root = new AST(TokenType::CompoundStmt, "CompoundStmt", {nullptr, nullptr});
 
-    __MatchToken(TokenType::LeftCurlyBracket);
+    __matchToken(TokenType::LeftCurlyBracket);
 
     __LocalDecl(root->subList()[0]);
 
     __StmtList(root->subList()[1]);
 
-    __MatchToken(TokenType::RightCurlyBracket);
+    __matchToken(TokenType::RightCurlyBracket);
 }
 
 
@@ -653,7 +653,7 @@ void Parser::__ExprStmt(AST *&root)
         __Expr(root);
     }
 
-    __MatchToken(TokenType::Semicolon);
+    __matchToken(TokenType::Semicolon);
 }
 
 
@@ -682,18 +682,18 @@ void Parser::__IfStmt(AST *&root)
 
     root = new AST(TokenType::IfStmt, "IfStmt", {nullptr, nullptr});
 
-    __MatchToken(TokenType::If);
-    __MatchToken(TokenType::LeftRoundBracket);
+    __matchToken(TokenType::If);
+    __matchToken(TokenType::LeftRoundBracket);
 
     __Expr(root->subList()[0]);
 
-    __MatchToken(TokenType::RightRoundBracket);
+    __matchToken(TokenType::RightRoundBracket);
 
     __Stmt(root->subList()[1]);
 
     if (__tokenPtr->tokenType() == TokenType::Else)
     {
-        __MatchToken(TokenType::Else);
+        __matchToken(TokenType::Else);
 
         root->subList().push_back(nullptr);
 
@@ -725,12 +725,12 @@ void Parser::__WhileStmt(AST *&root)
 
     root = new AST(TokenType::WhileStmt, "WhileStmt", {nullptr, nullptr});
 
-    __MatchToken(TokenType::While);
-    __MatchToken(TokenType::LeftRoundBracket);
+    __matchToken(TokenType::While);
+    __matchToken(TokenType::LeftRoundBracket);
 
     __Expr(root->subList()[0]);
 
-    __MatchToken(TokenType::RightRoundBracket);
+    __matchToken(TokenType::RightRoundBracket);
 
     __Stmt(root->subList()[1]);
 }
@@ -757,7 +757,7 @@ void Parser::__ReturnStmt(AST *&root)
 
     root = new AST(TokenType::ReturnStmt, "ReturnStmt");
 
-    __MatchToken(TokenType::Return);
+    __matchToken(TokenType::Return);
 
     if (__tokenPtr->tokenType() == TokenType::Id               ||
         __tokenPtr->tokenType() == TokenType::LeftRoundBracket ||
@@ -767,7 +767,7 @@ void Parser::__ReturnStmt(AST *&root)
         __Expr(root->subList().back());
     }
 
-    __MatchToken(TokenType::Semicolon);
+    __matchToken(TokenType::Semicolon);
 }
 
 
@@ -835,7 +835,7 @@ void Parser::__Expr(AST *&root)
 
             __Var(root->subList()[0]);
 
-            __MatchToken(TokenType::Assign);
+            __matchToken(TokenType::Assign);
 
             __Expr(root->subList()[1]);
         }
@@ -874,7 +874,7 @@ void Parser::__Var(AST *&root)
     {
         root->subList()[0] = new AST(__tokenPtr);
 
-        __MatchToken(TokenType::Id);
+        __matchToken(TokenType::Id);
     }
     else
     {
@@ -883,13 +883,13 @@ void Parser::__Var(AST *&root)
 
     if (__tokenPtr->tokenType() == TokenType::LeftSquareBracket)
     {
-        __MatchToken(TokenType::LeftSquareBracket);
+        __matchToken(TokenType::LeftSquareBracket);
 
         root->subList().push_back(nullptr);
 
         __Expr(root->subList()[1]);
 
-        __MatchToken(TokenType::RightSquareBracket);
+        __matchToken(TokenType::RightSquareBracket);
     }
 }
 
@@ -975,7 +975,7 @@ void Parser::__RelOp(AST *&root)
     {
         root = new AST(__tokenPtr);
 
-        __MatchToken(__tokenPtr->tokenType());
+        __matchToken(__tokenPtr->tokenType());
     }
     else
     {
@@ -1051,7 +1051,7 @@ void Parser::__AddOp(AST *&root)
     {
         root = new AST(__tokenPtr);
 
-        __MatchToken(__tokenPtr->tokenType());
+        __matchToken(__tokenPtr->tokenType());
     }
     else
     {
@@ -1127,7 +1127,7 @@ void Parser::__MulOp(AST *&root)
     {
         root = new AST(__tokenPtr);
 
-        __MatchToken(__tokenPtr->tokenType());
+        __matchToken(__tokenPtr->tokenType());
     }
     else
     {
@@ -1158,17 +1158,17 @@ void Parser::__Factor(AST *&root)
 
     if (__tokenPtr->tokenType() == TokenType::LeftRoundBracket)
     {
-        __MatchToken(TokenType::LeftRoundBracket);
+        __matchToken(TokenType::LeftRoundBracket);
 
         __Expr(root);
 
-        __MatchToken(TokenType::RightRoundBracket);
+        __matchToken(TokenType::RightRoundBracket);
     }
     else if (__tokenPtr->tokenType() == TokenType::Number)
     {
         root = new AST(__tokenPtr);
 
-        __MatchToken(__tokenPtr->tokenType());
+        __matchToken(__tokenPtr->tokenType());
     }
     else if (__tokenPtr->tokenType() == TokenType::Id)
     {
@@ -1215,14 +1215,14 @@ void Parser::__Call(AST *&root)
     {
         root->subList()[0] = new AST(__tokenPtr);
 
-        __MatchToken(TokenType::Id);
+        __matchToken(TokenType::Id);
     }
     else
     {
         __invalidToken(__tokenPtr);
     }
 
-    __MatchToken(TokenType::LeftRoundBracket);
+    __matchToken(TokenType::LeftRoundBracket);
 
     if (__tokenPtr->tokenType() == TokenType::Id               ||
         __tokenPtr->tokenType() == TokenType::LeftRoundBracket ||
@@ -1233,7 +1233,7 @@ void Parser::__Call(AST *&root)
         __ArgList(root->subList()[1]);
     }
 
-    __MatchToken(TokenType::RightRoundBracket);
+    __matchToken(TokenType::RightRoundBracket);
 }
 
 
@@ -1267,7 +1267,7 @@ void Parser::__ArgList(AST *&root)
 
     while (__tokenPtr->tokenType() == TokenType::Comma)
     {
-        __MatchToken(TokenType::Comma);
+        __matchToken(TokenType::Comma);
 
         root->subList().push_back(nullptr);
 
