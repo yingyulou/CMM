@@ -13,7 +13,7 @@ namespace CMM
 // Enum Class Instruction
 ////////////////////////////////////////////////////////////////////////////////
 
-enum class Instruction: char
+enum class Instruction
 {
     // Load
     LDC,

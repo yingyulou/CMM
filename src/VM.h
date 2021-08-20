@@ -30,7 +30,7 @@ class VM
 public:
 
     // Constructor
-    explicit VM(const vector<pair<Instruction, int>> &instructionList);
+    explicit VM(const vector<pair<Instruction, int>> &CS);
 
 
     // Run

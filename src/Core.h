@@ -40,9 +40,8 @@ private:
     int __ARGC;
     char **__ARGV;
     string __cmmFilePath;
-    string __outputASMCodeFilePath;
-    string __outputByteCodeFilePath;
-    string __inputByteCodeFilePath;
+    string __outputFilePath;
+    string __asmFilePath;
 
 
     // Input Arguments

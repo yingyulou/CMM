@@ -29,8 +29,8 @@ using std::runtime_error;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////////
 
-VM::VM(const vector<pair<Instruction, int>> &instructionList):
-    __CS(instructionList),
+VM::VM(const vector<pair<Instruction, int>> &CS):
+    __CS(CS),
     __IP(0),
     __SS(2) {}
 
@@ -161,7 +161,7 @@ void VM::__execInstruction(const pair<Instruction, int> &instructionPair)
             break;
 
         default:
-            throw runtime_error("Invalid Instruction");
+            throw runtime_error("Invalid Instruction value");
     }
 }
 

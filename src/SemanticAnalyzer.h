@@ -32,17 +32,23 @@ class SemanticAnalyzer
 public:
 
     // Constructor
-    SemanticAnalyzer(AST *root);
+    SemanticAnalyzer(AST *root = nullptr);
 
 
-    // Get Symbol Table
-    unordered_map<string, unordered_map<string, pair<int, int>>> getSymbolTable() const;
+    // Semantic Analysis
+    unordered_map<string, unordered_map<string, pair<int, int>>>
+    semanticAnalysis() const;
 
 
 private:
 
     // Attribute
     AST *__root;
+
+
+    // Semantic Analysis
+    unordered_map<string, unordered_map<string, pair<int, int>>>
+    __semanticAnalysis() const;
 };
 
 

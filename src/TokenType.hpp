@@ -48,8 +48,8 @@ enum class TokenType
     LeftCurlyBracket,    // {
     RightCurlyBracket,   // }
 
-    // Eof
-    EndOfFile,           // EOF
+    // End
+    END,                 // END
 
     // Ast
     DeclList,            // AST: DeclList

@@ -10,8 +10,12 @@
 #include <iostream>
 #include <boost/program_options.hpp>
 #include "Core.h"
+#include "LexicalAnalyzer.h"
+#include "SyntaxAnalyzer.h"
+#include "SemanticAnalyzer.h"
 #include "CodeGenerator.h"
-#include "Decoder.h"
+#include "IO.h"
+#include "VM.h"
 #include "Constants.hpp"
 
 namespace CMM
@@ -64,14 +68,11 @@ void Core::__inputArguments()
         (",c", po::value<string>(&__cmmFilePath),
             "Input CMM File Path")
 
-        (",s", po::value<string>(&__outputASMCodeFilePath),
+        (",o", po::value<string>(&__outputFilePath)->default_value("a.out"),
             "Output ASM File Path")
 
-        (",o", po::value<string>(&__outputByteCodeFilePath)->default_value("a.out"),
-            "Output Byte Code File Path")
-
-        (",r", po::value<string>(&__inputByteCodeFilePath),
-            "Input Byte Code File Path (For Running)");
+        (",r", po::value<string>(&__asmFilePath),
+            "Input ASM File Path (For Running)");
 
     po::variables_map vm;
     po::store(po::parse_command_line(__ARGC, __ARGV, desc), vm);
@@ -94,8 +95,23 @@ void Core::__generateCode() const
 {
     if (!__cmmFilePath.empty())
     {
-        CodeGenerator(Parser(__cmmFilePath).root(), __outputASMCodeFilePath,
-            __outputByteCodeFilePath).generateCode();
+        LexicalAnalyzer lexicalAnalyzer(__cmmFilePath);
+
+        auto tokenList = lexicalAnalyzer.lexicalAnalysis();
+
+        SyntaxAnalyzer syntaxAnalyzer(tokenList);
+
+        auto root = syntaxAnalyzer.syntaxAnalysis();
+
+        SemanticAnalyzer semanticAnalyzer(root);
+
+        auto symbolTable = semanticAnalyzer.semanticAnalysis();
+
+        CodeGenerator codeGenerator(root, symbolTable);
+
+        auto codeList = codeGenerator.generateCode();
+
+        IO::outputInstruction(__outputFilePath, codeList);
     }
 }
 
@@ -106,9 +122,13 @@ void Core::__generateCode() const
 
 void Core::__execCode() const
 {
-    if (!__inputByteCodeFilePath.empty())
+    if (!__asmFilePath.empty())
     {
-        VM(Decoder(__inputByteCodeFilePath).instructionList()).run();
+        auto codeList = IO::parseInstructionFile(__asmFilePath);
+
+        VM vm(codeList);
+
+        vm.run();
     }
 }
 

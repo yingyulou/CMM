@@ -35,10 +35,22 @@ SemanticAnalyzer::SemanticAnalyzer(AST *root):
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// Getter: __symbolTable
+////////////////////////////////////////////////////////////////////////////////
+
+unordered_map<string, unordered_map<string, pair<int, int>>>
+SemanticAnalyzer::semanticAnalysis() const
+{
+    return __semanticAnalysis();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // Get Symbol Table
 ////////////////////////////////////////////////////////////////////////////////
 
-unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::getSymbolTable() const
+unordered_map<string, unordered_map<string, pair<int, int>>>
+SemanticAnalyzer::__semanticAnalysis() const
 {
     /*
         symbolTable: Function Name => Variable Name => (Variable Number, Array Size)

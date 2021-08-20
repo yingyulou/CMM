@@ -10,7 +10,6 @@
 #include <vector>
 #include <unordered_map>
 #include <utility>
-#include <cstdio>
 #include "AST.h"
 #include "Instruction.hpp"
 
@@ -36,12 +35,12 @@ class CodeGenerator
 public:
 
     // Constructor
-    CodeGenerator(AST *root, const string &asmCodeFilePath,
-        const string &byteCodeFilePath);
+    CodeGenerator(AST *root = nullptr,
+        const unordered_map<string, unordered_map<string, pair<int, int>>> &symbolTable = {});
 
 
     // Generate Code
-    void generateCode();
+    vector<pair<Instruction, string>> generateCode();
 
 
 private:
@@ -49,8 +48,7 @@ private:
     // Attribute
     AST *__root;
     unordered_map<string, unordered_map<string, pair<int, int>>> __symbolTable;
-    string __asmCodeFilePath, __byteCodeFilePath;
-    string __nowFuncName;
+    string __curFuncName;
 
 
     // Generate Number Code
@@ -151,8 +149,8 @@ private:
 
 
     // Translate Call Helper
-    void __translateCallHelper(vector<pair<Instruction, string>> &codeList, int &IP,
-        const unordered_map<string, int> &funcJmpMap) const;
+    void __translateCallHelper(vector<pair<Instruction, string>> &codeList,
+        int &IP, const unordered_map<string, int> &funcJmpMap) const;
 
 
     // Translate Call
@@ -161,24 +159,13 @@ private:
         const unordered_map<string, int> &funcJmpMap) const;
 
 
-    // Output ASM Code Helper
-    void __outputASMCodeHelper(FILE *fo, Instruction codeEnum,
-        const string &codeValStr) const;
+    // Merge Code Map
+    static vector<pair<Instruction, string>> __mergeCodeMap(
+        const unordered_map<string, vector<pair<Instruction, string>>> &codeMap);
 
 
-    // Output ASM Code
-    void __outputASMCode(
-        const unordered_map<string, vector<pair<Instruction, string>>> &codeMap) const;
-
-
-    // Output Byte Code Helper
-    void __outputByteCodeHelper(FILE *fo, Instruction codeEnum,
-        const string &codeValStr) const;
-
-
-    // Output Byte Code
-    void __outputByteCode(
-        const unordered_map<string, vector<pair<Instruction, string>>> &codeMap) const;
+    // Generate Code
+    vector<pair<Instruction, string>> __generateCode();
 };
 
 
