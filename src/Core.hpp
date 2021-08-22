@@ -65,7 +65,7 @@ void Core::__inputArguments()
 
         ("help,h", "show this help message and exit")
 
-        (",c", po::value<string>(&__cmmFilePath),
+        (",i", po::value<string>(&__cmmFilePath),
             "Input CMM File Path")
 
         (",o", po::value<string>(&__outputFilePath)->default_value("a.out"),

@@ -66,7 +66,7 @@ void sortNumList(int numArray[], int beginIdx, int endIdx)
 // Main Program Define
 //////////////////////////////////////////////////////////////////////////////*/
 
-void main()
+int main()
 {
     int idx;
 
