@@ -162,26 +162,15 @@ private:
     __createCodeMap() const;
 
 
-    // Create FuncJmpMap
-    static unordered_map<string, int> __createFuncJmpMap(
+    // Merge CodeMap
+    static pair<vector<pair<Instruction, string>>, unordered_map<string, int>>
+    __mergeCodeMap(
         const unordered_map<string, vector<pair<Instruction, string>>> &codeMap);
-
-
-    // Translate Call Helper
-    static void __translateCallHelper(
-        vector<pair<Instruction, string>> &codeList,
-        int &IP, const unordered_map<string, int> &funcJmpMap);
 
 
     // Translate Call
-    static void __translateCall(
-        unordered_map<string, vector<pair<Instruction, string>>> &codeMap,
+    static void __translateCall(vector<pair<Instruction, string>> &codeList,
         const unordered_map<string, int> &funcJmpMap);
-
-
-    // Merge Code Map
-    static vector<pair<Instruction, string>> __mergeCodeMap(
-        const unordered_map<string, vector<pair<Instruction, string>>> &codeMap);
 
 
     // Generate Code

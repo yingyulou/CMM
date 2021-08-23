@@ -1019,6 +1019,7 @@ CodeGenerator::__generateMainPrepareCode() const
 vector<pair<Instruction, string>> CodeGenerator::__generateGlobalCode() const
 {
     auto codeList = __generateGlobalVariableCode();
+
     auto mainPrepareCodeList = __generateMainPrepareCode();
 
     codeList.insert(codeList.end(),
@@ -1112,52 +1113,45 @@ CodeGenerator::__createCodeMap() const
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Create FuncJmpMap
+// Merge CodeMap
 ////////////////////////////////////////////////////////////////////////////////
 
-unordered_map<string, int> CodeGenerator::__createFuncJmpMap(
-const unordered_map<string, vector<pair<Instruction, string>>> &codeMap)
+pair<vector<pair<Instruction, string>>, unordered_map<string, int>>
+CodeGenerator::__mergeCodeMap(
+    const unordered_map<string, vector<pair<Instruction, string>>> &codeMap)
 {
+    vector<pair<Instruction, string>> codeList;
+
     // funcJmpMap: Function name => Function start IP
     unordered_map<string, int> funcJmpMap {{"__GLOBAL__", 0}};
 
     // Global code must be the first part
     int jmpNum = codeMap.at("__GLOBAL__").size();
 
+    codeList.insert(codeList.end(),
+        codeMap.at("__GLOBAL__").begin(), codeMap.at("__GLOBAL__").end());
+
     // Other functions
-    for (auto &[funcName, codeList]: codeMap)
+    for (auto &[funcName, subCodeList]: codeMap)
     {
         if (funcName != "__GLOBAL__" && funcName != "main")
         {
+            codeList.insert(codeList.end(),
+                subCodeList.begin(), subCodeList.end());
+
             funcJmpMap[funcName] = jmpNum;
-            jmpNum += codeList.size();
+
+            jmpNum += subCodeList.size();
         }
     }
 
     // The "main" function must be the last function
+    codeList.insert(codeList.end(),
+        codeMap.at("main").begin(), codeMap.at("main").end());
+
     funcJmpMap["main"] = jmpNum;
 
-    return funcJmpMap;
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Translate Call Helper
-////////////////////////////////////////////////////////////////////////////////
-
-void CodeGenerator::__translateCallHelper(
-    vector<pair<Instruction, string>> &codeList, int &IP,
-    const unordered_map<string, int> &funcJmpMap)
-{
-    for (auto &[codeEnum, codeValStr]: codeList)
-    {
-        if (codeEnum == Instruction::CALL)
-        {
-            codeValStr = to_string(funcJmpMap.at(codeValStr) - IP);
-        }
-
-        IP++;
-    }
+    return {codeList, funcJmpMap};
 }
 
 
@@ -1166,54 +1160,18 @@ void CodeGenerator::__translateCallHelper(
 ////////////////////////////////////////////////////////////////////////////////
 
 void CodeGenerator::__translateCall(
-    unordered_map<string, vector<pair<Instruction, string>>> &codeMap,
+    vector<pair<Instruction, string>> &codeList,
     const unordered_map<string, int> &funcJmpMap)
 {
     // A virtual "IP"
-    int IP = 0;
-
-    // Global code must be the first part
-    __translateCallHelper(codeMap.at("__GLOBAL__"), IP, funcJmpMap);
-
-    // Other functions
-    for (auto &[funcName, codeList]: codeMap)
+    for (int IP = 0; IP < codeList.size(); IP++)
     {
-        if (funcName != "__GLOBAL__" && funcName != "main")
+        if (codeList[IP].first == Instruction::CALL)
         {
-            __translateCallHelper(codeList, IP, funcJmpMap);
+            codeList[IP].second = to_string(
+                funcJmpMap.at(codeList[IP].second) - IP);
         }
     }
-
-    // The "main" function must be the last function
-    __translateCallHelper(codeMap.at("main"), IP, funcJmpMap);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Merge Code Map
-////////////////////////////////////////////////////////////////////////////////
-
-vector<pair<Instruction, string>> CodeGenerator::__mergeCodeMap(
-    const unordered_map<string, vector<pair<Instruction, string>>> &codeMap)
-{
-    vector<pair<Instruction, string>> codeList;
-
-    codeList.insert(codeList.end(),
-        codeMap.at("__GLOBAL__").begin(), codeMap.at("__GLOBAL__").end());
-
-    for (auto &[funcName, subCodeList]: codeMap)
-    {
-        if (funcName != "__GLOBAL__" && funcName != "main")
-        {
-            codeList.insert(codeList.end(),
-                subCodeList.begin(), subCodeList.end());
-        }
-    }
-
-    codeList.insert(codeList.end(),
-        codeMap.at("main").begin(), codeMap.at("main").end());
-
-    return codeList;
 }
 
 
@@ -1223,12 +1181,11 @@ vector<pair<Instruction, string>> CodeGenerator::__mergeCodeMap(
 
 vector<pair<Instruction, string>> CodeGenerator::__generateCode() const
 {
-    auto codeMap    = __createCodeMap();
-    auto funcJmpMap = __createFuncJmpMap(codeMap);
+    auto codeMap = __createCodeMap();
 
-    __translateCall(codeMap, funcJmpMap);
+    auto [codeList, funcJmpMap] = __mergeCodeMap(codeMap);
 
-    auto codeList = __mergeCodeMap(codeMap);
+    __translateCall(codeList, funcJmpMap);
 
     return codeList;
 }
