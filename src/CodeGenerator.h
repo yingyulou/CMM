@@ -40,7 +40,7 @@ public:
 
 
     // Generate Code
-    vector<pair<Instruction, string>> generateCode();
+    vector<pair<Instruction, string>> generateCode() const;
 
 
 private:
@@ -48,83 +48,101 @@ private:
     // Attribute
     AST *__root;
     unordered_map<string, unordered_map<string, pair<int, int>>> __symbolTable;
-    string __curFuncName;
 
 
     // Generate Number Code
-    vector<pair<Instruction, string>> __generateNumberCode(AST *root) const;
+    vector<pair<Instruction, string>> __generateNumberCode(
+        AST *root, const string &) const;
 
 
     // Generate CompoundStmt Code
-    vector<pair<Instruction, string>> __generateCompoundStmtCode(AST *root) const;
+    vector<pair<Instruction, string>> __generateCompoundStmtCode(
+        AST *root, const string &curFuncName) const;
 
 
     // Generate StmtList Code
-    vector<pair<Instruction, string>> __generateStmtListCode(AST *root) const;
+    vector<pair<Instruction, string>> __generateStmtListCode(
+        AST *root, const string &curFuncName) const;
 
 
     // Generate Stmt Code
-    vector<pair<Instruction, string>> __generateStmtCode(AST *root) const;
+    vector<pair<Instruction, string>> __generateStmtCode(
+        AST *root, const string &curFuncName) const;
 
 
     // Generate IfStmt Code
-    vector<pair<Instruction, string>> __generateIfStmtCode(AST *root) const;
+    vector<pair<Instruction, string>> __generateIfStmtCode(
+        AST *root, const string &curFuncName) const;
 
 
     // Generate WhileStmt Code
-    vector<pair<Instruction, string>> __generateWhileStmtCode(AST *root) const;
+    vector<pair<Instruction, string>> __generateWhileStmtCode(
+        AST *root, const string &curFuncName) const;
 
 
     // Generate ReturnStmt Code
-    vector<pair<Instruction, string>> __generateReturnStmtCode(AST *root) const;
+    vector<pair<Instruction, string>> __generateReturnStmtCode(
+        AST *root, const string &curFuncName) const;
 
 
     // Generate Expr Code
-    vector<pair<Instruction, string>> __generateExprCode(AST *root) const;
+    vector<pair<Instruction, string>> __generateExprCode(
+        AST *root, const string &curFuncName) const;
 
 
     // Generate Var Code
-    vector<pair<Instruction, string>> __generateVarCode(AST *root) const;
+    vector<pair<Instruction, string>> __generateVarCode(
+        AST *root, const string &curFuncName) const;
 
 
     // Generate SimpleExpr Code
-    vector<pair<Instruction, string>> __generateSimpleExprCode(AST *root) const;
+    vector<pair<Instruction, string>> __generateSimpleExprCode(
+        AST *root, const string &curFuncName) const;
 
 
     // Generate RelOp Code
-    vector<pair<Instruction, string>> __generateRelOpCode(AST *root) const;
+    vector<pair<Instruction, string>> __generateRelOpCode(
+        AST *root, const string &) const;
 
 
     // Generate AddExpr Code
-    vector<pair<Instruction, string>> __generateAddExprCode(AST *root) const;
+    vector<pair<Instruction, string>> __generateAddExprCode(
+        AST *root, const string &curFuncName) const;
 
 
     // Generate AddOp Code
-    vector<pair<Instruction, string>> __generateAddOpCode(AST *root) const;
+    vector<pair<Instruction, string>> __generateAddOpCode(
+        AST *root, const string &) const;
 
 
     // Generate Term Code
-    vector<pair<Instruction, string>> __generateTermCode(AST *root) const;
+    vector<pair<Instruction, string>> __generateTermCode(
+        AST *root, const string &curFuncName) const;
 
 
     // Generate MulOp Code
-    vector<pair<Instruction, string>> __generateMulOpCode(AST *root) const;
+    vector<pair<Instruction, string>> __generateMulOpCode(
+        AST *root, const string &) const;
 
 
     // Generate Factor Code
-    vector<pair<Instruction, string>> __generateFactorCode(AST *root) const;
+    vector<pair<Instruction, string>> __generateFactorCode(
+        AST *root, const string &curFuncName) const;
 
 
     // Generate Call Code
-    vector<pair<Instruction, string>> __generateCallCode(AST *root) const;
+    vector<pair<Instruction, string>> __generateCallCode(
+        AST *root, const string &curFuncName) const;
 
 
     // Generate ArgList Code
-    vector<pair<Instruction, string>> __generateArgListCode(AST *root) const;
+    vector<pair<Instruction, string>> __generateArgListCode(
+        AST *root, const string &curFuncName) const;
 
 
     // Generate Assign Code
-    vector<pair<Instruction, string>> __generateAssignCode(AST *root) const;
+    vector<pair<Instruction, string>> __generateAssignCode(
+        AST *root, const string &curFuncName) const;
 
 
     // Generate Global Variable Code
@@ -140,23 +158,25 @@ private:
 
 
     // Create CodeMap
-    unordered_map<string, vector<pair<Instruction, string>>> __createCodeMap();
+    unordered_map<string, vector<pair<Instruction, string>>>
+    __createCodeMap() const;
 
 
     // Create FuncJmpMap
-    unordered_map<string, int> __createFuncJmpMap(
-        const unordered_map<string, vector<pair<Instruction, string>>> &codeMap) const;
+    static unordered_map<string, int> __createFuncJmpMap(
+        const unordered_map<string, vector<pair<Instruction, string>>> &codeMap);
 
 
     // Translate Call Helper
-    void __translateCallHelper(vector<pair<Instruction, string>> &codeList,
-        int &IP, const unordered_map<string, int> &funcJmpMap) const;
+    static void __translateCallHelper(
+        vector<pair<Instruction, string>> &codeList,
+        int &IP, const unordered_map<string, int> &funcJmpMap);
 
 
     // Translate Call
-    void __translateCall(
+    static void __translateCall(
         unordered_map<string, vector<pair<Instruction, string>>> &codeMap,
-        const unordered_map<string, int> &funcJmpMap) const;
+        const unordered_map<string, int> &funcJmpMap);
 
 
     // Merge Code Map
@@ -165,7 +185,7 @@ private:
 
 
     // Generate Code
-    vector<pair<Instruction, string>> __generateCode();
+    vector<pair<Instruction, string>> __generateCode() const;
 };
 
 

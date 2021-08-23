@@ -46,7 +46,7 @@ CodeGenerator::CodeGenerator(AST *root,
 // Generate Code
 ////////////////////////////////////////////////////////////////////////////////
 
-vector<pair<Instruction, string>> CodeGenerator::generateCode()
+vector<pair<Instruction, string>> CodeGenerator::generateCode() const
 {
     return __generateCode();
 }
@@ -57,7 +57,7 @@ vector<pair<Instruction, string>> CodeGenerator::generateCode()
 ////////////////////////////////////////////////////////////////////////////////
 
 vector<pair<Instruction, string>> CodeGenerator::__generateNumberCode(
-    AST *root) const
+    AST *root, const string &) const
 {
     /*
         TokenType::Number
@@ -72,7 +72,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateNumberCode(
 ////////////////////////////////////////////////////////////////////////////////
 
 vector<pair<Instruction, string>> CodeGenerator::__generateCompoundStmtCode(
-    AST *root) const
+    AST *root, const string &curFuncName) const
 {
     /*
         TokenType::CompoundStmt
@@ -82,7 +82,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateCompoundStmtCode(
             |---- __StmtList
     */
 
-    return __generateStmtListCode(root->subList()[1]);
+    return __generateStmtListCode(root->subList()[1], curFuncName);
 }
 
 
@@ -91,7 +91,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateCompoundStmtCode(
 ////////////////////////////////////////////////////////////////////////////////
 
 vector<pair<Instruction, string>> CodeGenerator::__generateStmtListCode(
-    AST *root) const
+    AST *root, const string &curFuncName) const
 {
     /*
         TokenType::StmtList
@@ -106,7 +106,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateStmtListCode(
 
     for (auto stmtPtr: root->subList())
     {
-        auto stmtCodeList = __generateStmtCode(stmtPtr);
+        auto stmtCodeList = __generateStmtCode(stmtPtr, curFuncName);
 
         codeList.insert(codeList.end(),
             stmtCodeList.begin(), stmtCodeList.end());
@@ -121,7 +121,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateStmtListCode(
 ////////////////////////////////////////////////////////////////////////////////
 
 vector<pair<Instruction, string>> CodeGenerator::__generateStmtCode(
-    AST *root) const
+    AST *root, const string &curFuncName) const
 {
     /*
         __ExprStmt | __CompoundStmt | __IfStmt | __WhileStmt | __ReturnStmt
@@ -137,19 +137,19 @@ vector<pair<Instruction, string>> CodeGenerator::__generateStmtCode(
     switch (root->tokenType())
     {
         case TokenType::Expr:
-            return __generateExprCode(root);
+            return __generateExprCode(root, curFuncName);
 
         case TokenType::CompoundStmt:
-            return __generateCompoundStmtCode(root);
+            return __generateCompoundStmtCode(root, curFuncName);
 
         case TokenType::IfStmt:
-            return __generateIfStmtCode(root);
+            return __generateIfStmtCode(root, curFuncName);
 
         case TokenType::WhileStmt:
-            return __generateWhileStmtCode(root);
+            return __generateWhileStmtCode(root, curFuncName);
 
         case TokenType::ReturnStmt:
-            return __generateReturnStmtCode(root);
+            return __generateReturnStmtCode(root, curFuncName);
 
         default:
             throw runtime_error("Invalid TokenType value");
@@ -162,7 +162,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateStmtCode(
 ////////////////////////////////////////////////////////////////////////////////
 
 vector<pair<Instruction, string>> CodeGenerator::__generateIfStmtCode(
-    AST *root) const
+    AST *root, const string &curFuncName) const
 {
     /*
         TokenType::IfStmt
@@ -174,8 +174,8 @@ vector<pair<Instruction, string>> CodeGenerator::__generateIfStmtCode(
             |---- [__Stmt]
     */
 
-    auto codeList   = __generateExprCode(root->subList()[0]);
-    auto ifCodeList = __generateStmtCode(root->subList()[1]);
+    auto codeList   = __generateExprCode(root->subList()[0], curFuncName);
+    auto ifCodeList = __generateStmtCode(root->subList()[1], curFuncName);
 
     if (root->subList().size() == 2)
     {
@@ -211,7 +211,8 @@ vector<pair<Instruction, string>> CodeGenerator::__generateIfStmtCode(
 
             END: ...
         */
-        auto elseCodeList = __generateStmtCode(root->subList()[2]);
+        auto elseCodeList = __generateStmtCode(
+            root->subList()[2], curFuncName);
 
         ifCodeList.emplace_back(Instruction::JMP,
             to_string(elseCodeList.size() + 1));
@@ -235,7 +236,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateIfStmtCode(
 ////////////////////////////////////////////////////////////////////////////////
 
 vector<pair<Instruction, string>> CodeGenerator::__generateWhileStmtCode(
-    AST *root) const
+    AST *root, const string &curFuncName) const
 {
     /*
         TokenType::WhileStmt
@@ -245,8 +246,8 @@ vector<pair<Instruction, string>> CodeGenerator::__generateWhileStmtCode(
             |---- __Stmt
     */
 
-    auto codeList     = __generateExprCode(root->subList()[0]);
-    auto stmtCodeList = __generateStmtCode(root->subList()[1]);
+    auto codeList     = __generateExprCode(root->subList()[0], curFuncName);
+    auto stmtCodeList = __generateStmtCode(root->subList()[1], curFuncName);
 
     /*
         START: while ...
@@ -277,7 +278,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateWhileStmtCode(
 ////////////////////////////////////////////////////////////////////////////////
 
 vector<pair<Instruction, string>> CodeGenerator::__generateReturnStmtCode(
-    AST *root) const
+    AST *root, const string &curFuncName) const
 {
     /*
         TokenType::ReturnStmt
@@ -291,7 +292,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateReturnStmtCode(
     }
     else
     {
-        return __generateExprCode(root->subList()[0]);
+        return __generateExprCode(root->subList()[0], curFuncName);
     }
 }
 
@@ -301,7 +302,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateReturnStmtCode(
 ////////////////////////////////////////////////////////////////////////////////
 
 vector<pair<Instruction, string>> CodeGenerator::__generateExprCode(
-    AST *root) const
+    AST *root, const string &curFuncName) const
 {
     /*
         TokenType::Expr
@@ -319,12 +320,15 @@ vector<pair<Instruction, string>> CodeGenerator::__generateExprCode(
 
     if (root->subList().size() == 1)
     {
-        return __generateSimpleExprCode(root->subList()[0]);
+        return __generateSimpleExprCode(root->subList()[0], curFuncName);
     }
     else
     {
-        auto codeList       = __generateExprCode(root->subList()[1]);
-        auto assignCodeList = __generateAssignCode(root->subList()[0]);
+        auto codeList = __generateExprCode(
+            root->subList()[1], curFuncName);
+
+        auto assignCodeList = __generateAssignCode(
+            root->subList()[0], curFuncName);
 
         codeList.insert(codeList.end(),
             assignCodeList.begin(), assignCodeList.end());
@@ -339,7 +343,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateExprCode(
 ////////////////////////////////////////////////////////////////////////////////
 
 vector<pair<Instruction, string>> CodeGenerator::__generateVarCode(
-    AST *root) const
+    AST *root, const string &curFuncName) const
 {
     /*
         TokenType::Var
@@ -352,11 +356,11 @@ vector<pair<Instruction, string>> CodeGenerator::__generateVarCode(
     vector<pair<Instruction, string>> codeList;
 
     // Local variable
-    if (__symbolTable.at(__curFuncName).count(
+    if (__symbolTable.at(curFuncName).count(
         root->subList()[0]->tokenStr()))
     {
         codeList.emplace_back(Instruction::LDC,
-            to_string(__symbolTable.at(__curFuncName).at(
+            to_string(__symbolTable.at(curFuncName).at(
             root->subList()[0]->tokenStr()).first));
 
         codeList.emplace_back(Instruction::LD, "");
@@ -374,7 +378,8 @@ vector<pair<Instruction, string>> CodeGenerator::__generateVarCode(
     // Array
     if (root->subList().size() == 2)
     {
-        auto exprCodeList = __generateExprCode(root->subList()[1]);
+        auto exprCodeList = __generateExprCode(
+            root->subList()[1], curFuncName);
 
         codeList.emplace_back(Instruction::PUSH, "");
 
@@ -395,7 +400,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateVarCode(
 ////////////////////////////////////////////////////////////////////////////////
 
 vector<pair<Instruction, string>> CodeGenerator::__generateSimpleExprCode(
-    AST *root) const
+    AST *root, const string &curFuncName) const
 {
     /*
         TokenType::SimpleExpr
@@ -409,13 +414,18 @@ vector<pair<Instruction, string>> CodeGenerator::__generateSimpleExprCode(
 
     if (root->subList().size() == 1)
     {
-        return __generateAddExprCode(root->subList()[0]);
+        return __generateAddExprCode(root->subList()[0], curFuncName);
     }
     else
     {
-        auto codeList      = __generateAddExprCode(root->subList()[0]);
-        auto midCodeList   = __generateRelOpCode(root->subList()[1]);
-        auto rightCodeList = __generateAddExprCode(root->subList()[2]);
+        auto codeList = __generateAddExprCode(
+            root->subList()[0], curFuncName);
+
+        auto midCodeList = __generateRelOpCode(
+            root->subList()[1], curFuncName);
+
+        auto rightCodeList = __generateAddExprCode(
+            root->subList()[2], curFuncName);
 
         codeList.emplace_back(Instruction::PUSH, "");
 
@@ -437,7 +447,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateSimpleExprCode(
 ////////////////////////////////////////////////////////////////////////////////
 
 vector<pair<Instruction, string>> CodeGenerator::__generateRelOpCode(
-    AST *root) const
+    AST *root, const string &) const
 {
     /*
         TokenType::Less         |
@@ -479,7 +489,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateRelOpCode(
 ////////////////////////////////////////////////////////////////////////////////
 
 vector<pair<Instruction, string>> CodeGenerator::__generateAddExprCode(
-    AST *root) const
+    AST *root, const string &curFuncName) const
 {
     /*
         TokenType::AddExpr
@@ -494,12 +504,15 @@ vector<pair<Instruction, string>> CodeGenerator::__generateAddExprCode(
             .
     */
 
-    auto codeList = __generateTermCode(root->subList()[0]);
+    auto codeList = __generateTermCode(root->subList()[0], curFuncName);
 
     for (int idx = 1; idx < root->subList().size(); idx += 2)
     {
-        auto midCodeList   = __generateAddOpCode(root->subList()[idx]);
-        auto rightCodeList = __generateTermCode(root->subList()[idx + 1]);
+        auto midCodeList = __generateAddOpCode(
+            root->subList()[idx], curFuncName);
+
+        auto rightCodeList = __generateTermCode(
+            root->subList()[idx + 1], curFuncName);
 
         codeList.emplace_back(Instruction::PUSH, "");
 
@@ -521,7 +534,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateAddExprCode(
 ////////////////////////////////////////////////////////////////////////////////
 
 vector<pair<Instruction, string>> CodeGenerator::__generateAddOpCode(
-    AST *root) const
+    AST *root, const string &) const
 {
     /*
         TokenType::Plus | TokenType::Minus
@@ -543,7 +556,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateAddOpCode(
 ////////////////////////////////////////////////////////////////////////////////
 
 vector<pair<Instruction, string>> CodeGenerator::__generateTermCode(
-    AST *root) const
+    AST *root, const string &curFuncName) const
 {
     /*
         TokenType::Term
@@ -558,12 +571,15 @@ vector<pair<Instruction, string>> CodeGenerator::__generateTermCode(
             .
     */
 
-    auto codeList = __generateFactorCode(root->subList()[0]);
+    auto codeList = __generateFactorCode(root->subList()[0], curFuncName);
 
     for (int idx = 1; idx < root->subList().size(); idx += 2)
     {
-        auto midCodeList   = __generateMulOpCode(root->subList()[idx]);
-        auto rightCodeList = __generateFactorCode(root->subList()[idx + 1]);
+        auto midCodeList = __generateMulOpCode(
+            root->subList()[idx], curFuncName);
+
+        auto rightCodeList = __generateFactorCode(
+            root->subList()[idx + 1], curFuncName);
 
         codeList.emplace_back(Instruction::PUSH, "");
 
@@ -585,7 +601,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateTermCode(
 ////////////////////////////////////////////////////////////////////////////////
 
 vector<pair<Instruction, string>> CodeGenerator::__generateMulOpCode(
-    AST *root) const
+    AST *root, const string &) const
 {
     /*
         TokenType::Multiply | TokenType::Divide
@@ -607,7 +623,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateMulOpCode(
 ////////////////////////////////////////////////////////////////////////////////
 
 vector<pair<Instruction, string>> CodeGenerator::__generateFactorCode(
-    AST *root) const
+    AST *root, const string &curFuncName) const
 {
     /*
         __Expr | TokenType::Number | __Call | __Var
@@ -616,16 +632,16 @@ vector<pair<Instruction, string>> CodeGenerator::__generateFactorCode(
     switch (root->tokenType())
     {
         case TokenType::Expr:
-            return __generateExprCode(root);
+            return __generateExprCode(root, curFuncName);
 
         case TokenType::Number:
-            return __generateNumberCode(root);
+            return __generateNumberCode(root, curFuncName);
 
         case TokenType::Call:
-            return __generateCallCode(root);
+            return __generateCallCode(root, curFuncName);
 
         case TokenType::Var:
-            return __generateVarCode(root);
+            return __generateVarCode(root, curFuncName);
 
         default:
             throw runtime_error("Invalid TokenType value");
@@ -638,7 +654,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateFactorCode(
 ////////////////////////////////////////////////////////////////////////////////
 
 vector<pair<Instruction, string>> CodeGenerator::__generateCallCode(
-    AST *root) const
+    AST *root, const string &curFuncName) const
 {
     /*
         TokenType::Call
@@ -662,7 +678,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateCallCode(
                 |---- __Expr
         */
         auto codeList = __generateExprCode(
-            root->subList()[1]->subList()[0]);
+            root->subList()[1]->subList()[0], curFuncName);
 
         codeList.emplace_back(Instruction::OUT, "");
 
@@ -727,7 +743,8 @@ vector<pair<Instruction, string>> CodeGenerator::__generateCallCode(
     // Push parameter
     if (root->subList().size() == 2)
     {
-        auto argListCodeList = __generateArgListCode(root->subList()[1]);
+        auto argListCodeList = __generateArgListCode(
+            root->subList()[1], curFuncName);
 
         codeList.insert(codeList.end(),
             argListCodeList.begin(), argListCodeList.end());
@@ -789,7 +806,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateCallCode(
 ////////////////////////////////////////////////////////////////////////////////
 
 vector<pair<Instruction, string>> CodeGenerator::__generateArgListCode(
-    AST *root) const
+    AST *root, const string &curFuncName) const
 {
     /*
         TokenType::ArgList
@@ -806,7 +823,8 @@ vector<pair<Instruction, string>> CodeGenerator::__generateArgListCode(
 
     for (int idx = root->subList().size() - 1; idx >= 0; idx--)
     {
-        auto exprCodeList = __generateExprCode(root->subList()[idx]);
+        auto exprCodeList = __generateExprCode(
+            root->subList()[idx], curFuncName);
 
         codeList.insert(codeList.end(),
             exprCodeList.begin(), exprCodeList.end());
@@ -823,7 +841,7 @@ vector<pair<Instruction, string>> CodeGenerator::__generateArgListCode(
 ////////////////////////////////////////////////////////////////////////////////
 
 vector<pair<Instruction, string>> CodeGenerator::__generateAssignCode(
-    AST *root) const
+    AST *root, const string &curFuncName) const
 {
     /*
         TokenType::Expr
@@ -836,11 +854,11 @@ vector<pair<Instruction, string>> CodeGenerator::__generateAssignCode(
     vector<pair<Instruction, string>> codeList {{Instruction::PUSH, ""}};
 
     // Local variable
-    if (__symbolTable.at(__curFuncName).count(
+    if (__symbolTable.at(curFuncName).count(
         root->subList()[0]->tokenStr()))
     {
         codeList.emplace_back(Instruction::LDC,
-            to_string(__symbolTable.at(__curFuncName).at(
+            to_string(__symbolTable.at(curFuncName).at(
             root->subList()[0]->tokenStr()).first));
 
         // Scalar
@@ -851,7 +869,8 @@ vector<pair<Instruction, string>> CodeGenerator::__generateAssignCode(
         // Array
         else
         {
-            auto exprCodeList = __generateExprCode(root->subList()[1]);
+            auto exprCodeList = __generateExprCode(
+                root->subList()[1], curFuncName);
 
             // Get the (start) pointer (is already an absolute address)
             codeList.emplace_back(Instruction::LD, "");
@@ -883,7 +902,8 @@ vector<pair<Instruction, string>> CodeGenerator::__generateAssignCode(
         // Array
         else
         {
-            auto exprCodeList = __generateExprCode(root->subList()[1]);
+            auto exprCodeList = __generateExprCode(
+                root->subList()[1], curFuncName);
 
             // Absolute get the (start) pointer (is already an absolute address)
             codeList.emplace_back(Instruction::ALD, "");
@@ -911,7 +931,8 @@ vector<pair<Instruction, string>> CodeGenerator::__generateAssignCode(
 // Generate Global Variable Code
 ////////////////////////////////////////////////////////////////////////////////
 
-vector<pair<Instruction, string>> CodeGenerator::__generateGlobalVariableCode() const
+vector<pair<Instruction, string>>
+CodeGenerator::__generateGlobalVariableCode() const
 {
     vector<pair<Instruction, string>> codeList;
 
@@ -944,7 +965,8 @@ vector<pair<Instruction, string>> CodeGenerator::__generateGlobalVariableCode() 
 // Generate Main Prepare Code
 ////////////////////////////////////////////////////////////////////////////////
 
-vector<pair<Instruction, string>> CodeGenerator::__generateMainPrepareCode() const
+vector<pair<Instruction, string>>
+CodeGenerator::__generateMainPrepareCode() const
 {
     /*
         The "main" function is a special function, so the following code is
@@ -1010,7 +1032,8 @@ vector<pair<Instruction, string>> CodeGenerator::__generateGlobalCode() const
 // Create CodeMap
 ////////////////////////////////////////////////////////////////////////////////
 
-unordered_map<string, vector<pair<Instruction, string>>> CodeGenerator::__createCodeMap()
+unordered_map<string, vector<pair<Instruction, string>>>
+CodeGenerator::__createCodeMap() const
 {
     unordered_map<string, vector<pair<Instruction, string>>> codeMap
     {
@@ -1045,7 +1068,7 @@ unordered_map<string, vector<pair<Instruction, string>>> CodeGenerator::__create
                     |
                     |---- __CompoundStmt
             */
-            __curFuncName = declPtr->subList()[1]->tokenStr();
+            auto curFuncName = declPtr->subList()[1]->tokenStr();
 
             /*
                 TokenType::CompoundStmt
@@ -1055,9 +1078,9 @@ unordered_map<string, vector<pair<Instruction, string>>> CodeGenerator::__create
                     |---- __StmtList
             */
             auto codeList = __generateStmtListCode(
-                declPtr->subList()[3]->subList()[1]);
+                declPtr->subList()[3]->subList()[1], curFuncName);
 
-            if (__curFuncName != "main")
+            if (curFuncName != "main")
             {
                 /*
                     The instruction "RET" perform multiple actions:
@@ -1080,7 +1103,7 @@ unordered_map<string, vector<pair<Instruction, string>>> CodeGenerator::__create
                 codeList.emplace_back(Instruction::RET, "");
             }
 
-            codeMap[__curFuncName] = codeList;
+            codeMap[curFuncName] = codeList;
         }
     }
 
@@ -1093,7 +1116,7 @@ unordered_map<string, vector<pair<Instruction, string>>> CodeGenerator::__create
 ////////////////////////////////////////////////////////////////////////////////
 
 unordered_map<string, int> CodeGenerator::__createFuncJmpMap(
-const unordered_map<string, vector<pair<Instruction, string>>> &codeMap) const
+const unordered_map<string, vector<pair<Instruction, string>>> &codeMap)
 {
     // funcJmpMap: Function name => Function start IP
     unordered_map<string, int> funcJmpMap {{"__GLOBAL__", 0}};
@@ -1124,7 +1147,7 @@ const unordered_map<string, vector<pair<Instruction, string>>> &codeMap) const
 
 void CodeGenerator::__translateCallHelper(
     vector<pair<Instruction, string>> &codeList, int &IP,
-    const unordered_map<string, int> &funcJmpMap) const
+    const unordered_map<string, int> &funcJmpMap)
 {
     for (auto &[codeEnum, codeValStr]: codeList)
     {
@@ -1144,7 +1167,7 @@ void CodeGenerator::__translateCallHelper(
 
 void CodeGenerator::__translateCall(
     unordered_map<string, vector<pair<Instruction, string>>> &codeMap,
-    const unordered_map<string, int> &funcJmpMap) const
+    const unordered_map<string, int> &funcJmpMap)
 {
     // A virtual "IP"
     int IP = 0;
@@ -1198,7 +1221,7 @@ vector<pair<Instruction, string>> CodeGenerator::__mergeCodeMap(
 // Generate Code
 ////////////////////////////////////////////////////////////////////////////////
 
-vector<pair<Instruction, string>> CodeGenerator::__generateCode()
+vector<pair<Instruction, string>> CodeGenerator::__generateCode() const
 {
     auto codeMap    = __createCodeMap();
     auto funcJmpMap = __createFuncJmpMap(codeMap);
