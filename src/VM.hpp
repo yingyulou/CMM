@@ -41,7 +41,7 @@ VM::VM(const vector<pair<Instruction, int>> &CS):
 
 void VM::run()
 {
-    for (; __IP < __CS.size(); __execInstruction(__CS[__IP]), __IP++);
+    for (__IP = 0; __IP < __CS.size(); __execInstruction(__CS[__IP]), __IP++);
 }
 
 
