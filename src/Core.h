@@ -54,6 +54,10 @@ private:
 
     // Exec Code
     void __execCode() const;
+
+
+    // Main
+    void __main();
 };
 
 

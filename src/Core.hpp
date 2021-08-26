@@ -45,9 +45,7 @@ Core::Core(int argc, char **argv):
 
 void Core::main()
 {
-    __inputArguments();
-    __generateCode();
-    __execCode();
+    __main();
 }
 
 
@@ -130,6 +128,18 @@ void Core::__execCode() const
 
         vm.run();
     }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Main
+////////////////////////////////////////////////////////////////////////////////
+
+void Core::__main()
+{
+    __inputArguments();
+    __generateCode();
+    __execCode();
 }
 
 

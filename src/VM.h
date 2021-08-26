@@ -47,6 +47,10 @@ private:
 
     // Exec Instruction
     void __execInstruction(const pair<Instruction, int> &instructionPair);
+
+
+    // Run
+    void __run();
 };
 
 

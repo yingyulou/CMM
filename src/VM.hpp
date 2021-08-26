@@ -41,7 +41,7 @@ VM::VM(const vector<pair<Instruction, int>> &CS):
 
 void VM::run()
 {
-    for (__IP = 0; __IP < __CS.size(); __execInstruction(__CS[__IP]), __IP++);
+    __run();
 }
 
 
@@ -163,6 +163,16 @@ void VM::__execInstruction(const pair<Instruction, int> &instructionPair)
         default:
             throw runtime_error("Invalid Instruction value");
     }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Run
+////////////////////////////////////////////////////////////////////////////////
+
+void VM::__run()
+{
+    for (__IP = 0; __IP < __CS.size(); __execInstruction(__CS[__IP]), __IP++);
 }
 
 
