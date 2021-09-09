@@ -182,7 +182,7 @@ void IO::__outputInstruction(const string &instructionFilePath,
 {
     FILE *fo = fopen(instructionFilePath.c_str(), "w");
 
-    for (auto [codeEnum, codeValStr]: codeList)
+    for (auto &[codeEnum, codeValStr]: codeList)
     {
         switch (codeEnum)
         {
