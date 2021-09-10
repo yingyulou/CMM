@@ -33,8 +33,7 @@ using boost::format;
 ////////////////////////////////////////////////////////////////////////////////
 
 SyntaxAnalyzer::SyntaxAnalyzer(const vector<Token> &tokenList):
-    __tokenList(tokenList),
-    __root     (nullptr) {}
+    __tokenList(tokenList) {}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -44,16 +43,6 @@ SyntaxAnalyzer::SyntaxAnalyzer(const vector<Token> &tokenList):
 AST *SyntaxAnalyzer::syntaxAnalysis()
 {
     return __syntaxAnalysis();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Destructor
-////////////////////////////////////////////////////////////////////////////////
-
-SyntaxAnalyzer::~SyntaxAnalyzer()
-{
-    delete __root;
 }
 
 
@@ -1252,15 +1241,13 @@ void SyntaxAnalyzer::__ArgList(AST *&root, Token *&tokenPtr)
 
 AST *SyntaxAnalyzer::__syntaxAnalysis()
 {
-    delete __root;
-
-    __root = nullptr;
+    AST *root = nullptr;
 
     auto tokenPtr = __tokenList.data();
 
-    __Parse(__root, tokenPtr);
+    __Parse(root, tokenPtr);
 
-    return __root;
+    return root;
 }
 
 

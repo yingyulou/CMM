@@ -110,6 +110,8 @@ void Core::__generateCode() const
         auto codeList = codeGenerator.generateCode();
 
         IO::outputInstruction(__outputFilePath, codeList);
+
+        delete root;
     }
 }
 

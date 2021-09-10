@@ -39,15 +39,10 @@ public:
     AST *syntaxAnalysis();
 
 
-    // Destructor
-    ~SyntaxAnalyzer();
-
-
 private:
 
     // Attribute
     vector<Token> __tokenList;
-    AST *__root;
 
 
     // Invalid Token
