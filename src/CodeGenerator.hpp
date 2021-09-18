@@ -1123,7 +1123,7 @@ CodeGenerator::__mergeCodeMap(
     vector<pair<Instruction, string>> codeList;
 
     // funcJmpMap: Function name => Function start IP
-    unordered_map<string, int> funcJmpMap {{"__GLOBAL__", 0}};
+    unordered_map<string, int> funcJmpMap;
 
     // Global code must be the first part
     int jmpNum = codeMap.at("__GLOBAL__").size();
