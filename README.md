@@ -141,14 +141,14 @@ Here is the CMM language grammar in EBNF format:
 Here is the VM model of the CMM language:
 
 ```
-+----+    +----+
-| SS |    | CS |
-+----+    +----+
-| .. |    | .. |
-+----+    +----+    +----+
-| .. |    | .. | <= | IP |
-+----+    +----+    +----+
-  ..        ..
++----+              +----+    +----+
+| CS |              | SS |    | AX |
++----+              +----+    +----+
+| .. |              | .. |
++----+    +----+    +----+    +----+
+| .. | <= | IP |    | .. |    | BP |
++----+    +----+    +----+    +----+
+  ..                  ..
 ```
 
 CMM VM use only one SS to store all the data.
@@ -157,30 +157,30 @@ CMM VM use only one SS to store all the data.
 
 Here is the instruction set and the fake code of each instruction of the CMM language:
 
-| Instruction | Fake Code                                               |
-| :---------: | :-----------------------------------------------------: |
-| LDC N       | SS[0] = N                                               |
-| LD          | SS[0] = SS[SS[1] - SS[0]]                               |
-| ALD         | SS[0] = SS[SS[0]]                                       |
-| ST          | SS[SS[1] - SS[0]] = SS.TOP()                            |
-| AST         | SS[SS[0]] = SS.TOP()                                    |
-| PUSH        | SS.PUSH(SS[0])                                          |
-| POP         | SS.POP()                                                |
-| JMP N       | IP += N                                                 |
-| JZ N        | if (SS[0] == 0) IP += N                                 |
-| ADD         | SS[0] = SS.TOP() + SS[0]                                |
-| SUB         | SS[0] = SS.TOP() - SS[0]                                |
-| MUL         | SS[0] = SS.TOP() * SS[0]                                |
-| DIV         | SS[0] = SS.TOP() / SS[0]                                |
-| LT          | SS[0] = SS.TOP() < SS[0]                                |
-| LE          | SS[0] = SS.TOP() <= SS[0]                               |
-| GT          | SS[0] = SS.TOP() > SS[0]                                |
-| GE          | SS[0] = SS.TOP() >= SS[0]                               |
-| EQ          | SS[0] = SS.TOP() == SS[0]                               |
-| NE          | SS[0] = SS.TOP() != SS[0]                               |
-| IN          | scanf("%d", &SS[0])                                     |
-| OUT         | printf("%d\n", SS[0])                                   |
-| ADDR N      | SS[0] = SS.SIZE() - N                                   |
-| CALL N      | SS.PUSH(SS[1]); SS[1] = SS.SIZE(); SS.PUSH(IP); IP += N |
-| RET         | IP = SS.POP(); SS[1] = SS.POP()                         |
+| Instruction | Fake Code                                         |
+| :---------: | :-----------------------------------------------: |
+| LDC N       | AX = N                                            |
+| LD          | AX = SS[BP - AX]                                  |
+| ALD         | AX = SS[AX]                                       |
+| ST          | SS[BP - AX] = SS.TOP()                            |
+| AST         | SS[AX] = SS.TOP()                                 |
+| PUSH        | SS.PUSH(AX)                                       |
+| POP         | SS.POP()                                          |
+| JMP N       | IP += N                                           |
+| JZ N        | if (AX == 0) IP += N                              |
+| ADD         | AX = SS.TOP() + AX                                |
+| SUB         | AX = SS.TOP() - AX                                |
+| MUL         | AX = SS.TOP() * AX                                |
+| DIV         | AX = SS.TOP() / AX                                |
+| LT          | AX = SS.TOP() < AX                                |
+| LE          | AX = SS.TOP() <= AX                               |
+| GT          | AX = SS.TOP() > AX                                |
+| GE          | AX = SS.TOP() >= AX                               |
+| EQ          | AX = SS.TOP() == AX                               |
+| NE          | AX = SS.TOP() != AX                               |
+| IN          | scanf("%d", &AX)                                  |
+| OUT         | printf("%d\n", AX)                                |
+| ADDR N      | AX = SS.SIZE() - N                                |
+| CALL N      | SS.PUSH(BP); BP = SS.SIZE(); SS.PUSH(IP); IP += N |
+| RET         | IP = SS.POP(); BP = SS.POP()                      |
 
