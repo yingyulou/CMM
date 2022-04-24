@@ -47,10 +47,9 @@ CMM
 
 Usage:
   -h [ --help ]         show this help message and exit
-  -c arg                Input CMM File Path
-  -s arg                Output ASM File Path
-  -o arg (=a.out)       Output Byte Code File Path
-  -r arg                Input Byte Code File Path (For Running)
+  -i arg                Input CMM File Path
+  -o arg (=a.out)       Output ASM File Path
+  -r arg                Input ASM File Path (For Running)
 ```
 
 ## Sample files
