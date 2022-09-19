@@ -63,11 +63,11 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateStmtListCode(__AS
 {
     /*
         __TokenType::__StmtList
-            |
-            |---- [__Stmt]
-            .
-            .
-            .
+        |
+        |---- [__Stmt]
+        .
+        .
+        .
     */
 
     vector<pair<__Instruction, string>> codeList;
@@ -128,12 +128,12 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateIfStmtCode(__AST 
 {
     /*
         __TokenType::__IfStmt
-            |
-            |---- __Expr
-            |
-            |---- __StmtList
-            |
-            |---- [__StmtList]
+        |
+        |---- __Expr
+        |
+        |---- __StmtList
+        |
+        |---- [__StmtList]
     */
 
     auto codeList   = __generateExprCode(root->__subList[0], curFuncName);
@@ -193,10 +193,10 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateWhileStmtCode(__A
 {
     /*
         __TokenType::__WhileStmt
-            |
-            |---- __Expr
-            |
-            |---- __StmtList
+        |
+        |---- __Expr
+        |
+        |---- __StmtList
     */
 
     auto codeList     = __generateExprCode(root->__subList[0], curFuncName);
@@ -231,8 +231,8 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateReturnStmtCode(__
 {
     /*
         __TokenType::__ReturnStmt
-            |
-            |---- [__Expr]
+        |
+        |---- [__Expr]
     */
 
     if (root->__subList[0])
@@ -254,16 +254,16 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateExprCode(__AST *r
 {
     /*
         __TokenType::__Expr
-            |
-            |---- __Var
-            |
-            |---- __Expr
+        |
+        |---- __Var
+        |
+        |---- __Expr
 
         ----------------------
 
         __TokenType::__Expr
-            |
-            |---- __SimpleExpr
+        |
+        |---- __SimpleExpr
     */
 
     if (!root->__subList[1])
@@ -290,10 +290,10 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateVarCode(__AST *ro
 {
     /*
         __TokenType::__Var
-            |
-            |---- __TokenType::__Id
-            |
-            |---- [__Expr]
+        |
+        |---- __TokenType::__Id
+        |
+        |---- [__Expr]
     */
 
     vector<pair<__Instruction, string>> codeList;
@@ -337,12 +337,12 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateSimpleExprCode(__
 {
     /*
         __TokenType::__SimpleExpr
-            |
-            |---- __AddExpr
-            |
-            |---- [__RelOp]
-            |
-            |---- [__AddExpr]
+        |
+        |---- __AddExpr
+        |
+        |---- [__RelOp]
+        |
+        |---- [__AddExpr]
     */
 
     if (!root->__subList[1] && !root->__subList[2])
@@ -416,15 +416,15 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateAddExprCode(__AST
 {
     /*
         __TokenType::__AddExpr
-            |
-            |---- __Term
-            |
-            |---- [__AddOp]
-            |
-            |---- [__Term]
-            .
-            .
-            .
+        |
+        |---- __Term
+        |
+        |---- [__AddOp]
+        |
+        |---- [__Term]
+        .
+        .
+        .
     */
 
     auto codeList = __generateTermCode(root->__subList[0], curFuncName);
@@ -475,15 +475,15 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateTermCode(__AST *r
 {
     /*
         __TokenType::__Term
-            |
-            |---- __Factor
-            |
-            |---- [__MulOp]
-            |
-            |---- [__Factor]
-            .
-            .
-            .
+        |
+        |---- __Factor
+        |
+        |---- [__MulOp]
+        |
+        |---- [__Factor]
+        .
+        .
+        .
     */
 
     auto codeList = __generateFactorCode(root->__subList[0], curFuncName);
@@ -564,10 +564,10 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateCallCode(__AST *r
 {
     /*
         __TokenType::__Call
-            |
-            |---- __TokenType::__Id
-            |
-            |---- [__ArgList]
+        |
+        |---- __TokenType::__Id
+        |
+        |---- [__ArgList]
     */
 
     // xxx = input();
@@ -580,8 +580,8 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateCallCode(__AST *r
     {
         /*
             __TokenType::__ArgList
-                |
-                |---- __Expr
+            |
+            |---- __Expr
         */
         auto codeList = __generateExprCode(root->__subList[1]->__subList[0], curFuncName);
 
@@ -708,13 +708,13 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateArgListCode(__AST
 {
     /*
         __TokenType::__ArgList
-            |
-            |---- __Expr
-            |
-            |---- [__Expr]
-            .
-            .
-            .
+        |
+        |---- __Expr
+        |
+        |---- [__Expr]
+        .
+        .
+        .
     */
 
     vector<pair<__Instruction, string>> codeList;

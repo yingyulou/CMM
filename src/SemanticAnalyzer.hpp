@@ -49,13 +49,13 @@ unordered_map<string, unordered_map<string, pair<int, int>>> __SemanticAnalyzer:
 
     /*
         __TokenType::__Program
-            |
-            |---- __Decl
-            |
-            |---- [__Decl]
-            .
-            .
-            .
+        |
+        |---- __Decl
+        |
+        |---- [__Decl]
+        .
+        .
+        .
     */
     for (auto declNodePtr: __root->__subList)
     {
@@ -66,12 +66,12 @@ unordered_map<string, unordered_map<string, pair<int, int>>> __SemanticAnalyzer:
         {
             /*
                 __TokenType::__VarDecl
-                    |
-                    |---- __Type
-                    |
-                    |---- __TokenType::__Id
-                    |
-                    |---- [__TokenType::__Number]
+                |
+                |---- __Type
+                |
+                |---- __TokenType::__Id
+                |
+                |---- [__TokenType::__Number]
             */
             string varName = declNodePtr->__subList[1]->__tokenStr;
 
@@ -84,16 +84,16 @@ unordered_map<string, unordered_map<string, pair<int, int>>> __SemanticAnalyzer:
         {
             /*
                 __TokenType::__FuncDecl
-                    |
-                    |---- __Type
-                    |
-                    |---- __TokenType::__Id
-                    |
-                    |---- [__ParamList]
-                    |
-                    |---- __LocalDecl
-                    |
-                    |---- __StmtList
+                |
+                |---- __Type
+                |
+                |---- __TokenType::__Id
+                |
+                |---- [__ParamList]
+                |
+                |---- __LocalDecl
+                |
+                |---- __StmtList
             */
             int varIdx = 0;
             string funcName = declNodePtr->__subList[1]->__tokenStr;
@@ -107,22 +107,22 @@ unordered_map<string, unordered_map<string, pair<int, int>>> __SemanticAnalyzer:
             {
                 /*
                     __TokenType::__ParamList
-                        |
-                        |---- __Param
-                        |
-                        |---- [__Param]
-                        .
-                        .
-                        .
+                    |
+                    |---- __Param
+                    |
+                    |---- [__Param]
+                    .
+                    .
+                    .
                 */
                 for (auto paramPtr: declNodePtr->__subList[2]->__subList)
                 {
                     /*
                         __TokenType::__Param
-                            |
-                            |---- __Type
-                            |
-                            |---- __TokenType::__Id
+                        |
+                        |---- __Type
+                        |
+                        |---- __TokenType::__Id
                     */
                     string varName = paramPtr->__subList[1]->__tokenStr;
 
@@ -132,22 +132,22 @@ unordered_map<string, unordered_map<string, pair<int, int>>> __SemanticAnalyzer:
 
             /*
                 __TokenType::__LocalDecl
-                    |
-                    |---- [__VarDecl]
-                    .
-                    .
-                    .
+                |
+                |---- [__VarDecl]
+                .
+                .
+                .
             */
             for (auto varDeclPtr: declNodePtr->__subList[3]->__subList)
             {
                 /*
                     __TokenType::__VarDecl
-                        |
-                        |---- __Type
-                        |
-                        |---- __TokenType::__Id
-                        |
-                        |---- [__TokenType::__Number]
+                    |
+                    |---- __Type
+                    |
+                    |---- __TokenType::__Id
+                    |
+                    |---- [__TokenType::__Number]
                 */
                 string varName = varDeclPtr->__subList[1]->__tokenStr;
 

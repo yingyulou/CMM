@@ -78,16 +78,16 @@ void __SyntaxAnalyzer::__Program(__AST *&root, __Token *&tokenPtr)
             Program ::= Decl { Decl }
 
 
-        __AST:
+        AST:
 
             __TokenType::__Program
-                |
-                |---- __Decl
-                |
-                |---- [__Decl]
-                .
-                .
-                .
+            |
+            |---- __Decl
+            |
+            |---- [__Decl]
+            .
+            .
+            .
     */
 
     root = new __AST(__TokenType::__Program, "Program", {nullptr});
@@ -116,7 +116,7 @@ void __SyntaxAnalyzer::__Decl(__AST *&root, __Token *&tokenPtr)
                    | FuncDecl
 
 
-        __AST:
+        AST:
 
             __VarDecl | __FuncDecl
     */
@@ -158,15 +158,15 @@ void __SyntaxAnalyzer::__VarDecl(__AST *&root, __Token *&tokenPtr)
             VarDecl ::= Type ID [ '[' NUM ']' ] ';'
 
 
-        __AST:
+        AST:
 
             __TokenType::__VarDecl
-                |
-                |---- __Type
-                |
-                |---- __TokenType::__Id
-                |
-                |---- [__TokenType::__Number]
+            |
+            |---- __Type
+            |
+            |---- __TokenType::__Id
+            |
+            |---- [__TokenType::__Number]
     */
 
     root = new __AST(__TokenType::__VarDecl, "VarDecl", {nullptr, nullptr, nullptr});
@@ -211,7 +211,7 @@ void __SyntaxAnalyzer::__Type(__AST *&root, __Token *&tokenPtr)
                    | void
 
 
-        __AST:
+        AST:
 
             __TokenType::__Int | __TokenType::__Void
     */
@@ -241,19 +241,19 @@ void __SyntaxAnalyzer::__FuncDecl(__AST *&root, __Token *&tokenPtr)
             FuncDecl ::= Type ID '(' [ ParamList ] ')' '{' LocalDecl StmtList '}'
 
 
-        __AST:
+        AST:
 
             __TokenType::__FuncDecl
-                |
-                |---- __Type
-                |
-                |---- __TokenType::__Id
-                |
-                |---- [__ParamList]
-                |
-                |---- __LocalDecl
-                |
-                |---- __StmtList
+            |
+            |---- __Type
+            |
+            |---- __TokenType::__Id
+            |
+            |---- [__ParamList]
+            |
+            |---- __LocalDecl
+            |
+            |---- __StmtList
     */
 
     root = new __AST(__TokenType::__FuncDecl, "FuncDecl", {nullptr, nullptr, nullptr, nullptr, nullptr});
@@ -302,16 +302,16 @@ void __SyntaxAnalyzer::__ParamList(__AST *&root, __Token *&tokenPtr)
             ParamList ::= Param { ',' Param }
 
 
-        __AST:
+        AST:
 
             __TokenType::__ParamList
-                |
-                |---- __Param
-                |
-                |---- [__Param]
-                .
-                .
-                .
+            |
+            |---- __Param
+            |
+            |---- [__Param]
+            .
+            .
+            .
     */
 
     root = new __AST(__TokenType::__ParamList, "ParamList", {nullptr});
@@ -341,13 +341,13 @@ void __SyntaxAnalyzer::__Param(__AST *&root, __Token *&tokenPtr)
             Param ::= Type ID [ '[' ']' ]
 
 
-        __AST:
+        AST:
 
             __TokenType::__Param
-                |
-                |---- __Type
-                |
-                |---- __TokenType::__Id
+            |
+            |---- __Type
+            |
+            |---- __TokenType::__Id
     */
 
     root = new __AST(__TokenType::__Param, "Param", {nullptr, nullptr});
@@ -385,14 +385,14 @@ void __SyntaxAnalyzer::__LocalDecl(__AST *&root, __Token *&tokenPtr)
             LocalDecl ::= { VarDecl }
 
 
-        __AST:
+        AST:
 
             __TokenType::__LocalDecl
-                |
-                |---- [__VarDecl]
-                .
-                .
-                .
+            |
+            |---- [__VarDecl]
+            .
+            .
+            .
     */
 
     root = new __AST(__TokenType::__LocalDecl, "LocalDecl");
@@ -418,14 +418,14 @@ void __SyntaxAnalyzer::__StmtList(__AST *&root, __Token *&tokenPtr)
             StmtList ::= { Stmt }
 
 
-        __AST:
+        AST:
 
             __TokenType::__StmtList
-                |
-                |---- [__Stmt]
-                .
-                .
-                .
+            |
+            |---- [__Stmt]
+            .
+            .
+            .
     */
 
     root = new __AST(__TokenType::__StmtList, "StmtList");
@@ -461,7 +461,7 @@ void __SyntaxAnalyzer::__Stmt(__AST *&root, __Token *&tokenPtr)
                    | ReturnStmt
 
 
-        __AST:
+        AST:
 
             __ExprStmt | __IfStmt | __WhileStmt | __ReturnStmt
     */
@@ -504,7 +504,7 @@ void __SyntaxAnalyzer::__ExprStmt(__AST *&root, __Token *&tokenPtr)
             ExprStmt ::= [ Expr ] ';'
 
 
-        __AST:
+        AST:
 
             [__Expr]
     */
@@ -532,15 +532,15 @@ void __SyntaxAnalyzer::__IfStmt(__AST *&root, __Token *&tokenPtr)
             IfStmt ::= if '(' Expr ')' '{' StmtList '}' [ else '{' StmtList '}' ]
 
 
-        __AST:
+        AST:
 
             __TokenType::__IfStmt
-                |
-                |---- __Expr
-                |
-                |---- __StmtList
-                |
-                |---- [__StmtList]
+            |
+            |---- __Expr
+            |
+            |---- __StmtList
+            |
+            |---- [__StmtList]
     */
 
     root = new __AST(__TokenType::__IfStmt, "IfStmt", {nullptr, nullptr, nullptr});
@@ -580,13 +580,13 @@ void __SyntaxAnalyzer::__WhileStmt(__AST *&root, __Token *&tokenPtr)
             WhileStmt ::= while '(' Expr ')' '{' StmtList '}'
 
 
-        __AST:
+        AST:
 
             __TokenType::__WhileStmt
-                |
-                |---- __Expr
-                |
-                |---- __StmtList
+            |
+            |---- __Expr
+            |
+            |---- __StmtList
     */
 
     root = new __AST(__TokenType::__WhileStmt, "WhileStmt", {nullptr, nullptr});
@@ -619,11 +619,11 @@ void __SyntaxAnalyzer::__ReturnStmt(__AST *&root, __Token *&tokenPtr)
             ReturnStmt ::= return [ Expr ] ';'
 
 
-        __AST:
+        AST:
 
             __TokenType::__ReturnStmt
-                |
-                |---- [__Expr]
+            |
+            |---- [__Expr]
     */
 
     root = new __AST(__TokenType::__ReturnStmt, "ReturnStmt", {nullptr});
@@ -654,19 +654,19 @@ void __SyntaxAnalyzer::__Expr(__AST *&root, __Token *&tokenPtr)
                    | SimpleExpr
 
 
-        __AST:
+        AST:
 
             __TokenType::__Expr
-                |
-                |---- __Var
-                |
-                |---- __Expr
+            |
+            |---- __Var
+            |
+            |---- __Expr
 
             ----------------------
 
             __TokenType::__Expr
-                |
-                |---- __SimpleExpr
+            |
+            |---- __SimpleExpr
     */
 
     root = new __AST(__TokenType::__Expr, "Expr", {nullptr, nullptr});
@@ -727,13 +727,13 @@ void __SyntaxAnalyzer::__Var(__AST *&root, __Token *&tokenPtr)
             Var ::= ID [ '[' Expr ']' ]
 
 
-        __AST:
+        AST:
 
             __TokenType::__Var
-                |
-                |---- __TokenType::__Id
-                |
-                |---- [__Expr]
+            |
+            |---- __TokenType::__Id
+            |
+            |---- [__Expr]
     */
 
     root = new __AST(__TokenType::__Var, "Var", {nullptr, nullptr});
@@ -772,15 +772,15 @@ void __SyntaxAnalyzer::__SimpleExpr(__AST *&root, __Token *&tokenPtr)
             SimpleExpr ::= AddExpr [ RelOp AddExpr ]
 
 
-        __AST:
+        AST:
 
             __TokenType::__SimpleExpr
-                |
-                |---- __AddExpr
-                |
-                |---- [__RelOp]
-                |
-                |---- [__AddExpr]
+            |
+            |---- __AddExpr
+            |
+            |---- [__RelOp]
+            |
+            |---- [__AddExpr]
     */
 
     root = new __AST(__TokenType::__SimpleExpr, "SimpleExpr", {nullptr, nullptr, nullptr});
@@ -818,7 +818,7 @@ void __SyntaxAnalyzer::__RelOp(__AST *&root, __Token *&tokenPtr)
                     | !=
 
 
-        __AST:
+        AST:
 
             __TokenType::__Less         |
             __TokenType::__LessEqual    |
@@ -858,18 +858,18 @@ void __SyntaxAnalyzer::__AddExpr(__AST *&root, __Token *&tokenPtr)
             AddExpr ::= Term { AddOp Term }
 
 
-        __AST:
+        AST:
 
             __TokenType::__AddExpr
-                |
-                |---- __Term
-                |
-                |---- [__AddOp]
-                |
-                |---- [__Term]
-                .
-                .
-                .
+            |
+            |---- __Term
+            |
+            |---- [__AddOp]
+            |
+            |---- [__Term]
+            .
+            .
+            .
     */
 
     root = new __AST(__TokenType::__AddExpr, "AddExpr", {nullptr});
@@ -902,7 +902,7 @@ void __SyntaxAnalyzer::__AddOp(__AST *&root, __Token *&tokenPtr)
                     | -
 
 
-        __AST:
+        AST:
 
             __TokenType::__Plus | __TokenType::__Minus
     */
@@ -932,18 +932,18 @@ void __SyntaxAnalyzer::__Term(__AST *&root, __Token *&tokenPtr)
             Term ::= Factor { MulOp Factor }
 
 
-        __AST:
+        AST:
 
             __TokenType::__Term
-                |
-                |---- __Factor
-                |
-                |---- [__MulOp]
-                |
-                |---- [__Factor]
-                .
-                .
-                .
+            |
+            |---- __Factor
+            |
+            |---- [__MulOp]
+            |
+            |---- [__Factor]
+            .
+            .
+            .
     */
 
     root = new __AST(__TokenType::__Term, "Term", {nullptr});
@@ -976,7 +976,7 @@ void __SyntaxAnalyzer::__MulOp(__AST *&root, __Token *&tokenPtr)
                     | /
 
 
-        __AST:
+        AST:
 
             __TokenType::__Multiply | __TokenType::__Divide
     */
@@ -1009,7 +1009,7 @@ void __SyntaxAnalyzer::__Factor(__AST *&root, __Token *&tokenPtr)
                      | Var
 
 
-        __AST:
+        AST:
 
             __Expr | __TokenType::__Number | __Call | __Var
     */
@@ -1058,13 +1058,13 @@ void __SyntaxAnalyzer::__Call(__AST *&root, __Token *&tokenPtr)
             Call ::= ID '(' [ ArgList ] ')'
 
 
-        __AST:
+        AST:
 
             __TokenType::__Call
-                |
-                |---- __TokenType::__Id
-                |
-                |---- [__ArgList]
+            |
+            |---- __TokenType::__Id
+            |
+            |---- [__ArgList]
     */
 
     root = new __AST(__TokenType::__Call, "Call", {nullptr, nullptr});
@@ -1105,16 +1105,16 @@ void __SyntaxAnalyzer::__ArgList(__AST *&root, __Token *&tokenPtr)
             ArgList ::= Expr { ',' Expr }
 
 
-        __AST:
+        AST:
 
             __TokenType::__ArgList
-                |
-                |---- __Expr
-                |
-                |---- [__Expr]
-                .
-                .
-                .
+            |
+            |---- __Expr
+            |
+            |---- [__Expr]
+            .
+            .
+            .
     */
 
     root = new __AST(__TokenType::__ArgList, "ArgList", {nullptr});
