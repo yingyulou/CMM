@@ -89,16 +89,15 @@ Here is the CMM language grammar in EBNF format:
 12. StmtList ::= { Stmt }
 
 13. Stmt ::= ExprStmt
-           | CompoundStmt
            | IfStmt
            | WhileStmt
            | ReturnStmt
 
 14. ExprStmt ::= [ Expr ] ';'
 
-15. IfStmt ::= if '(' Expr ')' Stmt [ else Stmt ]
+15. IfStmt ::= if '(' Expr ')' '{' Stmt '}' [ else '{' Stmt '}' ]
 
-16. WhileStmt ::= while '(' Expr ')' Stmt
+16. WhileStmt ::= while '(' Expr ')' '{' Stmt '}'
 
 17. ReturnStmt ::= return [ Expr ] ';'
 

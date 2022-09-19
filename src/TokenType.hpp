@@ -49,7 +49,7 @@ enum class TokenType
     RightCurlyBracket,   // }
 
     // End
-    END,                 // END
+    End,                 // End
 
     // Ast
     DeclList,            // AST: DeclList

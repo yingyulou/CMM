@@ -187,7 +187,7 @@ void LexicalAnalyzer::__nextTokenStartStage(const char *&codePtr,
 
             case '\0':
                 lexerStage = LexerStage::Done;
-                tokenType = TokenType::END;
+                tokenType = TokenType::End;
                 break;
 
             default:
@@ -503,7 +503,7 @@ vector<Token> LexicalAnalyzer::__lexicalAnalysis() const
     {
         tokenList.push_back(tokenObj);
 
-        if (tokenObj.tokenType() == TokenType::END)
+        if (tokenObj.tokenType() == TokenType::End)
         {
             break;
         }

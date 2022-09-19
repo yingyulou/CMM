@@ -135,7 +135,7 @@ void SyntaxAnalyzer::__DeclList(AST *&root, Token *&tokenPtr)
 
     __Decl(root->subList()[0], tokenPtr);
 
-    while (tokenPtr->tokenType() != TokenType::END)
+    while (tokenPtr->tokenType() != TokenType::End)
     {
         root->subList().push_back(nullptr);
         __Decl(root->subList().back(), tokenPtr);
@@ -547,7 +547,6 @@ void SyntaxAnalyzer::__Stmt(AST *&root, Token *&tokenPtr)
         EBNF:
 
             Stmt ::= ExprStmt
-                   | CompoundStmt
                    | IfStmt
                    | WhileStmt
                    | ReturnStmt
@@ -555,7 +554,7 @@ void SyntaxAnalyzer::__Stmt(AST *&root, Token *&tokenPtr)
 
         AST:
 
-            __ExprStmt | __CompoundStmt | __IfStmt | __WhileStmt | __ReturnStmt
+            __ExprStmt | __IfStmt | __WhileStmt | __ReturnStmt
     */
 
     if (tokenPtr->tokenType() == TokenType::Semicolon        ||
@@ -564,10 +563,6 @@ void SyntaxAnalyzer::__Stmt(AST *&root, Token *&tokenPtr)
         tokenPtr->tokenType() == TokenType::Number)
     {
         __ExprStmt(root, tokenPtr);
-    }
-    else if (tokenPtr->tokenType() == TokenType::LeftCurlyBracket)
-    {
-        __CompoundStmt(root, tokenPtr);
     }
     else if (tokenPtr->tokenType() == TokenType::If)
     {
@@ -625,7 +620,7 @@ void SyntaxAnalyzer::__IfStmt(AST *&root, Token *&tokenPtr)
     /*
         EBNF:
 
-            IfStmt ::= if '(' Expr ')' Stmt [ else Stmt ]
+            IfStmt ::= if '(' Expr ')' '{' Stmt '}' [ else '{' Stmt '}' ]
 
 
         AST:
@@ -642,13 +637,18 @@ void SyntaxAnalyzer::__IfStmt(AST *&root, Token *&tokenPtr)
     root = new AST(TokenType::IfStmt, "IfStmt", {nullptr, nullptr});
 
     __matchToken(TokenType::If, tokenPtr);
+
     __matchToken(TokenType::LeftRoundBracket, tokenPtr);
 
     __Expr(root->subList()[0], tokenPtr);
 
     __matchToken(TokenType::RightRoundBracket, tokenPtr);
 
+    __matchToken(TokenType::LeftCurlyBracket, tokenPtr);
+
     __Stmt(root->subList()[1], tokenPtr);
+
+    __matchToken(TokenType::RightCurlyBracket, tokenPtr);
 
     if (tokenPtr->tokenType() == TokenType::Else)
     {
@@ -670,7 +670,7 @@ void SyntaxAnalyzer::__WhileStmt(AST *&root, Token *&tokenPtr)
     /*
         EBNF:
 
-            WhileStmt ::= while '(' Expr ')' Stmt
+            WhileStmt ::= while '(' Expr ')' '{' Stmt '}'
 
 
         AST:
@@ -685,13 +685,18 @@ void SyntaxAnalyzer::__WhileStmt(AST *&root, Token *&tokenPtr)
     root = new AST(TokenType::WhileStmt, "WhileStmt", {nullptr, nullptr});
 
     __matchToken(TokenType::While, tokenPtr);
+
     __matchToken(TokenType::LeftRoundBracket, tokenPtr);
 
     __Expr(root->subList()[0], tokenPtr);
 
     __matchToken(TokenType::RightRoundBracket, tokenPtr);
 
+    __matchToken(TokenType::LeftCurlyBracket, tokenPtr);
+
     __Stmt(root->subList()[1], tokenPtr);
+
+    __matchToken(TokenType::RightCurlyBracket, tokenPtr);
 }
 
 
