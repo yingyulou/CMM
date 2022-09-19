@@ -42,6 +42,8 @@ private:
     // Attribute
     vector<pair<Instruction, int>> __CS;
     int __IP;
+    int __AX;
+    int __BP;
     vector<int> __SS;
 
 
