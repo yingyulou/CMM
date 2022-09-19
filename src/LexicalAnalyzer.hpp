@@ -1,7 +1,7 @@
 /*
     LexicalAnalyzer.hpp
     ===================
-        Class LexicalAnalyzer implementation.
+        Class __LexicalAnalyzer implementation.
 */
 
 #pragma once
@@ -16,14 +16,14 @@
 #include "Token.h"
 #include "TokenType.hpp"
 #include "LexerStage.hpp"
-#include "Constants.hpp"
+#include "Constants.h"
 
 namespace CMM
 {
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Using
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using std::string;
 using std::getline;
@@ -33,29 +33,19 @@ using std::runtime_error;
 using boost::format;
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Constructor
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-LexicalAnalyzer::LexicalAnalyzer(const string &inputFilePath):
+__LexicalAnalyzer::__LexicalAnalyzer(const string &inputFilePath):
     __inputFilePath(inputFilePath) {}
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Lexical Analysis
-////////////////////////////////////////////////////////////////////////////////
-
-vector<Token> LexicalAnalyzer::lexicalAnalysis() const
-{
-    return __lexicalAnalysis();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Invalid Char
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void LexicalAnalyzer::__invalidChar(char curChar, int lineNo)
+void __LexicalAnalyzer::__invalidChar(char curChar, int lineNo)
 {
     throw runtime_error((format("Invalid char: %c in line: %d") %
         curChar                                                 %
@@ -64,21 +54,21 @@ void LexicalAnalyzer::__invalidChar(char curChar, int lineNo)
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Next Token LexerStage::Start Stage
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Next Token __LexerStage::__Start Stage
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void LexicalAnalyzer::__nextTokenStartStage(const char *&codePtr,
-    LexerStage &lexerStage, TokenType &tokenType, string &tokenStr, int &lineNo)
+void __LexicalAnalyzer::__nextTokenStartStage(const char *&codePtr, __LexerStage &lexerStage, __TokenType &tokenType,
+    string &tokenStr, int &lineNo)
 {
     if (isalpha(*codePtr))
     {
-        lexerStage = LexerStage::InId;
+        lexerStage = __LexerStage::__InId;
         tokenStr += *codePtr++;
     }
     else if (isdigit(*codePtr))
     {
-        lexerStage = LexerStage::InNumber;
+        lexerStage = __LexerStage::__InNumber;
         tokenStr += *codePtr++;
     }
     else if (isspace(*codePtr))
@@ -95,99 +85,99 @@ void LexicalAnalyzer::__nextTokenStartStage(const char *&codePtr,
         switch (*codePtr)
         {
             case '+':
-                lexerStage = LexerStage::Done;
-                tokenType = TokenType::Plus;
+                lexerStage = __LexerStage::__Done;
+                tokenType = __TokenType::__Plus;
                 tokenStr += *codePtr++;
                 break;
 
             case '-':
-                lexerStage = LexerStage::Done;
-                tokenType = TokenType::Minus;
+                lexerStage = __LexerStage::__Done;
+                tokenType = __TokenType::__Minus;
                 tokenStr += *codePtr++;
                 break;
 
             case '*':
-                lexerStage = LexerStage::Done;
-                tokenType = TokenType::Multiply;
+                lexerStage = __LexerStage::__Done;
+                tokenType = __TokenType::__Multiply;
                 tokenStr += *codePtr++;
                 break;
 
             case '/':
-                lexerStage = LexerStage::InDivide;
+                lexerStage = __LexerStage::__InDivide;
                 codePtr++;
                 break;
 
             case '<':
-                lexerStage = LexerStage::InLess;
+                lexerStage = __LexerStage::__InLess;
                 tokenStr += *codePtr++;
                 break;
 
             case '>':
-                lexerStage = LexerStage::InGreater;
+                lexerStage = __LexerStage::__InGreater;
                 tokenStr += *codePtr++;
                 break;
 
             case '=':
-                lexerStage = LexerStage::InAssign;
+                lexerStage = __LexerStage::__InAssign;
                 tokenStr += *codePtr++;
                 break;
 
             case '!':
-                lexerStage = LexerStage::InNot;
+                lexerStage = __LexerStage::__InNot;
                 tokenStr += *codePtr++;
                 break;
 
             case ';':
-                lexerStage = LexerStage::Done;
-                tokenType = TokenType::Semicolon;
+                lexerStage = __LexerStage::__Done;
+                tokenType = __TokenType::__Semicolon;
                 tokenStr += *codePtr++;
                 break;
 
             case ',':
-                lexerStage = LexerStage::Done;
-                tokenType = TokenType::Comma;
+                lexerStage = __LexerStage::__Done;
+                tokenType = __TokenType::__Comma;
                 tokenStr += *codePtr++;
                 break;
 
             case '(':
-                lexerStage = LexerStage::Done;
-                tokenType = TokenType::LeftRoundBracket;
+                lexerStage = __LexerStage::__Done;
+                tokenType = __TokenType::__LeftRoundBracket;
                 tokenStr += *codePtr++;
                 break;
 
             case ')':
-                lexerStage = LexerStage::Done;
-                tokenType = TokenType::RightRoundBracket;
+                lexerStage = __LexerStage::__Done;
+                tokenType = __TokenType::__RightRoundBracket;
                 tokenStr += *codePtr++;
                 break;
 
             case '[':
-                lexerStage = LexerStage::Done;
-                tokenType = TokenType::LeftSquareBracket;
+                lexerStage = __LexerStage::__Done;
+                tokenType = __TokenType::__LeftSquareBracket;
                 tokenStr += *codePtr++;
                 break;
 
             case ']':
-                lexerStage = LexerStage::Done;
-                tokenType = TokenType::RightSquareBracket;
+                lexerStage = __LexerStage::__Done;
+                tokenType = __TokenType::__RightSquareBracket;
                 tokenStr += *codePtr++;
                 break;
 
             case '{':
-                lexerStage = LexerStage::Done;
-                tokenType = TokenType::LeftCurlyBracket;
+                lexerStage = __LexerStage::__Done;
+                tokenType = __TokenType::__LeftCurlyBracket;
                 tokenStr += *codePtr++;
                 break;
 
             case '}':
-                lexerStage = LexerStage::Done;
-                tokenType = TokenType::RightCurlyBracket;
+                lexerStage = __LexerStage::__Done;
+                tokenType = __TokenType::__RightCurlyBracket;
                 tokenStr += *codePtr++;
                 break;
 
             case '\0':
-                lexerStage = LexerStage::Done;
-                tokenType = TokenType::End;
+                lexerStage = __LexerStage::__Done;
+                tokenType = __TokenType::__End;
                 break;
 
             default:
@@ -198,12 +188,12 @@ void LexicalAnalyzer::__nextTokenStartStage(const char *&codePtr,
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Next Token LexerStage::InId Stage
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Next Token __LexerStage::__InId Stage
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void LexicalAnalyzer::__nextTokenInIDStage(const char *&codePtr,
-    LexerStage &lexerStage, TokenType &tokenType, string &tokenStr, int &)
+void __LexicalAnalyzer::__nextTokenInIDStage(const char *&codePtr, __LexerStage &lexerStage, __TokenType &tokenType,
+    string &tokenStr, int &)
 {
     if (isalpha(*codePtr))
     {
@@ -211,20 +201,19 @@ void LexicalAnalyzer::__nextTokenInIDStage(const char *&codePtr,
     }
     else
     {
-        lexerStage = LexerStage::Done;
+        lexerStage = __LexerStage::__Done;
 
-        tokenType = KEYWORD_MAP.count(tokenStr) ?
-            KEYWORD_MAP.at(tokenStr) : TokenType::Id;
+        tokenType = __Constants::__KEYWORD_MAP.count(tokenStr) ? __Constants::__KEYWORD_MAP.at(tokenStr) : __TokenType::__Id;
     }
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Next Token LexerStage::InNumber Stage
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Next Token __LexerStage::__InNumber Stage
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void LexicalAnalyzer::__nextTokenInNumberStage(const char *&codePtr,
-    LexerStage &lexerStage, TokenType &tokenType, string &tokenStr, int &)
+void __LexicalAnalyzer::__nextTokenInNumberStage(const char *&codePtr, __LexerStage &lexerStage, __TokenType &tokenType,
+    string &tokenStr, int &)
 {
     if (isdigit(*codePtr))
     {
@@ -232,43 +221,43 @@ void LexicalAnalyzer::__nextTokenInNumberStage(const char *&codePtr,
     }
     else
     {
-        lexerStage = LexerStage::Done;
-        tokenType = TokenType::Number;
+        lexerStage = __LexerStage::__Done;
+        tokenType = __TokenType::__Number;
     }
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Next Token LexerStage::InDivide Stage
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Next Token __LexerStage::__InDivide Stage
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void LexicalAnalyzer::__nextTokenInDivideStage(const char *&codePtr,
-    LexerStage &lexerStage, TokenType &tokenType, string &tokenStr, int &)
+void __LexicalAnalyzer::__nextTokenInDivideStage(const char *&codePtr, __LexerStage &lexerStage, __TokenType &tokenType,
+    string &tokenStr, int &)
 {
     if (*codePtr == '*')
     {
-        lexerStage = LexerStage::InComment;
+        lexerStage = __LexerStage::__InComment;
         codePtr++;
     }
     else
     {
-        lexerStage = LexerStage::Done;
-        tokenType = TokenType::Divide;
+        lexerStage = __LexerStage::__Done;
+        tokenType = __TokenType::__Divide;
         tokenStr = "/";
     }
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Next Token LexerStage::InComment Stage
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Next Token __LexerStage::__InComment Stage
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void LexicalAnalyzer::__nextTokenInCommentStage(const char *&codePtr,
-    LexerStage &lexerStage, TokenType &, string &, int &lineNo)
+void __LexicalAnalyzer::__nextTokenInCommentStage(const char *&codePtr, __LexerStage &lexerStage, __TokenType &,
+    string &, int &lineNo)
 {
     if (*codePtr == '*')
     {
-        lexerStage = LexerStage::EndComment;
+        lexerStage = __LexerStage::__EndComment;
     }
     else if (*codePtr == '\n')
     {
@@ -279,20 +268,20 @@ void LexicalAnalyzer::__nextTokenInCommentStage(const char *&codePtr,
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Next Token LexerStage::EndComment Stage
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Next Token __LexerStage::__EndComment Stage
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void LexicalAnalyzer::__nextTokenEndCommentStage(const char *&codePtr,
-    LexerStage &lexerStage, TokenType &, string &, int &lineNo)
+void __LexicalAnalyzer::__nextTokenEndCommentStage(const char *&codePtr, __LexerStage &lexerStage, __TokenType &,
+    string &, int &lineNo)
 {
     if (*codePtr == '/')
     {
-        lexerStage = LexerStage::Start;
+        lexerStage = __LexerStage::__Start;
     }
     else if (*codePtr != '*')
     {
-        lexerStage = LexerStage::InComment;
+        lexerStage = __LexerStage::__InComment;
 
         if (*codePtr == '\n')
         {
@@ -304,80 +293,80 @@ void LexicalAnalyzer::__nextTokenEndCommentStage(const char *&codePtr,
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Next Token LexerStage::InLess Stage
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Next Token __LexerStage::__InLess Stage
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void LexicalAnalyzer::__nextTokenInLessStage(const char *&codePtr,
-    LexerStage &lexerStage, TokenType &tokenType, string &tokenStr, int &)
+void __LexicalAnalyzer::__nextTokenInLessStage(const char *&codePtr, __LexerStage &lexerStage, __TokenType &tokenType,
+    string &tokenStr, int &)
 {
-    lexerStage = LexerStage::Done;
+    lexerStage = __LexerStage::__Done;
 
     if (*codePtr == '=')
     {
-        tokenType = TokenType::LessEqual;
+        tokenType = __TokenType::__LessEqual;
         tokenStr += *codePtr++;
     }
     else
     {
-        tokenType = TokenType::Less;
+        tokenType = __TokenType::__Less;
     }
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Next Token LexerStage::InGreater Stage
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Next Token __LexerStage::__InGreater Stage
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void LexicalAnalyzer::__nextTokenInGreaterStage(const char *&codePtr,
-    LexerStage &lexerStage, TokenType &tokenType, string &tokenStr, int &)
+void __LexicalAnalyzer::__nextTokenInGreaterStage(const char *&codePtr, __LexerStage &lexerStage, __TokenType &tokenType,
+    string &tokenStr, int &)
 {
-    lexerStage = LexerStage::Done;
+    lexerStage = __LexerStage::__Done;
 
     if (*codePtr == '=')
     {
-        tokenType = TokenType::GreaterEqual;
+        tokenType = __TokenType::__GreaterEqual;
         tokenStr += *codePtr++;
     }
     else
     {
-        tokenType = TokenType::Greater;
+        tokenType = __TokenType::__Greater;
     }
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Next Token LexerStage::InAssign Stage
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Next Token __LexerStage::__InAssign Stage
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void LexicalAnalyzer::__nextTokenInAssignStage(const char *&codePtr,
-    LexerStage &lexerStage, TokenType &tokenType, string &tokenStr, int &)
+void __LexicalAnalyzer::__nextTokenInAssignStage(const char *&codePtr, __LexerStage &lexerStage, __TokenType &tokenType,
+    string &tokenStr, int &)
 {
-    lexerStage = LexerStage::Done;
+    lexerStage = __LexerStage::__Done;
 
     if (*codePtr == '=')
     {
-        tokenType = TokenType::Equal;
+        tokenType = __TokenType::__Equal;
         tokenStr += *codePtr++;
     }
     else
     {
-        tokenType = TokenType::Assign;
+        tokenType = __TokenType::__Assign;
     }
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Next Token LexerStage::InNot Stage
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Next Token __LexerStage::__InNot Stage
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void LexicalAnalyzer::__nextTokenInNotStage(const char *&codePtr,
-    LexerStage &lexerStage, TokenType &tokenType, string &tokenStr, int &lineNo)
+void __LexicalAnalyzer::__nextTokenInNotStage(const char *&codePtr, __LexerStage &lexerStage, __TokenType &tokenType,
+    string &tokenStr, int &lineNo)
 {
     if (*codePtr == '=')
     {
-        lexerStage = LexerStage::Done;
-        tokenType = TokenType::NotEqual;
+        lexerStage = __LexerStage::__Done;
+        tokenType = __TokenType::__NotEqual;
         tokenStr += *codePtr++;
     }
     else
@@ -387,107 +376,76 @@ void LexicalAnalyzer::__nextTokenInNotStage(const char *&codePtr,
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Next Token
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Token LexicalAnalyzer::__nextToken(const char *&codePtr, int &lineNo)
+__Token __LexicalAnalyzer::__nextToken(const char *&codePtr, int &lineNo)
 {
-    LexerStage lexerStage = LexerStage::Start;
-    TokenType tokenType;
+    __LexerStage lexerStage = __LexerStage::__Start;
+    __TokenType tokenType;
     string tokenStr;
 
-    while (lexerStage != LexerStage::Done)
+    while (lexerStage != __LexerStage::__Done)
     {
         switch (lexerStage)
         {
-            case LexerStage::Start:
-
-                __nextTokenStartStage(codePtr, lexerStage, tokenType,
-                    tokenStr, lineNo);
-
+            case __LexerStage::__Start:
+                __nextTokenStartStage(codePtr, lexerStage, tokenType, tokenStr, lineNo);
                 break;
 
-            case LexerStage::InId:
-
-                __nextTokenInIDStage(codePtr, lexerStage, tokenType,
-                    tokenStr, lineNo);
-
+            case __LexerStage::__InId:
+                __nextTokenInIDStage(codePtr, lexerStage, tokenType, tokenStr, lineNo);
                 break;
 
-            case LexerStage::InNumber:
-
-                __nextTokenInNumberStage(codePtr, lexerStage, tokenType,
-                    tokenStr, lineNo);
-
+            case __LexerStage::__InNumber:
+                __nextTokenInNumberStage(codePtr, lexerStage, tokenType, tokenStr, lineNo);
                 break;
 
-            case LexerStage::InDivide:
-
-                __nextTokenInDivideStage(codePtr, lexerStage, tokenType,
-                    tokenStr, lineNo);
-
+            case __LexerStage::__InDivide:
+                __nextTokenInDivideStage(codePtr, lexerStage, tokenType, tokenStr, lineNo);
                 break;
 
-            case LexerStage::InComment:
-
-                __nextTokenInCommentStage(codePtr, lexerStage, tokenType,
-                    tokenStr, lineNo);
-
+            case __LexerStage::__InComment:
+                __nextTokenInCommentStage(codePtr, lexerStage, tokenType, tokenStr, lineNo);
                 break;
 
-            case LexerStage::EndComment:
-
-                __nextTokenEndCommentStage(codePtr, lexerStage, tokenType,
-                    tokenStr, lineNo);
-
+            case __LexerStage::__EndComment:
+                __nextTokenEndCommentStage(codePtr, lexerStage, tokenType, tokenStr, lineNo);
                 break;
 
-            case LexerStage::InLess:
-
-                __nextTokenInLessStage(codePtr, lexerStage, tokenType,
-                    tokenStr, lineNo);
-
+            case __LexerStage::__InLess:
+                __nextTokenInLessStage(codePtr, lexerStage, tokenType, tokenStr, lineNo);
                 break;
 
-            case LexerStage::InGreater:
-
-                __nextTokenInGreaterStage(codePtr, lexerStage, tokenType,
-                    tokenStr, lineNo);
-
+            case __LexerStage::__InGreater:
+                __nextTokenInGreaterStage(codePtr, lexerStage, tokenType, tokenStr, lineNo);
                 break;
 
-            case LexerStage::InAssign:
-
-                __nextTokenInAssignStage(codePtr, lexerStage, tokenType,
-                    tokenStr, lineNo);
-
+            case __LexerStage::__InAssign:
+                __nextTokenInAssignStage(codePtr, lexerStage, tokenType, tokenStr, lineNo);
                 break;
 
-            case LexerStage::InNot:
-
-                __nextTokenInNotStage(codePtr, lexerStage, tokenType,
-                    tokenStr, lineNo);
-
+            case __LexerStage::__InNot:
+                __nextTokenInNotStage(codePtr, lexerStage, tokenType, tokenStr, lineNo);
                 break;
 
             default:
-
-                throw runtime_error("Invalid LexerStage value");
+                throw runtime_error("Invalid __LexerStage value");
         }
     }
 
-    return Token(tokenType, tokenStr, lineNo);
+    return __Token(tokenType, tokenStr, lineNo);
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Lexical Analysis
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-vector<Token> LexicalAnalyzer::__lexicalAnalysis() const
+vector<__Token> __LexicalAnalyzer::__lexicalAnalysis() const
 {
-    vector<Token> tokenList;
+    vector<__Token> tokenList;
 
     ifstream f(__inputFilePath);
     string codeStr;
@@ -497,13 +455,11 @@ vector<Token> LexicalAnalyzer::__lexicalAnalysis() const
 
     auto codePtr = codeStr.c_str();
 
-    for (auto tokenObj = __nextToken(codePtr, lineNo);
-        /* See below */;
-        tokenObj = __nextToken(codePtr, lineNo))
+    for (auto tokenObj = __nextToken(codePtr, lineNo); /* See below */; tokenObj = __nextToken(codePtr, lineNo))
     {
         tokenList.push_back(tokenObj);
 
-        if (tokenObj.tokenType() == TokenType::End)
+        if (tokenObj.__tokenType == __TokenType::__End)
         {
             break;
         }

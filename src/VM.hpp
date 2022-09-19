@@ -1,7 +1,7 @@
 /*
     VM.hpp
     ======
-        Class VM implementation.
+        Class __VM implementation.
 */
 
 #pragma once
@@ -16,75 +16,65 @@
 namespace CMM
 {
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Using
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using std::vector;
 using std::pair;
 using std::runtime_error;
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Constructor
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-VM::VM(const vector<pair<Instruction, int>> &CS):
+__VM::__VM(const vector<pair<__Instruction, int>> &CS):
     __CS(CS),
     __IP(0) {}
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Run
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Exec __Instruction
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void VM::run()
-{
-    __run();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Exec Instruction
-////////////////////////////////////////////////////////////////////////////////
-
-void VM::__execInstruction(const pair<Instruction, int> &instructionPair)
+void __VM::__execInstruction(const pair<__Instruction, int> &instructionPair)
 {
     switch (instructionPair.first)
     {
-        case Instruction::LDC:
+        case __Instruction::__LDC:
             __AX = instructionPair.second;
             break;
 
-        case Instruction::LD:
+        case __Instruction::__LD:
             __AX = __SS[__BP - __AX];
             break;
 
-        case Instruction::ALD:
+        case __Instruction::__ALD:
             __AX = __SS[__AX];
             break;
 
-        case Instruction::ST:
+        case __Instruction::__ST:
             __SS[__BP - __AX] = __SS.back();
             break;
 
-        case Instruction::AST:
+        case __Instruction::__AST:
             __SS[__AX] = __SS.back();
             break;
 
-        case Instruction::PUSH:
+        case __Instruction::__PUSH:
             __SS.push_back(__AX);
             break;
 
-        case Instruction::POP:
+        case __Instruction::__POP:
             __SS.pop_back();
             break;
 
-        case Instruction::JMP:
+        case __Instruction::__JMP:
             __IP += instructionPair.second - 1;
             break;
 
-        case Instruction::JZ:
+        case __Instruction::__JZ:
 
             if (!__AX)
             {
@@ -93,66 +83,66 @@ void VM::__execInstruction(const pair<Instruction, int> &instructionPair)
 
             break;
 
-        case Instruction::ADD:
+        case __Instruction::__ADD:
             __AX = __SS.back() + __AX;
             break;
 
-        case Instruction::SUB:
+        case __Instruction::__SUB:
             __AX = __SS.back() - __AX;
             break;
 
-        case Instruction::MUL:
+        case __Instruction::__MUL:
             __AX = __SS.back() * __AX;
             break;
 
-        case Instruction::DIV:
+        case __Instruction::__DIV:
             __AX = __SS.back() / __AX;
             break;
 
-        case Instruction::LT:
+        case __Instruction::__LT:
             __AX = __SS.back() < __AX;
             break;
 
-        case Instruction::LE:
+        case __Instruction::__LE:
             __AX = __SS.back() <= __AX;
             break;
 
-        case Instruction::GT:
+        case __Instruction::__GT:
             __AX = __SS.back() > __AX;
             break;
 
-        case Instruction::GE:
+        case __Instruction::__GE:
             __AX = __SS.back() >= __AX;
             break;
 
-        case Instruction::EQ:
+        case __Instruction::__EQ:
             __AX = __SS.back() == __AX;
             break;
 
-        case Instruction::NE:
+        case __Instruction::__NE:
             __AX = __SS.back() != __AX;
             break;
 
-        case Instruction::IN:
+        case __Instruction::__IN:
             scanf("%d", &__AX);
             break;
 
-        case Instruction::OUT:
+        case __Instruction::__OUT:
             printf("%d\n", __AX);
             break;
 
-        case Instruction::ADDR:
-            __AX = __SS.size() - instructionPair.second;
+        case __Instruction::__ADDR:
+            __AX = (int)__SS.size() - instructionPair.second;
             break;
 
-        case Instruction::CALL:
+        case __Instruction::__CALL:
             __SS.push_back(__BP);
-            __BP = __SS.size() - 2;
+            __BP = (int)__SS.size() - 2;
             __SS.push_back(__IP);
             __IP += instructionPair.second - 1;
             break;
 
-        case Instruction::RET:
+        case __Instruction::__RET:
             __IP = __SS.back();
             __SS.pop_back();
             __BP = __SS.back();
@@ -160,18 +150,18 @@ void VM::__execInstruction(const pair<Instruction, int> &instructionPair)
             break;
 
         default:
-            throw runtime_error("Invalid Instruction value");
+            throw runtime_error("Invalid __Instruction value");
     }
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Run
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void VM::__run()
+void __VM::__run()
 {
-    for (__IP = 0; __IP < __CS.size(); __IP++)
+    for (__IP = 0; __IP < (int)__CS.size(); __IP++)
     {
         __execInstruction(__CS[__IP]);
     }

@@ -1,7 +1,7 @@
 /*
     SyntaxAnalyzer.hpp
     ==================
-        Class SyntaxAnalyzer implementation.
+        Class __SyntaxAnalyzer implementation.
 */
 
 #pragma once
@@ -18,9 +18,9 @@
 namespace CMM
 {
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Using
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using std::string;
 using std::vector;
@@ -28,44 +28,34 @@ using std::runtime_error;
 using boost::format;
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Constructor
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-SyntaxAnalyzer::SyntaxAnalyzer(const vector<Token> &tokenList):
+__SyntaxAnalyzer::__SyntaxAnalyzer(const vector<__Token> &tokenList):
     __tokenList(tokenList) {}
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Syntax Analysis
-////////////////////////////////////////////////////////////////////////////////
-
-AST *SyntaxAnalyzer::syntaxAnalysis()
-{
-    return __syntaxAnalysis();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Invalid Token
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__invalidToken(const Token *tokenPtr)
+void __SyntaxAnalyzer::__invalidToken(const __Token *tokenPtr)
 {
     throw runtime_error((format("Invalid token: %s in line %d") %
-        tokenPtr->tokenStr()                                    %
-        tokenPtr->lineNo()
+        tokenPtr->__tokenStr                                    %
+        tokenPtr->__lineNo
     ).str());
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Match Token
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__matchToken(TokenType tarTokenType, Token *&tokenPtr)
+void __SyntaxAnalyzer::__matchToken(__TokenType tar__TokenType, __Token *&tokenPtr)
 {
-    if (tokenPtr->tokenType() == tarTokenType)
+    if (tokenPtr->__tokenType == tar__TokenType)
     {
         tokenPtr++;
     }
@@ -76,52 +66,21 @@ void SyntaxAnalyzer::__matchToken(TokenType tarTokenType, Token *&tokenPtr)
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-// ENBF: Parse
-////////////////////////////////////////////////////////////////////////////////
-
-void SyntaxAnalyzer::__Parse(AST *&root, Token *&tokenPtr)
-{
-    __Program(root, tokenPtr);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: Program
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__Program(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__Program(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
 
-            Program ::= DeclList
+            Program ::= Decl { Decl }
 
 
-        AST:
+        __AST:
 
-            __DeclList
-    */
-
-    __DeclList(root, tokenPtr);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// ENBF: DeclList
-////////////////////////////////////////////////////////////////////////////////
-
-void SyntaxAnalyzer::__DeclList(AST *&root, Token *&tokenPtr)
-{
-    /*
-        EBNF:
-
-            DeclList ::= Decl { Decl }
-
-
-        AST:
-
-            TokenType::DeclList
+            __TokenType::__Program
                 |
                 |---- __Decl
                 |
@@ -131,23 +90,24 @@ void SyntaxAnalyzer::__DeclList(AST *&root, Token *&tokenPtr)
                 .
     */
 
-    root = new AST(TokenType::DeclList, "DeclList", {nullptr});
+    root = new __AST(__TokenType::__Program, "Program", {nullptr});
 
-    __Decl(root->subList()[0], tokenPtr);
+    __Decl(root->__subList[0], tokenPtr);
 
-    while (tokenPtr->tokenType() != TokenType::End)
+    while (tokenPtr->__tokenType != __TokenType::__End)
     {
-        root->subList().push_back(nullptr);
-        __Decl(root->subList().back(), tokenPtr);
+        root->__subList.push_back(nullptr);
+
+        __Decl(root->__subList.back(), tokenPtr);
     }
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: Decl
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__Decl(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__Decl(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
@@ -156,28 +116,26 @@ void SyntaxAnalyzer::__Decl(AST *&root, Token *&tokenPtr)
                    | FuncDecl
 
 
-        AST:
+        __AST:
 
             __VarDecl | __FuncDecl
     */
 
-    if (tokenPtr->tokenType() != TokenType::Int &&
-        tokenPtr->tokenType() != TokenType::Void)
+    if (tokenPtr->__tokenType != __TokenType::__Int && tokenPtr->__tokenType != __TokenType::__Void)
     {
         __invalidToken(tokenPtr);
     }
 
-    if (tokenPtr[1].tokenType() != TokenType::Id)
+    if (tokenPtr[1].__tokenType != __TokenType::__Id)
     {
         __invalidToken(tokenPtr + 1);
     }
 
-    if (tokenPtr[2].tokenType() == TokenType::LeftSquareBracket ||
-        tokenPtr[2].tokenType() == TokenType::Semicolon)
+    if (tokenPtr[2].__tokenType == __TokenType::__LeftSquareBracket || tokenPtr[2].__tokenType == __TokenType::__Semicolon)
     {
         __VarDecl(root, tokenPtr);
     }
-    else if (tokenPtr[2].tokenType() == TokenType::LeftRoundBracket)
+    else if (tokenPtr[2].__tokenType == __TokenType::__LeftRoundBracket)
     {
         __FuncDecl(root, tokenPtr);
     }
@@ -188,63 +146,63 @@ void SyntaxAnalyzer::__Decl(AST *&root, Token *&tokenPtr)
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: VarDecl
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__VarDecl(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__VarDecl(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
 
-            VarDecl ::= Type ID [ '[' NUMBER ']' ] ';'
+            VarDecl ::= Type ID [ '[' NUM ']' ] ';'
 
 
-        AST:
+        __AST:
 
-            TokenType::VarDecl
+            __TokenType::__VarDecl
                 |
                 |---- __Type
                 |
-                |---- TokenType::Id
+                |---- __TokenType::__Id
                 |
-                |---- [TokenType::Number]
+                |---- [__TokenType::__Number]
     */
 
-    root = new AST(TokenType::VarDecl, "VarDecl", {nullptr, nullptr});
+    root = new __AST(__TokenType::__VarDecl, "VarDecl", {nullptr, nullptr, nullptr});
 
-    __Type(root->subList()[0], tokenPtr);
+    __Type(root->__subList[0], tokenPtr);
 
-    if (tokenPtr->tokenType() == TokenType::Id)
+    if (tokenPtr->__tokenType == __TokenType::__Id)
     {
-        root->subList()[1] = new AST(tokenPtr);
+        root->__subList[1] = new __AST(tokenPtr);
 
-        __matchToken(TokenType::Id, tokenPtr);
+        __matchToken(__TokenType::__Id, tokenPtr);
     }
     else
     {
         __invalidToken(tokenPtr);
     }
 
-    if (tokenPtr->tokenType() == TokenType::LeftSquareBracket)
+    if (tokenPtr->__tokenType == __TokenType::__LeftSquareBracket)
     {
-        __matchToken(TokenType::LeftSquareBracket, tokenPtr);
+        __matchToken(__TokenType::__LeftSquareBracket, tokenPtr);
 
-        root->subList().push_back(new AST(tokenPtr));
+        root->__subList[2] = new __AST(tokenPtr);
 
-        __matchToken(TokenType::Number, tokenPtr);
-        __matchToken(TokenType::RightSquareBracket, tokenPtr);
+        __matchToken(__TokenType::__Number, tokenPtr);
+        __matchToken(__TokenType::__RightSquareBracket, tokenPtr);
     }
 
-    __matchToken(TokenType::Semicolon, tokenPtr);
+    __matchToken(__TokenType::__Semicolon, tokenPtr);
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: Type
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__Type(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__Type(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
@@ -253,17 +211,16 @@ void SyntaxAnalyzer::__Type(AST *&root, Token *&tokenPtr)
                    | void
 
 
-        AST:
+        __AST:
 
-            TokenType::Int | TokenType::Void
+            __TokenType::__Int | __TokenType::__Void
     */
 
-    if (tokenPtr->tokenType() == TokenType::Int ||
-        tokenPtr->tokenType() == TokenType::Void)
+    if (tokenPtr->__tokenType == __TokenType::__Int || tokenPtr->__tokenType == __TokenType::__Void)
     {
-        root = new AST(tokenPtr);
+        root = new __AST(tokenPtr);
 
-        __matchToken(tokenPtr->tokenType(), tokenPtr);
+        __matchToken(tokenPtr->__tokenType, tokenPtr);
     }
     else
     {
@@ -272,86 +229,72 @@ void SyntaxAnalyzer::__Type(AST *&root, Token *&tokenPtr)
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: FuncDecl
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__FuncDecl(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__FuncDecl(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
 
-            FuncDecl ::= Type ID '(' Params ')' CompoundStmt
+            FuncDecl ::= Type ID '(' [ ParamList ] ')' '{' LocalDecl StmtList '}'
 
 
-        AST:
+        __AST:
 
-            TokenType::FuncDecl
+            __TokenType::__FuncDecl
                 |
                 |---- __Type
                 |
-                |---- TokenType::Id
+                |---- __TokenType::__Id
                 |
-                |---- __Params
+                |---- [__ParamList]
                 |
-                |---- __CompoundStmt
+                |---- __LocalDecl
+                |
+                |---- __StmtList
     */
 
-    root = new AST(TokenType::FuncDecl, "FuncDecl", {nullptr, nullptr, nullptr, nullptr});
+    root = new __AST(__TokenType::__FuncDecl, "FuncDecl", {nullptr, nullptr, nullptr, nullptr, nullptr});
 
-    __Type(root->subList()[0], tokenPtr);
+    __Type(root->__subList[0], tokenPtr);
 
-    if (tokenPtr->tokenType() == TokenType::Id)
+    if (tokenPtr->__tokenType == __TokenType::__Id)
     {
-        root->subList()[1] = new AST(tokenPtr);
+        root->__subList[1] = new __AST(tokenPtr);
 
-        __matchToken(TokenType::Id, tokenPtr);
+        __matchToken(__TokenType::__Id, tokenPtr);
     }
     else
     {
         __invalidToken(tokenPtr);
     }
 
-    __matchToken(TokenType::LeftRoundBracket, tokenPtr);
+    __matchToken(__TokenType::__LeftRoundBracket, tokenPtr);
 
-    __Params(root->subList()[2], tokenPtr);
-
-    __matchToken(TokenType::RightRoundBracket, tokenPtr);
-
-    __CompoundStmt(root->subList()[3], tokenPtr);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// ENBF: Params
-////////////////////////////////////////////////////////////////////////////////
-
-void SyntaxAnalyzer::__Params(AST *&root, Token *&tokenPtr)
-{
-    /*
-        EBNF:
-
-            Params ::= [ ParamList ]
-
-
-        AST:
-
-            __ParamList | nullptr
-    */
-
-    if (tokenPtr->tokenType() == TokenType::Int ||
-        tokenPtr->tokenType() == TokenType::Void)
+    if (tokenPtr->__tokenType == __TokenType::__Int || tokenPtr->__tokenType == __TokenType::__Void)
     {
-        __ParamList(root, tokenPtr);
+        __ParamList(root->__subList[2], tokenPtr);
     }
+
+    __matchToken(__TokenType::__RightRoundBracket, tokenPtr);
+
+    __matchToken(__TokenType::__LeftCurlyBracket, tokenPtr);
+
+    __LocalDecl(root->__subList[3], tokenPtr);
+
+    __StmtList(root->__subList[4], tokenPtr);
+
+    __matchToken(__TokenType::__RightCurlyBracket, tokenPtr);
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: ParamList
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__ParamList(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__ParamList(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
@@ -359,9 +302,9 @@ void SyntaxAnalyzer::__ParamList(AST *&root, Token *&tokenPtr)
             ParamList ::= Param { ',' Param }
 
 
-        AST:
+        __AST:
 
-            TokenType::ParamList
+            __TokenType::__ParamList
                 |
                 |---- __Param
                 |
@@ -371,26 +314,26 @@ void SyntaxAnalyzer::__ParamList(AST *&root, Token *&tokenPtr)
                 .
     */
 
-    root = new AST(TokenType::ParamList, "ParamList", {nullptr});
+    root = new __AST(__TokenType::__ParamList, "ParamList", {nullptr});
 
-    __Param(root->subList()[0], tokenPtr);
+    __Param(root->__subList[0], tokenPtr);
 
-    while (tokenPtr->tokenType() == TokenType::Comma)
+    while (tokenPtr->__tokenType == __TokenType::__Comma)
     {
-        __matchToken(TokenType::Comma, tokenPtr);
+        __matchToken(__TokenType::__Comma, tokenPtr);
 
-        root->subList().push_back(nullptr);
+        root->__subList.push_back(nullptr);
 
-        __Param(root->subList().back(), tokenPtr);
+        __Param(root->__subList.back(), tokenPtr);
     }
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: Param
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__Param(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__Param(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
@@ -398,76 +341,43 @@ void SyntaxAnalyzer::__Param(AST *&root, Token *&tokenPtr)
             Param ::= Type ID [ '[' ']' ]
 
 
-        AST:
+        __AST:
 
-            TokenType::Param
+            __TokenType::__Param
                 |
                 |---- __Type
                 |
-                |---- TokenType::Id
+                |---- __TokenType::__Id
     */
 
-    root = new AST(TokenType::Param, "Param", {nullptr, nullptr});
+    root = new __AST(__TokenType::__Param, "Param", {nullptr, nullptr});
 
-    __Type(root->subList()[0], tokenPtr);
+    __Type(root->__subList[0], tokenPtr);
 
-    if (tokenPtr->tokenType() == TokenType::Id)
+    if (tokenPtr->__tokenType == __TokenType::__Id)
     {
-        root->subList()[1] = new AST(tokenPtr);
+        root->__subList[1] = new __AST(tokenPtr);
 
-        __matchToken(TokenType::Id, tokenPtr);
+        __matchToken(__TokenType::__Id, tokenPtr);
     }
     else
     {
         __invalidToken(tokenPtr);
     }
 
-    if (tokenPtr->tokenType() == TokenType::LeftSquareBracket)
+    if (tokenPtr->__tokenType == __TokenType::__LeftSquareBracket)
     {
-        __matchToken(TokenType::LeftSquareBracket, tokenPtr);
-        __matchToken(TokenType::RightSquareBracket, tokenPtr);
+        __matchToken(__TokenType::__LeftSquareBracket, tokenPtr);
+        __matchToken(__TokenType::__RightSquareBracket, tokenPtr);
     }
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-// ENBF: CompoundStmt
-////////////////////////////////////////////////////////////////////////////////
-
-void SyntaxAnalyzer::__CompoundStmt(AST *&root, Token *&tokenPtr)
-{
-    /*
-        EBNF:
-
-            CompoundStmt ::= '{' LocalDecl StmtList '}'
-
-
-        AST:
-
-            TokenType::CompoundStmt
-                |
-                |---- __LocalDecl
-                |
-                |---- __StmtList
-    */
-
-    root = new AST(TokenType::CompoundStmt, "CompoundStmt", {nullptr, nullptr});
-
-    __matchToken(TokenType::LeftCurlyBracket, tokenPtr);
-
-    __LocalDecl(root->subList()[0], tokenPtr);
-
-    __StmtList(root->subList()[1], tokenPtr);
-
-    __matchToken(TokenType::RightCurlyBracket, tokenPtr);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: LocalDecl
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__LocalDecl(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__LocalDecl(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
@@ -475,9 +385,9 @@ void SyntaxAnalyzer::__LocalDecl(AST *&root, Token *&tokenPtr)
             LocalDecl ::= { VarDecl }
 
 
-        AST:
+        __AST:
 
-            TokenType::LocalDecl
+            __TokenType::__LocalDecl
                 |
                 |---- [__VarDecl]
                 .
@@ -485,23 +395,22 @@ void SyntaxAnalyzer::__LocalDecl(AST *&root, Token *&tokenPtr)
                 .
     */
 
-    root = new AST(TokenType::LocalDecl, "LocalDecl");
+    root = new __AST(__TokenType::__LocalDecl, "LocalDecl");
 
-    while (tokenPtr->tokenType() == TokenType::Int ||
-        tokenPtr->tokenType() == TokenType::Void)
+    while (tokenPtr->__tokenType == __TokenType::__Int || tokenPtr->__tokenType == __TokenType::__Void)
     {
-        root->subList().push_back(nullptr);
+        root->__subList.push_back(nullptr);
 
-        __VarDecl(root->subList().back(), tokenPtr);
+        __VarDecl(root->__subList.back(), tokenPtr);
     }
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: StmtList
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__StmtList(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__StmtList(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
@@ -509,9 +418,9 @@ void SyntaxAnalyzer::__StmtList(AST *&root, Token *&tokenPtr)
             StmtList ::= { Stmt }
 
 
-        AST:
+        __AST:
 
-            TokenType::StmtList
+            __TokenType::__StmtList
                 |
                 |---- [__Stmt]
                 .
@@ -519,29 +428,29 @@ void SyntaxAnalyzer::__StmtList(AST *&root, Token *&tokenPtr)
                 .
     */
 
-    root = new AST(TokenType::StmtList, "StmtList");
+    root = new __AST(__TokenType::__StmtList, "StmtList");
 
-    while (tokenPtr->tokenType() == TokenType::Semicolon     ||
-        tokenPtr->tokenType() == TokenType::Id               ||
-        tokenPtr->tokenType() == TokenType::LeftRoundBracket ||
-        tokenPtr->tokenType() == TokenType::Number           ||
-        tokenPtr->tokenType() == TokenType::LeftCurlyBracket ||
-        tokenPtr->tokenType() == TokenType::If               ||
-        tokenPtr->tokenType() == TokenType::While            ||
-        tokenPtr->tokenType() == TokenType::Return)
+    while (tokenPtr->__tokenType == __TokenType::__Semicolon     ||
+        tokenPtr->__tokenType == __TokenType::__Id               ||
+        tokenPtr->__tokenType == __TokenType::__LeftRoundBracket ||
+        tokenPtr->__tokenType == __TokenType::__Number           ||
+        tokenPtr->__tokenType == __TokenType::__LeftCurlyBracket ||
+        tokenPtr->__tokenType == __TokenType::__If               ||
+        tokenPtr->__tokenType == __TokenType::__While            ||
+        tokenPtr->__tokenType == __TokenType::__Return)
     {
-        root->subList().push_back(nullptr);
+        root->__subList.push_back(nullptr);
 
-        __Stmt(root->subList().back(), tokenPtr);
+        __Stmt(root->__subList.back(), tokenPtr);
     }
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: Stmt
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__Stmt(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__Stmt(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
@@ -552,27 +461,27 @@ void SyntaxAnalyzer::__Stmt(AST *&root, Token *&tokenPtr)
                    | ReturnStmt
 
 
-        AST:
+        __AST:
 
             __ExprStmt | __IfStmt | __WhileStmt | __ReturnStmt
     */
 
-    if (tokenPtr->tokenType() == TokenType::Semicolon        ||
-        tokenPtr->tokenType() == TokenType::Id               ||
-        tokenPtr->tokenType() == TokenType::LeftRoundBracket ||
-        tokenPtr->tokenType() == TokenType::Number)
+    if (tokenPtr->__tokenType == __TokenType::__Semicolon        ||
+        tokenPtr->__tokenType == __TokenType::__Id               ||
+        tokenPtr->__tokenType == __TokenType::__LeftRoundBracket ||
+        tokenPtr->__tokenType == __TokenType::__Number)
     {
         __ExprStmt(root, tokenPtr);
     }
-    else if (tokenPtr->tokenType() == TokenType::If)
+    else if (tokenPtr->__tokenType == __TokenType::__If)
     {
         __IfStmt(root, tokenPtr);
     }
-    else if (tokenPtr->tokenType() == TokenType::While)
+    else if (tokenPtr->__tokenType == __TokenType::__While)
     {
         __WhileStmt(root, tokenPtr);
     }
-    else if (tokenPtr->tokenType() == TokenType::Return)
+    else if (tokenPtr->__tokenType == __TokenType::__Return)
     {
         __ReturnStmt(root, tokenPtr);
     }
@@ -583,11 +492,11 @@ void SyntaxAnalyzer::__Stmt(AST *&root, Token *&tokenPtr)
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: ExprStmt
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__ExprStmt(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__ExprStmt(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
@@ -595,116 +504,114 @@ void SyntaxAnalyzer::__ExprStmt(AST *&root, Token *&tokenPtr)
             ExprStmt ::= [ Expr ] ';'
 
 
-        AST:
+        __AST:
 
-            __Expr | nullptr
+            [__Expr]
     */
 
-    if (tokenPtr->tokenType() == TokenType::Id               ||
-        tokenPtr->tokenType() == TokenType::LeftRoundBracket ||
-        tokenPtr->tokenType() == TokenType::Number)
+    if (tokenPtr->__tokenType == __TokenType::__Id               ||
+        tokenPtr->__tokenType == __TokenType::__LeftRoundBracket ||
+        tokenPtr->__tokenType == __TokenType::__Number)
     {
         __Expr(root, tokenPtr);
     }
 
-    __matchToken(TokenType::Semicolon, tokenPtr);
+    __matchToken(__TokenType::__Semicolon, tokenPtr);
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: IfStmt
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__IfStmt(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__IfStmt(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
 
-            IfStmt ::= if '(' Expr ')' '{' Stmt '}' [ else '{' Stmt '}' ]
+            IfStmt ::= if '(' Expr ')' '{' StmtList '}' [ else '{' StmtList '}' ]
 
 
-        AST:
+        __AST:
 
-            TokenType::IfStmt
+            __TokenType::__IfStmt
                 |
                 |---- __Expr
                 |
-                |---- __Stmt
+                |---- __StmtList
                 |
-                |---- [__Stmt]
+                |---- [__StmtList]
     */
 
-    root = new AST(TokenType::IfStmt, "IfStmt", {nullptr, nullptr});
+    root = new __AST(__TokenType::__IfStmt, "IfStmt", {nullptr, nullptr, nullptr});
 
-    __matchToken(TokenType::If, tokenPtr);
+    __matchToken(__TokenType::__If, tokenPtr);
 
-    __matchToken(TokenType::LeftRoundBracket, tokenPtr);
+    __matchToken(__TokenType::__LeftRoundBracket, tokenPtr);
 
-    __Expr(root->subList()[0], tokenPtr);
+    __Expr(root->__subList[0], tokenPtr);
 
-    __matchToken(TokenType::RightRoundBracket, tokenPtr);
+    __matchToken(__TokenType::__RightRoundBracket, tokenPtr);
 
-    __matchToken(TokenType::LeftCurlyBracket, tokenPtr);
+    __matchToken(__TokenType::__LeftCurlyBracket, tokenPtr);
 
-    __Stmt(root->subList()[1], tokenPtr);
+    __StmtList(root->__subList[1], tokenPtr);
 
-    __matchToken(TokenType::RightCurlyBracket, tokenPtr);
+    __matchToken(__TokenType::__RightCurlyBracket, tokenPtr);
 
-    if (tokenPtr->tokenType() == TokenType::Else)
+    if (tokenPtr->__tokenType == __TokenType::__Else)
     {
-        __matchToken(TokenType::Else, tokenPtr);
+        __matchToken(__TokenType::__Else, tokenPtr);
 
-        root->subList().push_back(nullptr);
-
-        __Stmt(root->subList()[2], tokenPtr);
+        __StmtList(root->__subList[2], tokenPtr);
     }
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: WhileStmt
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__WhileStmt(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__WhileStmt(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
 
-            WhileStmt ::= while '(' Expr ')' '{' Stmt '}'
+            WhileStmt ::= while '(' Expr ')' '{' StmtList '}'
 
 
-        AST:
+        __AST:
 
-            TokenType::WhileStmt
+            __TokenType::__WhileStmt
                 |
                 |---- __Expr
                 |
-                |---- __Stmt
+                |---- __StmtList
     */
 
-    root = new AST(TokenType::WhileStmt, "WhileStmt", {nullptr, nullptr});
+    root = new __AST(__TokenType::__WhileStmt, "WhileStmt", {nullptr, nullptr});
 
-    __matchToken(TokenType::While, tokenPtr);
+    __matchToken(__TokenType::__While, tokenPtr);
 
-    __matchToken(TokenType::LeftRoundBracket, tokenPtr);
+    __matchToken(__TokenType::__LeftRoundBracket, tokenPtr);
 
-    __Expr(root->subList()[0], tokenPtr);
+    __Expr(root->__subList[0], tokenPtr);
 
-    __matchToken(TokenType::RightRoundBracket, tokenPtr);
+    __matchToken(__TokenType::__RightRoundBracket, tokenPtr);
 
-    __matchToken(TokenType::LeftCurlyBracket, tokenPtr);
+    __matchToken(__TokenType::__LeftCurlyBracket, tokenPtr);
 
-    __Stmt(root->subList()[1], tokenPtr);
+    __StmtList(root->__subList[1], tokenPtr);
 
-    __matchToken(TokenType::RightCurlyBracket, tokenPtr);
+    __matchToken(__TokenType::__RightCurlyBracket, tokenPtr);
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: ReturnStmt
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__ReturnStmt(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__ReturnStmt(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
@@ -712,34 +619,33 @@ void SyntaxAnalyzer::__ReturnStmt(AST *&root, Token *&tokenPtr)
             ReturnStmt ::= return [ Expr ] ';'
 
 
-        AST:
+        __AST:
 
-            TokenType::ReturnStmt
+            __TokenType::__ReturnStmt
                 |
                 |---- [__Expr]
     */
 
-    root = new AST(TokenType::ReturnStmt, "ReturnStmt");
+    root = new __AST(__TokenType::__ReturnStmt, "ReturnStmt", {nullptr});
 
-    __matchToken(TokenType::Return, tokenPtr);
+    __matchToken(__TokenType::__Return, tokenPtr);
 
-    if (tokenPtr->tokenType() == TokenType::Id               ||
-        tokenPtr->tokenType() == TokenType::LeftRoundBracket ||
-        tokenPtr->tokenType() == TokenType::Number)
+    if (tokenPtr->__tokenType == __TokenType::__Id               ||
+        tokenPtr->__tokenType == __TokenType::__LeftRoundBracket ||
+        tokenPtr->__tokenType == __TokenType::__Number)
     {
-        root->subList().push_back(nullptr);
-        __Expr(root->subList().back(), tokenPtr);
+        __Expr(root->__subList[0], tokenPtr);
     }
 
-    __matchToken(TokenType::Semicolon, tokenPtr);
+    __matchToken(__TokenType::__Semicolon, tokenPtr);
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: Expr
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__Expr(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__Expr(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
@@ -748,9 +654,9 @@ void SyntaxAnalyzer::__Expr(AST *&root, Token *&tokenPtr)
                    | SimpleExpr
 
 
-        AST:
+        __AST:
 
-            TokenType::Expr
+            __TokenType::__Expr
                 |
                 |---- __Var
                 |
@@ -758,64 +664,62 @@ void SyntaxAnalyzer::__Expr(AST *&root, Token *&tokenPtr)
 
             ----------------------
 
-            TokenType::Expr
+            __TokenType::__Expr
                 |
                 |---- __SimpleExpr
     */
 
-    root = new AST(TokenType::Expr, "Expr", {nullptr});
+    root = new __AST(__TokenType::__Expr, "Expr", {nullptr, nullptr});
 
-    if (tokenPtr->tokenType() == TokenType::LeftRoundBracket ||
-        tokenPtr->tokenType() == TokenType::Number)
+    if (tokenPtr->__tokenType == __TokenType::__LeftRoundBracket ||
+        tokenPtr->__tokenType == __TokenType::__Number)
     {
-        __SimpleExpr(root->subList()[0], tokenPtr);
+        __SimpleExpr(root->__subList[0], tokenPtr);
 
         return;
     }
-    else if (tokenPtr->tokenType() != TokenType::Id)
+    else if (tokenPtr->__tokenType != __TokenType::__Id)
     {
         __invalidToken(tokenPtr);
     }
 
-    if (tokenPtr[1].tokenType() == TokenType::LeftRoundBracket)
+    if (tokenPtr[1].__tokenType == __TokenType::__LeftRoundBracket)
     {
-        __SimpleExpr(root->subList()[0], tokenPtr);
+        __SimpleExpr(root->__subList[0], tokenPtr);
     }
     else
     {
         auto tokenPtrBak = tokenPtr;
 
-        __Var(root->subList()[0], tokenPtr);
+        __Var(root->__subList[0], tokenPtr);
 
-        bool isAssignBool = tokenPtr->tokenType() == TokenType::Assign;
+        bool isAssignBool = tokenPtr->__tokenType == __TokenType::__Assign;
 
-        delete root->subList()[0];
+        delete root->__subList[0];
 
         tokenPtr = tokenPtrBak;
 
         if (isAssignBool)
         {
-            root->subList().push_back(nullptr);
+            __Var(root->__subList[0], tokenPtr);
 
-            __Var(root->subList()[0], tokenPtr);
+            __matchToken(__TokenType::__Assign, tokenPtr);
 
-            __matchToken(TokenType::Assign, tokenPtr);
-
-            __Expr(root->subList()[1], tokenPtr);
+            __Expr(root->__subList[1], tokenPtr);
         }
         else
         {
-            __SimpleExpr(root->subList()[0], tokenPtr);
+            __SimpleExpr(root->__subList[0], tokenPtr);
         }
     }
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: Var
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__Var(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__Var(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
@@ -823,46 +727,44 @@ void SyntaxAnalyzer::__Var(AST *&root, Token *&tokenPtr)
             Var ::= ID [ '[' Expr ']' ]
 
 
-        AST:
+        __AST:
 
-            TokenType::Var
+            __TokenType::__Var
                 |
-                |---- TokenType::Id
+                |---- __TokenType::__Id
                 |
                 |---- [__Expr]
     */
 
-    root = new AST(TokenType::Var, "Var", {nullptr});
+    root = new __AST(__TokenType::__Var, "Var", {nullptr, nullptr});
 
-    if (tokenPtr->tokenType() == TokenType::Id)
+    if (tokenPtr->__tokenType == __TokenType::__Id)
     {
-        root->subList()[0] = new AST(tokenPtr);
+        root->__subList[0] = new __AST(tokenPtr);
 
-        __matchToken(TokenType::Id, tokenPtr);
+        __matchToken(__TokenType::__Id, tokenPtr);
     }
     else
     {
         __invalidToken(tokenPtr);
     }
 
-    if (tokenPtr->tokenType() == TokenType::LeftSquareBracket)
+    if (tokenPtr->__tokenType == __TokenType::__LeftSquareBracket)
     {
-        __matchToken(TokenType::LeftSquareBracket, tokenPtr);
+        __matchToken(__TokenType::__LeftSquareBracket, tokenPtr);
 
-        root->subList().push_back(nullptr);
+        __Expr(root->__subList[1], tokenPtr);
 
-        __Expr(root->subList()[1], tokenPtr);
-
-        __matchToken(TokenType::RightSquareBracket, tokenPtr);
+        __matchToken(__TokenType::__RightSquareBracket, tokenPtr);
     }
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: SimpleExpr
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__SimpleExpr(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__SimpleExpr(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
@@ -870,9 +772,9 @@ void SyntaxAnalyzer::__SimpleExpr(AST *&root, Token *&tokenPtr)
             SimpleExpr ::= AddExpr [ RelOp AddExpr ]
 
 
-        AST:
+        __AST:
 
-            TokenType::SimpleExpr
+            __TokenType::__SimpleExpr
                 |
                 |---- __AddExpr
                 |
@@ -881,33 +783,29 @@ void SyntaxAnalyzer::__SimpleExpr(AST *&root, Token *&tokenPtr)
                 |---- [__AddExpr]
     */
 
-    root = new AST(TokenType::SimpleExpr, "SimpleExpr", {nullptr});
+    root = new __AST(__TokenType::__SimpleExpr, "SimpleExpr", {nullptr, nullptr, nullptr});
 
-    __AddExpr(root->subList()[0], tokenPtr);
+    __AddExpr(root->__subList[0], tokenPtr);
 
-    if (tokenPtr->tokenType() == TokenType::Less         ||
-        tokenPtr->tokenType() == TokenType::LessEqual    ||
-        tokenPtr->tokenType() == TokenType::Greater      ||
-        tokenPtr->tokenType() == TokenType::GreaterEqual ||
-        tokenPtr->tokenType() == TokenType::Equal        ||
-        tokenPtr->tokenType() == TokenType::NotEqual)
+    if (tokenPtr->__tokenType == __TokenType::__Less         ||
+        tokenPtr->__tokenType == __TokenType::__LessEqual    ||
+        tokenPtr->__tokenType == __TokenType::__Greater      ||
+        tokenPtr->__tokenType == __TokenType::__GreaterEqual ||
+        tokenPtr->__tokenType == __TokenType::__Equal        ||
+        tokenPtr->__tokenType == __TokenType::__NotEqual)
     {
-        root->subList().push_back(nullptr);
+        __RelOp(root->__subList[1], tokenPtr);
 
-        __RelOp(root->subList()[1], tokenPtr);
-
-        root->subList().push_back(nullptr);
-
-        __AddExpr(root->subList()[2], tokenPtr);
+        __AddExpr(root->__subList[2], tokenPtr);
     }
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: RelOp
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__RelOp(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__RelOp(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
@@ -920,26 +818,26 @@ void SyntaxAnalyzer::__RelOp(AST *&root, Token *&tokenPtr)
                     | !=
 
 
-        AST:
+        __AST:
 
-            TokenType::Less         |
-            TokenType::LessEqual    |
-            TokenType::Greater      |
-            TokenType::GreaterEqual |
-            TokenType::Equal        |
-            TokenType::NotEqual
+            __TokenType::__Less         |
+            __TokenType::__LessEqual    |
+            __TokenType::__Greater      |
+            __TokenType::__GreaterEqual |
+            __TokenType::__Equal        |
+            __TokenType::__NotEqual
     */
 
-    if (tokenPtr->tokenType() == TokenType::Less         ||
-        tokenPtr->tokenType() == TokenType::LessEqual    ||
-        tokenPtr->tokenType() == TokenType::Greater      ||
-        tokenPtr->tokenType() == TokenType::GreaterEqual ||
-        tokenPtr->tokenType() == TokenType::Equal        ||
-        tokenPtr->tokenType() == TokenType::NotEqual)
+    if (tokenPtr->__tokenType == __TokenType::__Less         ||
+        tokenPtr->__tokenType == __TokenType::__LessEqual    ||
+        tokenPtr->__tokenType == __TokenType::__Greater      ||
+        tokenPtr->__tokenType == __TokenType::__GreaterEqual ||
+        tokenPtr->__tokenType == __TokenType::__Equal        ||
+        tokenPtr->__tokenType == __TokenType::__NotEqual)
     {
-        root = new AST(tokenPtr);
+        root = new __AST(tokenPtr);
 
-        __matchToken(tokenPtr->tokenType(), tokenPtr);
+        __matchToken(tokenPtr->__tokenType, tokenPtr);
     }
     else
     {
@@ -948,11 +846,11 @@ void SyntaxAnalyzer::__RelOp(AST *&root, Token *&tokenPtr)
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: AddExpr
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__AddExpr(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__AddExpr(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
@@ -960,9 +858,9 @@ void SyntaxAnalyzer::__AddExpr(AST *&root, Token *&tokenPtr)
             AddExpr ::= Term { AddOp Term }
 
 
-        AST:
+        __AST:
 
-            TokenType::AddExpr
+            __TokenType::__AddExpr
                 |
                 |---- __Term
                 |
@@ -974,29 +872,28 @@ void SyntaxAnalyzer::__AddExpr(AST *&root, Token *&tokenPtr)
                 .
     */
 
-    root = new AST(TokenType::AddExpr, "AddExpr", {nullptr});
+    root = new __AST(__TokenType::__AddExpr, "AddExpr", {nullptr});
 
-    __Term(root->subList()[0], tokenPtr);
+    __Term(root->__subList[0], tokenPtr);
 
-    while (tokenPtr->tokenType() == TokenType::Plus ||
-        tokenPtr->tokenType() == TokenType::Minus)
+    while (tokenPtr->__tokenType == __TokenType::__Plus || tokenPtr->__tokenType == __TokenType::__Minus)
     {
-        root->subList().push_back(nullptr);
+        root->__subList.push_back(nullptr);
 
-        __AddOp(root->subList().back(), tokenPtr);
+        __AddOp(root->__subList.back(), tokenPtr);
 
-        root->subList().push_back(nullptr);
+        root->__subList.push_back(nullptr);
 
-        __Term(root->subList().back(), tokenPtr);
+        __Term(root->__subList.back(), tokenPtr);
     }
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: AddOp
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__AddOp(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__AddOp(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
@@ -1005,17 +902,16 @@ void SyntaxAnalyzer::__AddOp(AST *&root, Token *&tokenPtr)
                     | -
 
 
-        AST:
+        __AST:
 
-            TokenType::Plus | TokenType::Minus
+            __TokenType::__Plus | __TokenType::__Minus
     */
 
-    if (tokenPtr->tokenType() == TokenType::Plus ||
-        tokenPtr->tokenType() == TokenType::Minus)
+    if (tokenPtr->__tokenType == __TokenType::__Plus || tokenPtr->__tokenType == __TokenType::__Minus)
     {
-        root = new AST(tokenPtr);
+        root = new __AST(tokenPtr);
 
-        __matchToken(tokenPtr->tokenType(), tokenPtr);
+        __matchToken(tokenPtr->__tokenType, tokenPtr);
     }
     else
     {
@@ -1024,11 +920,11 @@ void SyntaxAnalyzer::__AddOp(AST *&root, Token *&tokenPtr)
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: Term
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__Term(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__Term(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
@@ -1036,9 +932,9 @@ void SyntaxAnalyzer::__Term(AST *&root, Token *&tokenPtr)
             Term ::= Factor { MulOp Factor }
 
 
-        AST:
+        __AST:
 
-            TokenType::Term
+            __TokenType::__Term
                 |
                 |---- __Factor
                 |
@@ -1050,29 +946,28 @@ void SyntaxAnalyzer::__Term(AST *&root, Token *&tokenPtr)
                 .
     */
 
-    root = new AST(TokenType::Term, "Term", {nullptr});
+    root = new __AST(__TokenType::__Term, "Term", {nullptr});
 
-    __Factor(root->subList()[0], tokenPtr);
+    __Factor(root->__subList[0], tokenPtr);
 
-    while (tokenPtr->tokenType() == TokenType::Multiply ||
-        tokenPtr->tokenType() == TokenType::Divide)
+    while (tokenPtr->__tokenType == __TokenType::__Multiply || tokenPtr->__tokenType == __TokenType::__Divide)
     {
-        root->subList().push_back(nullptr);
+        root->__subList.push_back(nullptr);
 
-        __MulOp(root->subList().back(), tokenPtr);
+        __MulOp(root->__subList.back(), tokenPtr);
 
-        root->subList().push_back(nullptr);
+        root->__subList.push_back(nullptr);
 
-        __Factor(root->subList().back(), tokenPtr);
+        __Factor(root->__subList.back(), tokenPtr);
     }
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: MulOp
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__MulOp(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__MulOp(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
@@ -1081,17 +976,16 @@ void SyntaxAnalyzer::__MulOp(AST *&root, Token *&tokenPtr)
                     | /
 
 
-        AST:
+        __AST:
 
-            TokenType::Multiply | TokenType::Divide
+            __TokenType::__Multiply | __TokenType::__Divide
     */
 
-    if (tokenPtr->tokenType() == TokenType::Multiply ||
-        tokenPtr->tokenType() == TokenType::Divide)
+    if (tokenPtr->__tokenType == __TokenType::__Multiply || tokenPtr->__tokenType == __TokenType::__Divide)
     {
-        root = new AST(tokenPtr);
+        root = new __AST(tokenPtr);
 
-        __matchToken(tokenPtr->tokenType(), tokenPtr);
+        __matchToken(tokenPtr->__tokenType, tokenPtr);
     }
     else
     {
@@ -1100,43 +994,43 @@ void SyntaxAnalyzer::__MulOp(AST *&root, Token *&tokenPtr)
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: Factor
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__Factor(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__Factor(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
 
             Factor ::= '(' Expr ')'
-                     | Var
-                     | Call
                      | NUM
+                     | Call
+                     | Var
 
 
-        AST:
+        __AST:
 
-            __Expr | TokenType::Number | __Call | __Var
+            __Expr | __TokenType::__Number | __Call | __Var
     */
 
-    if (tokenPtr->tokenType() == TokenType::LeftRoundBracket)
+    if (tokenPtr->__tokenType == __TokenType::__LeftRoundBracket)
     {
-        __matchToken(TokenType::LeftRoundBracket, tokenPtr);
+        __matchToken(__TokenType::__LeftRoundBracket, tokenPtr);
 
         __Expr(root, tokenPtr);
 
-        __matchToken(TokenType::RightRoundBracket, tokenPtr);
+        __matchToken(__TokenType::__RightRoundBracket, tokenPtr);
     }
-    else if (tokenPtr->tokenType() == TokenType::Number)
+    else if (tokenPtr->__tokenType == __TokenType::__Number)
     {
-        root = new AST(tokenPtr);
+        root = new __AST(tokenPtr);
 
-        __matchToken(tokenPtr->tokenType(), tokenPtr);
+        __matchToken(tokenPtr->__tokenType, tokenPtr);
     }
-    else if (tokenPtr->tokenType() == TokenType::Id)
+    else if (tokenPtr->__tokenType == __TokenType::__Id)
     {
-        if (tokenPtr[1].tokenType() == TokenType::LeftRoundBracket)
+        if (tokenPtr[1].__tokenType == __TokenType::__LeftRoundBracket)
         {
             __Call(root, tokenPtr);
         }
@@ -1152,11 +1046,11 @@ void SyntaxAnalyzer::__Factor(AST *&root, Token *&tokenPtr)
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: Call
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__Call(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__Call(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
@@ -1164,48 +1058,46 @@ void SyntaxAnalyzer::__Call(AST *&root, Token *&tokenPtr)
             Call ::= ID '(' [ ArgList ] ')'
 
 
-        AST:
+        __AST:
 
-            TokenType::Call
+            __TokenType::__Call
                 |
-                |---- TokenType::Id
+                |---- __TokenType::__Id
                 |
                 |---- [__ArgList]
     */
 
-    root = new AST(TokenType::Call, "Call", {nullptr});
+    root = new __AST(__TokenType::__Call, "Call", {nullptr, nullptr});
 
-    if (tokenPtr->tokenType() == TokenType::Id)
+    if (tokenPtr->__tokenType == __TokenType::__Id)
     {
-        root->subList()[0] = new AST(tokenPtr);
+        root->__subList[0] = new __AST(tokenPtr);
 
-        __matchToken(TokenType::Id, tokenPtr);
+        __matchToken(__TokenType::__Id, tokenPtr);
     }
     else
     {
         __invalidToken(tokenPtr);
     }
 
-    __matchToken(TokenType::LeftRoundBracket, tokenPtr);
+    __matchToken(__TokenType::__LeftRoundBracket, tokenPtr);
 
-    if (tokenPtr->tokenType() == TokenType::Id               ||
-        tokenPtr->tokenType() == TokenType::LeftRoundBracket ||
-        tokenPtr->tokenType() == TokenType::Number)
+    if (tokenPtr->__tokenType == __TokenType::__Id               ||
+        tokenPtr->__tokenType == __TokenType::__LeftRoundBracket ||
+        tokenPtr->__tokenType == __TokenType::__Number)
     {
-        root->subList().push_back(nullptr);
-
-        __ArgList(root->subList()[1], tokenPtr);
+        __ArgList(root->__subList[1], tokenPtr);
     }
 
-    __matchToken(TokenType::RightRoundBracket, tokenPtr);
+    __matchToken(__TokenType::__RightRoundBracket, tokenPtr);
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENBF: ArgList
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SyntaxAnalyzer::__ArgList(AST *&root, Token *&tokenPtr)
+void __SyntaxAnalyzer::__ArgList(__AST *&root, __Token *&tokenPtr)
 {
     /*
         EBNF:
@@ -1213,9 +1105,9 @@ void SyntaxAnalyzer::__ArgList(AST *&root, Token *&tokenPtr)
             ArgList ::= Expr { ',' Expr }
 
 
-        AST:
+        __AST:
 
-            TokenType::ArgList
+            __TokenType::__ArgList
                 |
                 |---- __Expr
                 |
@@ -1225,32 +1117,32 @@ void SyntaxAnalyzer::__ArgList(AST *&root, Token *&tokenPtr)
                 .
     */
 
-    root = new AST(TokenType::ArgList, "ArgList", {nullptr});
+    root = new __AST(__TokenType::__ArgList, "ArgList", {nullptr});
 
-    __Expr(root->subList()[0], tokenPtr);
+    __Expr(root->__subList[0], tokenPtr);
 
-    while (tokenPtr->tokenType() == TokenType::Comma)
+    while (tokenPtr->__tokenType == __TokenType::__Comma)
     {
-        __matchToken(TokenType::Comma, tokenPtr);
+        __matchToken(__TokenType::__Comma, tokenPtr);
 
-        root->subList().push_back(nullptr);
+        root->__subList.push_back(nullptr);
 
-        __Expr(root->subList().back(), tokenPtr);
+        __Expr(root->__subList.back(), tokenPtr);
     }
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Syntax Analysis
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-AST *SyntaxAnalyzer::__syntaxAnalysis()
+__AST *__SyntaxAnalyzer::__syntaxAnalysis()
 {
-    AST *root = nullptr;
+    __AST *root = nullptr;
 
     auto tokenPtr = __tokenList.data();
 
-    __Parse(root, tokenPtr);
+    __Program(root, tokenPtr);
 
     return root;
 }

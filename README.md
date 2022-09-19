@@ -61,77 +61,71 @@ There are two sample code files written by the CMM language in the ```CMM/test/t
 Here is the CMM language grammar in EBNF format:
 
 ```
-1. Program ::= DeclList
+1. Program ::= Decl { Decl }
 
-2. DeclList ::= Decl { Decl }
-
-3. Decl ::= VarDecl
+2. Decl ::= VarDecl
           | FuncDecl
 
-4. VarDecl ::= Type ID [ '[' NUM ']' ] ';'
+3. VarDecl ::= Type ID [ '[' NUM ']' ] ';'
 
-5. Type ::= int
+4. Type ::= int
           | void
 
-6. FuncDecl ::= Type ID '(' Params ')' CompoundStmt
+5. FuncDecl ::= Type ID '(' [ ParamList ] ')' '{' LocalDecl StmtList '}'
 
-7. Params ::= [ ParamList ]
+6. ParamList ::= [ Param { ',' Param } ]
 
-8. ParamList ::= Param { ',' Param }
+7. Param ::= Type ID [ '[' ']' ]
 
-9. Param ::= Type ID [ '[' ']' ]
+8. LocalDecl ::= { VarDecl }
 
-10. CompoundStmt ::= '{' LocalDecl StmtList '}'
+9. StmtList ::= { Stmt }
 
-11. LocalDecl ::= { VarDecl }
-
-12. StmtList ::= { Stmt }
-
-13. Stmt ::= ExprStmt
+10. Stmt ::= ExprStmt
            | IfStmt
            | WhileStmt
            | ReturnStmt
 
-14. ExprStmt ::= [ Expr ] ';'
+11. ExprStmt ::= [ Expr ] ';'
 
-15. IfStmt ::= if '(' Expr ')' '{' Stmt '}' [ else '{' Stmt '}' ]
+12. IfStmt ::= if '(' Expr ')' '{' StmtList '}' [ else '{' StmtList '}' ]
 
-16. WhileStmt ::= while '(' Expr ')' '{' Stmt '}'
+13. WhileStmt ::= while '(' Expr ')' '{' StmtList '}'
 
-17. ReturnStmt ::= return [ Expr ] ';'
+14. ReturnStmt ::= return [ Expr ] ';'
 
-18. Expr ::= Var '=' Expr
+15. Expr ::= Var '=' Expr
            | SimpleExpr
 
-19. Var ::= ID [ '[' Expr ']' ]
+16. Var ::= ID [ '[' Expr ']' ]
 
-20. SimpleExpr ::= AddExpr [ RelOp AddExpr ]
+17. SimpleExpr ::= AddExpr [ RelOp AddExpr ]
 
-21. RelOp ::= '<'
+18. RelOp ::= '<'
             | '<='
             | '>'
             | '>='
             | '=='
             | '!='
 
-22. AddExpr ::= Term { AddOp Term }
+19. AddExpr ::= Term { AddOp Term }
 
-23. AddOp ::= '+'
+20. AddOp ::= '+'
             | '-'
 
-24. Term ::= Factor { MulOp Factor }
+21. Term ::= Factor { MulOp Factor }
 
-25. MulOp ::= '*'
+22. MulOp ::= '*'
             | '/'
 
-26. Factor ::= '(' Expr ')'
-             | Var
-             | Call
+23. Factor ::= '(' Expr ')'
              | NUM
+             | Call
+             | Var
 
-27. Call ::= ID '(' [ ArgList ] ')'
+24. Call ::= ID '(' [ ArgList ] ')'
 
-28. ArgList ::= Expr { ',' Expr }
+25. ArgList ::= Expr { ',' Expr }
 ```
 
 ## VM
@@ -181,4 +175,3 @@ Here is the instruction set and the fake code of each instruction of the CMM lan
 | ADDR N      | AX = SS.SIZE() - N                                |
 | CALL N      | SS.PUSH(BP); BP = SS.SIZE(); SS.PUSH(IP); IP += N |
 | RET         | IP = SS.POP(); BP = SS.POP()                      |
-

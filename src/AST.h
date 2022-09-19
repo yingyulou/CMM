@@ -1,7 +1,7 @@
 /*
     AST.h
     =====
-        Struct AST header.
+        Struct __AST header.
 */
 
 #pragma once
@@ -14,59 +14,46 @@
 namespace CMM
 {
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Using
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using std::string;
 using std::vector;
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Class AST
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Class __AST
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class AST
+class __AST
 {
+    // Friend
+    friend class __SyntaxAnalyzer;
+    friend class __SemanticAnalyzer;
+    friend class __CodeGenerator;
+
+
 public:
 
     // Constructor
-    explicit AST(TokenType tokenType, const string &tokenStr = "",
-        const vector<AST *> &subList = {}, int lineNo = 0);
+    explicit __AST(__TokenType tokenType, const string &tokenStr = "", const vector<__AST *> &subList = {}, int lineNo = 0);
 
 
     // Constructor (With tokenPtr)
-    explicit AST(const Token *tokenPtr);
-
-
-    // Getter: __tokenType
-    TokenType tokenType() const;
-
-
-    // Getter: __tokenStr
-    string &tokenStr();
-    const string &tokenStr() const;
-
-
-    // Getter: __subList
-    vector<AST *> &subList();
-    const vector<AST *> &subList() const;
-
-
-    // Getter: __lineNo
-    int lineNo() const;
+    explicit __AST(const __Token *tokenPtr);
 
 
     // Destructor
-    ~AST();
+    ~__AST();
 
 
 private:
 
     // Attribute
-    TokenType __tokenType;
+    __TokenType __tokenType;
     string __tokenStr;
-    vector<AST *> __subList;
+    vector<__AST *> __subList;
     int __lineNo;
 };
 

@@ -1,7 +1,7 @@
 /*
     SyntaxAnalyzer.h
     ================
-        Class SyntaxAnalyzer header.
+        Class __SyntaxAnalyzer header.
 */
 
 #pragma once
@@ -15,162 +15,146 @@
 namespace CMM
 {
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Using
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using std::string;
 using std::vector;
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Class SyntaxAnalyzer
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Class __SyntaxAnalyzer
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class SyntaxAnalyzer
+class __SyntaxAnalyzer
 {
+    // Friend
+    friend class Core;
+
+
 public:
 
     // Constructor
-    explicit SyntaxAnalyzer(const vector<Token> &tokenList = {});
-
-
-    // Syntax Analysis
-    AST *syntaxAnalysis();
+    explicit __SyntaxAnalyzer(const vector<__Token> &tokenList = {});
 
 
 private:
 
     // Attribute
-    vector<Token> __tokenList;
+    vector<__Token> __tokenList;
 
 
     // Invalid Token
-    static void __invalidToken(const Token *tokenPtr);
+    static void __invalidToken(const __Token *tokenPtr);
 
 
     // Match Token
-    static void __matchToken(TokenType tokenType, Token *&tokenPtr);
-
-
-    // ENBF: Parse
-    static void __Parse(AST *&root, Token *&tokenPtr);
+    static void __matchToken(__TokenType tokenType, __Token *&tokenPtr);
 
 
     // ENBF: Program
-    static void __Program(AST *&root, Token *&tokenPtr);
-
-
-    // ENBF: DeclList
-    static void __DeclList(AST *&root, Token *&tokenPtr);
+    static void __Program(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: Decl
-    static void __Decl(AST *&root, Token *&tokenPtr);
+    static void __Decl(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: VarDecl
-    static void __VarDecl(AST *&root, Token *&tokenPtr);
+    static void __VarDecl(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: Type
-    static void __Type(AST *&root, Token *&tokenPtr);
+    static void __Type(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: FuncDecl
-    static void __FuncDecl(AST *&root, Token *&tokenPtr);
-
-
-    // ENBF: Params
-    static void __Params(AST *&root, Token *&tokenPtr);
+    static void __FuncDecl(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: ParamList
-    static void __ParamList(AST *&root, Token *&tokenPtr);
+    static void __ParamList(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: Param
-    static void __Param(AST *&root, Token *&tokenPtr);
-
-
-    // ENBF: CompoundStmt
-    static void __CompoundStmt(AST *&root, Token *&tokenPtr);
+    static void __Param(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: LocalDecl
-    static void __LocalDecl(AST *&root, Token *&tokenPtr);
+    static void __LocalDecl(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: StmtList
-    static void __StmtList(AST *&root, Token *&tokenPtr);
+    static void __StmtList(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: Stmt
-    static void __Stmt(AST *&root, Token *&tokenPtr);
+    static void __Stmt(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: ExprStmt
-    static void __ExprStmt(AST *&root, Token *&tokenPtr);
+    static void __ExprStmt(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: IfStmt
-    static void __IfStmt(AST *&root, Token *&tokenPtr);
+    static void __IfStmt(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: WhileStmt
-    static void __WhileStmt(AST *&root, Token *&tokenPtr);
+    static void __WhileStmt(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: ReturnStmt
-    static void __ReturnStmt(AST *&root, Token *&tokenPtr);
+    static void __ReturnStmt(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: Expr
-    static void __Expr(AST *&root, Token *&tokenPtr);
+    static void __Expr(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: Var
-    static void __Var(AST *&root, Token *&tokenPtr);
+    static void __Var(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: SimpleExpr
-    static void __SimpleExpr(AST *&root, Token *&tokenPtr);
+    static void __SimpleExpr(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: RelOp
-    static void __RelOp(AST *&root, Token *&tokenPtr);
+    static void __RelOp(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: AddExpr
-    static void __AddExpr(AST *&root, Token *&tokenPtr);
+    static void __AddExpr(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: AddOp
-    static void __AddOp(AST *&root, Token *&tokenPtr);
+    static void __AddOp(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: Term
-    static void __Term(AST *&root, Token *&tokenPtr);
+    static void __Term(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: MulOp
-    static void __MulOp(AST *&root, Token *&tokenPtr);
+    static void __MulOp(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: Factor
-    static void __Factor(AST *&root, Token *&tokenPtr);
+    static void __Factor(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: Call
-    static void __Call(AST *&root, Token *&tokenPtr);
+    static void __Call(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: ArgList
-    static void __ArgList(AST *&root, Token *&tokenPtr);
+    static void __ArgList(__AST *&root, __Token *&tokenPtr);
 
 
     // Syntax Analysis
-    AST *__syntaxAnalysis();
+    __AST *__syntaxAnalysis();
 };
 
 

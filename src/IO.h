@@ -1,7 +1,7 @@
 /*
     IO.h
     ====
-        Class IO header.
+        Class __IO header.
 */
 
 #pragma once
@@ -14,43 +14,33 @@
 namespace CMM
 {
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Using
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using std::string;
 using std::vector;
 using std::pair;
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Class IO
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Class __IO
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class IO
+class __IO
 {
-public:
-
-    // Parse Instruction File
-    static vector<pair<Instruction, int>> parseInstructionFile(
-        const string &instructionFilePath);
-
-
-    // Output Instruction
-    static void outputInstruction(const string &instructionFilePath,
-        const vector<pair<Instruction, string>> &codeList);
+    // Friend
+    friend class Core;
 
 
 private:
 
-    // Parse Instruction File
-    static vector<pair<Instruction, int>> __parseInstructionFile(
-        const string &instructionFilePath);
+    // Parse __Instruction File
+    static vector<pair<__Instruction, int>> __parseInstructionFile(const string &instructionFilePath);
 
 
-    // Output Instruction
-    static void __outputInstruction(const string &instructionFilePath,
-        const vector<pair<Instruction, string>> &codeList);
+    // Output __Instruction
+    static void __outputInstruction(const string &instructionFilePath,const vector<pair<__Instruction, string>> &codeList);
 };
 
 

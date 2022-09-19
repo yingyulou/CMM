@@ -1,12 +1,13 @@
 /*
-    Token.h
-    =======
-        Struct __Token header.
+    Constants.h
+    ===========
+        Class __Constants header.
 */
 
 #pragma once
 
 #include <string>
+#include <unordered_map>
 #include "TokenType.hpp"
 
 namespace CMM
@@ -17,32 +18,28 @@ namespace CMM
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using std::string;
+using std::unordered_map;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Class __Token
+// Class __Constants
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class __Token
+class __Constants
 {
     // Friend
     friend class __LexicalAnalyzer;
-    friend class __AST;
-    friend class __SyntaxAnalyzer;
-
-
-public:
-
-    // Constructor
-    explicit __Token(__TokenType tokenType, const string &tokenStr, int lineNo);
+    friend class Core;
 
 
 private:
 
-    // Attribute
-    __TokenType __tokenType;
-    string __tokenStr;
-    int __lineNo;
+    // Description Str
+    static const string __DESCRIPTION_STR;
+
+
+    // Keyword Map
+    static const unordered_map<string, __TokenType> __KEYWORD_MAP;
 };
 
 

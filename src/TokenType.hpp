@@ -1,7 +1,7 @@
 /*
     TokenType.hpp
     =============
-        Enum class TokenType implementation.
+        Enum class __TokenType implementation.
 */
 
 #pragma once
@@ -9,67 +9,66 @@
 namespace CMM
 {
 
-////////////////////////////////////////////////////////////////////////////////
-// Enum Class TokenType
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Enum Class __TokenType
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-enum class TokenType
+enum class __TokenType
 {
     // Word
-    Id,                  // Id
-    Number,              // Number
+    __Id,                  // Id
+    __Number,              // Number
 
     // Keyword
-    Void,                // void
-    Int,                 // int
-    If,                  // if
-    Else,                // else
-    While,               // while
-    Return,              // return
+    __Void,                // void
+    __Int,                 // int
+    __If,                  // if
+    __Else,                // else
+    __While,               // while
+    __Return,              // return
 
     // Operator
-    Plus,                // +
-    Minus,               // -
-    Multiply,            // *
-    Divide,              // /
-    Less,                // <
-    LessEqual,           // <=
-    Greater,             // >
-    GreaterEqual,        // >=
-    Equal,               // ==
-    NotEqual,            // !=
-    Assign,              // =
-    Semicolon,           // ;
-    Comma,               // ,
-    LeftRoundBracket,    // (
-    RightRoundBracket,   // )
-    LeftSquareBracket,   // [
-    RightSquareBracket,  // ]
-    LeftCurlyBracket,    // {
-    RightCurlyBracket,   // }
+    __Plus,                // +
+    __Minus,               // -
+    __Multiply,            // *
+    __Divide,              // /
+    __Less,                // <
+    __LessEqual,           // <=
+    __Greater,             // >
+    __GreaterEqual,        // >=
+    __Equal,               // ==
+    __NotEqual,            // !=
+    __Assign,              // =
+    __Semicolon,           // ;
+    __Comma,               // ,
+    __LeftRoundBracket,    // (
+    __RightRoundBracket,   // )
+    __LeftSquareBracket,   // [
+    __RightSquareBracket,  // ]
+    __LeftCurlyBracket,    // {
+    __RightCurlyBracket,   // }
 
     // End
-    End,                 // End
+    __End,                 // End
 
     // Ast
-    DeclList,            // AST: DeclList
-    VarDecl,             // AST: VarDecl
-    FuncDecl,            // AST: FuncDecl
-    ParamList,           // AST: ParamList
-    Param,               // AST: Param
-    CompoundStmt,        // AST: CompoundStmt
-    LocalDecl,           // AST: LocalDecl
-    StmtList,            // AST: StmtList
-    IfStmt,              // AST: IfStmt
-    WhileStmt,           // AST: WhileStmt
-    ReturnStmt,          // AST: ReturnStmt
-    Expr,                // AST: Expr
-    Var,                 // AST: Var
-    SimpleExpr,          // AST: SimpleExpr
-    AddExpr,             // AST: AddExpr
-    Term,                // AST: Term
-    Call,                // AST: Call
-    ArgList,             // AST: ArgList
+    __Program,             // __AST: Program
+    __VarDecl,             // __AST: VarDecl
+    __FuncDecl,            // __AST: FuncDecl
+    __ParamList,           // __AST: ParamList
+    __Param,               // __AST: Param
+    __LocalDecl,           // __AST: LocalDecl
+    __StmtList,            // __AST: StmtList
+    __IfStmt,              // __AST: IfStmt
+    __WhileStmt,           // __AST: WhileStmt
+    __ReturnStmt,          // __AST: ReturnStmt
+    __Expr,                // __AST: Expr
+    __Var,                 // __AST: Var
+    __SimpleExpr,          // __AST: SimpleExpr
+    __AddExpr,             // __AST: AddExpr
+    __Term,                // __AST: Term
+    __Call,                // __AST: Call
+    __ArgList,             // __AST: ArgList
 };
 
 

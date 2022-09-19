@@ -1,7 +1,7 @@
 /*
     IO.h
     ====
-        Class IO implementation.
+        Class __IO implementation.
 */
 
 #pragma once
@@ -18,9 +18,9 @@
 namespace CMM
 {
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Using
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using std::string;
 using std::getline;
@@ -31,36 +31,13 @@ using std::ifstream;
 using std::runtime_error;
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Parse Instruction File
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Parse __Instruction File
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-vector<pair<Instruction, int>> IO::parseInstructionFile(
-    const string &instructionFilePath)
+vector<pair<__Instruction, int>> __IO::__parseInstructionFile(const string &instructionFilePath)
 {
-    return __parseInstructionFile(instructionFilePath);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Output Instruction
-////////////////////////////////////////////////////////////////////////////////
-
-void IO::outputInstruction(const string &instructionFilePath,
-    const vector<pair<Instruction, string>> &codeList)
-{
-    __outputInstruction(instructionFilePath, codeList);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Parse Instruction File
-////////////////////////////////////////////////////////////////////////////////
-
-vector<pair<Instruction, int>> IO::__parseInstructionFile(
-    const string &instructionFilePath)
-{
-    vector<pair<Instruction, int>> codeList;
+    vector<pair<__Instruction, int>> codeList;
 
     ifstream f(instructionFilePath);
     string line;
@@ -69,99 +46,99 @@ vector<pair<Instruction, int>> IO::__parseInstructionFile(
     {
         if (line.substr(0, 4) == "LDC ")
         {
-            codeList.emplace_back(Instruction::LDC, stoi(line.substr(4)));
+            codeList.emplace_back(__Instruction::__LDC, stoi(line.substr(4)));
         }
         else if (line == "LD")
         {
-            codeList.emplace_back(Instruction::LD, 0);
+            codeList.emplace_back(__Instruction::__LD, 0);
         }
         else if (line == "ALD")
         {
-            codeList.emplace_back(Instruction::ALD, 0);
+            codeList.emplace_back(__Instruction::__ALD, 0);
         }
         else if (line == "ST")
         {
-            codeList.emplace_back(Instruction::ST, 0);
+            codeList.emplace_back(__Instruction::__ST, 0);
         }
-        else if (line == "AST")
+        else if (line == "__AST")
         {
-            codeList.emplace_back(Instruction::AST, 0);
+            codeList.emplace_back(__Instruction::__AST, 0);
         }
         else if (line == "PUSH")
         {
-            codeList.emplace_back(Instruction::PUSH, 0);
+            codeList.emplace_back(__Instruction::__PUSH, 0);
         }
         else if (line == "POP")
         {
-            codeList.emplace_back(Instruction::POP, 0);
+            codeList.emplace_back(__Instruction::__POP, 0);
         }
         else if (line.substr(0, 4) == "JMP ")
         {
-            codeList.emplace_back(Instruction::JMP, stoi(line.substr(4)));
+            codeList.emplace_back(__Instruction::__JMP, stoi(line.substr(4)));
         }
         else if (line.substr(0, 3) == "JZ ")
         {
-            codeList.emplace_back(Instruction::JZ, stoi(line.substr(3)));
+            codeList.emplace_back(__Instruction::__JZ, stoi(line.substr(3)));
         }
         else if (line == "ADD")
         {
-            codeList.emplace_back(Instruction::ADD, 0);
+            codeList.emplace_back(__Instruction::__ADD, 0);
         }
         else if (line == "SUB")
         {
-            codeList.emplace_back(Instruction::SUB, 0);
+            codeList.emplace_back(__Instruction::__SUB, 0);
         }
         else if (line == "MUL")
         {
-            codeList.emplace_back(Instruction::MUL, 0);
+            codeList.emplace_back(__Instruction::__MUL, 0);
         }
         else if (line == "DIV")
         {
-            codeList.emplace_back(Instruction::DIV, 0);
+            codeList.emplace_back(__Instruction::__DIV, 0);
         }
         else if (line == "LT")
         {
-            codeList.emplace_back(Instruction::LT, 0);
+            codeList.emplace_back(__Instruction::__LT, 0);
         }
         else if (line == "LE")
         {
-            codeList.emplace_back(Instruction::LE, 0);
+            codeList.emplace_back(__Instruction::__LE, 0);
         }
         else if (line == "GT")
         {
-            codeList.emplace_back(Instruction::GT, 0);
+            codeList.emplace_back(__Instruction::__GT, 0);
         }
         else if (line == "GE")
         {
-            codeList.emplace_back(Instruction::GE, 0);
+            codeList.emplace_back(__Instruction::__GE, 0);
         }
         else if (line == "EQ")
         {
-            codeList.emplace_back(Instruction::EQ, 0);
+            codeList.emplace_back(__Instruction::__EQ, 0);
         }
         else if (line == "NE")
         {
-            codeList.emplace_back(Instruction::NE, 0);
+            codeList.emplace_back(__Instruction::__NE, 0);
         }
         else if (line == "IN")
         {
-            codeList.emplace_back(Instruction::IN, 0);
+            codeList.emplace_back(__Instruction::__IN, 0);
         }
         else if (line == "OUT")
         {
-            codeList.emplace_back(Instruction::OUT, 0);
+            codeList.emplace_back(__Instruction::__OUT, 0);
         }
         else if (line.substr(0, 5) == "ADDR ")
         {
-            codeList.emplace_back(Instruction::ADDR, stoi(line.substr(5)));
+            codeList.emplace_back(__Instruction::__ADDR, stoi(line.substr(5)));
         }
         else if (line.substr(0, 5) == "CALL ")
         {
-            codeList.emplace_back(Instruction::CALL, stoi(line.substr(5)));
+            codeList.emplace_back(__Instruction::__CALL, stoi(line.substr(5)));
         }
         else if (line == "RET")
         {
-            codeList.emplace_back(Instruction::RET, 0);
+            codeList.emplace_back(__Instruction::__RET, 0);
         }
         else
         {
@@ -173,12 +150,11 @@ vector<pair<Instruction, int>> IO::__parseInstructionFile(
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Output Instruction
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Output __Instruction
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void IO::__outputInstruction(const string &instructionFilePath,
-    const vector<pair<Instruction, string>> &codeList)
+void __IO::__outputInstruction(const string &instructionFilePath, const vector<pair<__Instruction, string>> &codeList)
 {
     FILE *fo = fopen(instructionFilePath.c_str(), "w");
 
@@ -186,99 +162,99 @@ void IO::__outputInstruction(const string &instructionFilePath,
     {
         switch (codeEnum)
         {
-            case Instruction::LDC:
+            case __Instruction::__LDC:
                 fprintf(fo, "LDC %s\n", codeValStr.c_str());
                 break;
 
-            case Instruction::LD:
+            case __Instruction::__LD:
                 fprintf(fo, "LD\n");
                 break;
 
-            case Instruction::ALD:
+            case __Instruction::__ALD:
                 fprintf(fo, "ALD\n");
                 break;
 
-            case Instruction::ST:
+            case __Instruction::__ST:
                 fprintf(fo, "ST\n");
                 break;
 
-            case Instruction::AST:
-                fprintf(fo, "AST\n");
+            case __Instruction::__AST:
+                fprintf(fo, "__AST\n");
                 break;
 
-            case Instruction::PUSH:
+            case __Instruction::__PUSH:
                 fprintf(fo, "PUSH\n");
                 break;
 
-            case Instruction::POP:
+            case __Instruction::__POP:
                 fprintf(fo, "POP\n");
                 break;
 
-            case Instruction::JMP:
+            case __Instruction::__JMP:
                 fprintf(fo, "JMP %s\n", codeValStr.c_str());
                 break;
 
-            case Instruction::JZ:
+            case __Instruction::__JZ:
                 fprintf(fo, "JZ %s\n", codeValStr.c_str());
                 break;
 
-            case Instruction::ADD:
+            case __Instruction::__ADD:
                 fprintf(fo, "ADD\n");
                 break;
 
-            case Instruction::SUB:
+            case __Instruction::__SUB:
                 fprintf(fo, "SUB\n");
                 break;
 
-            case Instruction::MUL:
+            case __Instruction::__MUL:
                 fprintf(fo, "MUL\n");
                 break;
 
-            case Instruction::DIV:
+            case __Instruction::__DIV:
                 fprintf(fo, "DIV\n");
                 break;
 
-            case Instruction::LT:
+            case __Instruction::__LT:
                 fprintf(fo, "LT\n");
                 break;
 
-            case Instruction::LE:
+            case __Instruction::__LE:
                 fprintf(fo, "LE\n");
                 break;
 
-            case Instruction::GT:
+            case __Instruction::__GT:
                 fprintf(fo, "GT\n");
                 break;
 
-            case Instruction::GE:
+            case __Instruction::__GE:
                 fprintf(fo, "GE\n");
                 break;
 
-            case Instruction::EQ:
+            case __Instruction::__EQ:
                 fprintf(fo, "EQ\n");
                 break;
 
-            case Instruction::NE:
+            case __Instruction::__NE:
                 fprintf(fo, "NE\n");
                 break;
 
-            case Instruction::IN:
+            case __Instruction::__IN:
                 fprintf(fo, "IN\n");
                 break;
 
-            case Instruction::OUT:
+            case __Instruction::__OUT:
                 fprintf(fo, "OUT\n");
                 break;
 
-            case Instruction::ADDR:
+            case __Instruction::__ADDR:
                 fprintf(fo, "ADDR %s\n", codeValStr.c_str());
                 break;
 
-            case Instruction::CALL:
+            case __Instruction::__CALL:
                 fprintf(fo, "CALL %s\n", codeValStr.c_str());
                 break;
 
-            case Instruction::RET:
+            case __Instruction::__RET:
                 fprintf(fo, "RET\n");
                 break;
 
