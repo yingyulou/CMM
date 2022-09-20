@@ -169,7 +169,7 @@ void __SyntaxAnalyzer::__VarDecl(__AST *&root, __Token *&tokenPtr)
             |---- [__TokenType::__Number]
     */
 
-    root = new __AST(__TokenType::__VarDecl, "VarDecl", {nullptr, nullptr, nullptr});
+    root = new __AST(__TokenType::__VarDecl, "VarDecl", {nullptr, nullptr});
 
     __Type(root->__subList[0], tokenPtr);
 
@@ -188,7 +188,7 @@ void __SyntaxAnalyzer::__VarDecl(__AST *&root, __Token *&tokenPtr)
     {
         __matchToken(__TokenType::__LeftSquareBracket, tokenPtr);
 
-        root->__subList[2] = new __AST(tokenPtr);
+        root->__subList.push_back(new __AST(tokenPtr));
 
         __matchToken(__TokenType::__Number, tokenPtr);
         __matchToken(__TokenType::__RightSquareBracket, tokenPtr);
@@ -543,7 +543,7 @@ void __SyntaxAnalyzer::__IfStmt(__AST *&root, __Token *&tokenPtr)
             |---- [__StmtList]
     */
 
-    root = new __AST(__TokenType::__IfStmt, "IfStmt", {nullptr, nullptr, nullptr});
+    root = new __AST(__TokenType::__IfStmt, "IfStmt", {nullptr, nullptr});
 
     __matchToken(__TokenType::__If, tokenPtr);
 
@@ -562,6 +562,8 @@ void __SyntaxAnalyzer::__IfStmt(__AST *&root, __Token *&tokenPtr)
     if (tokenPtr->__tokenType == __TokenType::__Else)
     {
         __matchToken(__TokenType::__Else, tokenPtr);
+
+        root->__subList.push_back(nullptr);
 
         __StmtList(root->__subList[2], tokenPtr);
     }
@@ -626,7 +628,7 @@ void __SyntaxAnalyzer::__ReturnStmt(__AST *&root, __Token *&tokenPtr)
             |---- [__Expr]
     */
 
-    root = new __AST(__TokenType::__ReturnStmt, "ReturnStmt", {nullptr});
+    root = new __AST(__TokenType::__ReturnStmt, "ReturnStmt");
 
     __matchToken(__TokenType::__Return, tokenPtr);
 
@@ -634,6 +636,8 @@ void __SyntaxAnalyzer::__ReturnStmt(__AST *&root, __Token *&tokenPtr)
         tokenPtr->__tokenType == __TokenType::__LeftRoundBracket ||
         tokenPtr->__tokenType == __TokenType::__Number)
     {
+        root->__subList.push_back(nullptr);
+
         __Expr(root->__subList[0], tokenPtr);
     }
 
@@ -650,26 +654,26 @@ void __SyntaxAnalyzer::__Expr(__AST *&root, __Token *&tokenPtr)
     /*
         EBNF:
 
-            Expr ::= Var '=' Expr
-                   | SimpleExpr
+            Expr ::= SimpleExpr
+                   | Var '=' Expr
 
 
         AST:
 
             __TokenType::__Expr
             |
-            |---- __Var
-            |
-            |---- __Expr
+            |---- __SimpleExpr
 
-            ----------------------
+          -----------------------
 
             __TokenType::__Expr
             |
-            |---- __SimpleExpr
+            |---- __Var
+            |
+            |---- __Expr
     */
 
-    root = new __AST(__TokenType::__Expr, "Expr", {nullptr, nullptr});
+    root = new __AST(__TokenType::__Expr, "Expr", {nullptr});
 
     if (tokenPtr->__tokenType == __TokenType::__LeftRoundBracket ||
         tokenPtr->__tokenType == __TokenType::__Number)
@@ -705,6 +709,8 @@ void __SyntaxAnalyzer::__Expr(__AST *&root, __Token *&tokenPtr)
 
             __matchToken(__TokenType::__Assign, tokenPtr);
 
+            root->__subList.push_back(nullptr);
+
             __Expr(root->__subList[1], tokenPtr);
         }
         else
@@ -736,7 +742,7 @@ void __SyntaxAnalyzer::__Var(__AST *&root, __Token *&tokenPtr)
             |---- [__Expr]
     */
 
-    root = new __AST(__TokenType::__Var, "Var", {nullptr, nullptr});
+    root = new __AST(__TokenType::__Var, "Var", {nullptr});
 
     if (tokenPtr->__tokenType == __TokenType::__Id)
     {
@@ -752,6 +758,8 @@ void __SyntaxAnalyzer::__Var(__AST *&root, __Token *&tokenPtr)
     if (tokenPtr->__tokenType == __TokenType::__LeftSquareBracket)
     {
         __matchToken(__TokenType::__LeftSquareBracket, tokenPtr);
+
+        root->__subList.push_back(nullptr);
 
         __Expr(root->__subList[1], tokenPtr);
 
@@ -783,7 +791,7 @@ void __SyntaxAnalyzer::__SimpleExpr(__AST *&root, __Token *&tokenPtr)
             |---- [__AddExpr]
     */
 
-    root = new __AST(__TokenType::__SimpleExpr, "SimpleExpr", {nullptr, nullptr, nullptr});
+    root = new __AST(__TokenType::__SimpleExpr, "SimpleExpr", {nullptr});
 
     __AddExpr(root->__subList[0], tokenPtr);
 
@@ -794,6 +802,9 @@ void __SyntaxAnalyzer::__SimpleExpr(__AST *&root, __Token *&tokenPtr)
         tokenPtr->__tokenType == __TokenType::__Equal        ||
         tokenPtr->__tokenType == __TokenType::__NotEqual)
     {
+        root->__subList.push_back(nullptr);
+        root->__subList.push_back(nullptr);
+
         __RelOp(root->__subList[1], tokenPtr);
 
         __AddExpr(root->__subList[2], tokenPtr);
@@ -1067,7 +1078,7 @@ void __SyntaxAnalyzer::__Call(__AST *&root, __Token *&tokenPtr)
             |---- [__ArgList]
     */
 
-    root = new __AST(__TokenType::__Call, "Call", {nullptr, nullptr});
+    root = new __AST(__TokenType::__Call, "Call", {nullptr});
 
     if (tokenPtr->__tokenType == __TokenType::__Id)
     {
@@ -1086,6 +1097,8 @@ void __SyntaxAnalyzer::__Call(__AST *&root, __Token *&tokenPtr)
         tokenPtr->__tokenType == __TokenType::__LeftRoundBracket ||
         tokenPtr->__tokenType == __TokenType::__Number)
     {
+        root->__subList.push_back(nullptr);
+
         __ArgList(root->__subList[1], tokenPtr);
     }
 

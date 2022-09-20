@@ -75,7 +75,7 @@ unordered_map<string, unordered_map<string, pair<int, int>>> __SemanticAnalyzer:
             */
             string varName = declNodePtr->__subList[1]->__tokenStr;
 
-            int varSize = !declNodePtr->__subList[2] ? 0 : stoi(declNodePtr->__subList[2]->__tokenStr);
+            int varSize = declNodePtr->__subList.size() == 2 ? 0 : stoi(declNodePtr->__subList[2]->__tokenStr);
 
             symbolTable["__GLOBAL__"][varName] = {globalIdx, varSize};
             globalIdx += varSize + 1;
@@ -151,7 +151,7 @@ unordered_map<string, unordered_map<string, pair<int, int>>> __SemanticAnalyzer:
                 */
                 string varName = varDeclPtr->__subList[1]->__tokenStr;
 
-                int varSize = !varDeclPtr->__subList[2] ? 0 : stoi(varDeclPtr->__subList[2]->__tokenStr);
+                int varSize = varDeclPtr->__subList.size() == 2 ? 0 : stoi(varDeclPtr->__subList[2]->__tokenStr);
 
                 symbolTable[funcName][varName] = {varIdx, varSize};
                 varIdx += varSize + 1;

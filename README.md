@@ -94,8 +94,8 @@ Here is the CMM language grammar in EBNF format:
 
 14. ReturnStmt ::= return [ Expr ] ';'
 
-15. Expr ::= Var '=' Expr
-           | SimpleExpr
+15. Expr ::= SimpleExpr
+           | Var '=' Expr
 
 16. Var ::= ID [ '[' Expr ']' ]
 

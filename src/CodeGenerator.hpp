@@ -139,7 +139,7 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateIfStmtCode(__AST 
     auto codeList   = __generateExprCode(root->__subList[0], curFuncName);
     auto ifCodeList = __generateStmtListCode(root->__subList[1], curFuncName);
 
-    if (!root->__subList[2])
+    if (root->__subList.size() == 2)
     {
         /*
             if ...
@@ -235,7 +235,7 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateReturnStmtCode(__
         |---- [__Expr]
     */
 
-    if (root->__subList[0])
+    if (!root->__subList.empty())
     {
         return __generateExprCode(root->__subList[0], curFuncName);
     }
@@ -255,18 +255,18 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateExprCode(__AST *r
     /*
         __TokenType::__Expr
         |
-        |---- __Var
-        |
-        |---- __Expr
+        |---- __SimpleExpr
 
-        ----------------------
+      -----------------------
 
         __TokenType::__Expr
         |
-        |---- __SimpleExpr
+        |---- __Var
+        |
+        |---- __Expr
     */
 
-    if (!root->__subList[1])
+    if (root->__subList.size() == 1)
     {
         return __generateSimpleExprCode(root->__subList[0], curFuncName);
     }
@@ -312,7 +312,7 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateVarCode(__AST *ro
     }
 
     // Array
-    if (root->__subList[1])
+    if (root->__subList.size() == 2)
     {
         auto exprCodeList = __generateExprCode(root->__subList[1], curFuncName);
 
@@ -345,7 +345,7 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateSimpleExprCode(__
         |---- [__AddExpr]
     */
 
-    if (!root->__subList[1] && !root->__subList[2])
+    if (root->__subList.size() == 1)
     {
         return __generateAddExprCode(root->__subList[0], curFuncName);
     }
@@ -600,7 +600,7 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateCallCode(__AST *r
     }
 
     // We only need local variable here
-    int topIdx = pairList.size() - (root->__subList[1] ?
+    int topIdx = pairList.size() - (root->__subList.size() == 2 ?
 
         // Call function by at least one parameter
         root->__subList[1]->__subList.size() :
@@ -642,7 +642,7 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateCallCode(__AST *r
     }
 
     // Push parameter
-    if (root->__subList[1])
+    if (root->__subList.size() == 2)
     {
         auto argListCodeList = __generateArgListCode(root->__subList[1], curFuncName);
 
@@ -754,7 +754,7 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateAssignCode(__AST 
         codeList.emplace_back(__Instruction::__LDC, to_string(__symbolTable.at(curFuncName).at(root->__subList[0]->__tokenStr).first));
 
         // Scalar
-        if (!root->__subList[1])
+        if (root->__subList.size() == 1)
         {
             codeList.emplace_back(__Instruction::__ST, "");
         }
@@ -783,7 +783,7 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateAssignCode(__AST 
         codeList.emplace_back(__Instruction::__LDC, to_string(__symbolTable.at("__GLOBAL__").at(root->__subList[0]->__tokenStr).first));
 
         // Scalar
-        if (!root->__subList[1])
+        if (root->__subList.size() == 1)
         {
             codeList.emplace_back(__Instruction::__AST, "");
         }
