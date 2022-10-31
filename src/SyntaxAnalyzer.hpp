@@ -563,9 +563,13 @@ void __SyntaxAnalyzer::__IfStmt(__AST *&root, __Token *&tokenPtr)
     {
         __matchToken(__TokenType::__Else, tokenPtr);
 
+        __matchToken(__TokenType::__LeftCurlyBracket, tokenPtr);
+
         root->__subList.push_back(nullptr);
 
         __StmtList(root->__subList[2], tokenPtr);
+
+        __matchToken(__TokenType::__RightCurlyBracket, tokenPtr);
     }
 }
 

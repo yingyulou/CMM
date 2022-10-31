@@ -175,3 +175,4 @@ Here is the instruction set and the fake code of each instruction of the CMM lan
 | ADDR N      | AX = SS.SIZE() - N                                |
 | CALL N      | SS.PUSH(BP); BP = SS.SIZE(); SS.PUSH(IP); IP += N |
 | RET         | IP = SS.POP(); BP = SS.POP()                      |
+
