@@ -36,14 +36,14 @@ make clean
 Command "CMM -h" or "CMM --help" is used to get the help information:
 
 ```
-================================================================================
+========================================================================================================================
 
 CMM
 ===
 
-    CMM (C Minus Minus) Language Compiler And VM.
+    CMM (C Minus Minus) Language Compiler And __VM.
 
-================================================================================
+========================================================================================================================
 
 Usage:
   -h [ --help ]         show this help message and exit
@@ -71,7 +71,7 @@ Here is the CMM language grammar in EBNF format:
 4. Type ::= int
           | void
 
-5. FuncDecl ::= Type ID '(' [ ParamList ] ')' '{' LocalDecl StmtList '}'
+5. FuncDecl ::= Type ID '(' ParamList  ')' '{' LocalDecl StmtList '}'
 
 6. ParamList ::= [ Param { ',' Param } ]
 

@@ -53,10 +53,6 @@ private:
     vector<pair<__Instruction, string>> __generateNumberCode(__AST *root, const string &) const;
 
 
-    // Generate CompoundStmt Code
-    vector<pair<__Instruction, string>> __generateCompoundStmtCode(__AST *root, const string &curFuncName) const;
-
-
     // Generate StmtList Code
     vector<pair<__Instruction, string>> __generateStmtListCode(__AST *root, const string &curFuncName) const;
 

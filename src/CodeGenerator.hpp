@@ -15,7 +15,7 @@
 #include "AST.h"
 #include "Instruction.hpp"
 #include "TokenType.hpp"
-
+#include <pprint/pprint>
 namespace CMM
 {
 
@@ -56,24 +56,6 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateNumberCode(__AST 
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Generate CompoundStmt Code
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-vector<pair<__Instruction, string>> __CodeGenerator::__generateCompoundStmtCode(__AST *root, const string &curFuncName) const
-{
-    /*
-        __TokenType::__CompoundStmt
-            |
-            |---- __LocalDecl
-            |
-            |---- __StmtList
-    */
-
-    return __generateStmtListCode(root->__subList[1], curFuncName);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Generate StmtList Code
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -108,7 +90,7 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateStmtListCode(__AS
 vector<pair<__Instruction, string>> __CodeGenerator::__generateStmtCode(__AST *root, const string &curFuncName) const
 {
     /*
-        __ExprStmt | __CompoundStmt | __IfStmt | __WhileStmt | __ReturnStmt
+        __ExprStmt | __IfStmt | __WhileStmt | __ReturnStmt
 
         (__ExprStmt __AST: __Expr | nullptr)
     */
@@ -122,9 +104,6 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateStmtCode(__AST *r
     {
         case __TokenType::__Expr:
             return __generateExprCode(root, curFuncName);
-
-        case __TokenType::__CompoundStmt:
-            return __generateCompoundStmtCode(root, curFuncName);
 
         case __TokenType::__IfStmt:
             return __generateIfStmtCode(root, curFuncName);
@@ -152,13 +131,13 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateIfStmtCode(__AST 
             |
             |---- __Expr
             |
-            |---- __Stmt
+            |---- __StmtList
             |
-            |---- [__Stmt]
+            |---- [__StmtList]
     */
 
     auto codeList   = __generateExprCode(root->__subList[0], curFuncName);
-    auto ifCodeList = __generateStmtCode(root->__subList[1], curFuncName);
+    auto ifCodeList = __generateStmtListCode(root->__subList[1], curFuncName);
 
     if (root->__subList.size() == 2)
     {
@@ -191,7 +170,7 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateIfStmtCode(__AST 
 
             END: ...
         */
-        auto elseCodeList = __generateStmtCode( root->__subList[2], curFuncName);
+        auto elseCodeList = __generateStmtListCode(root->__subList[2], curFuncName);
 
         ifCodeList.emplace_back(__Instruction::__JMP, to_string(elseCodeList.size() + 1));
 
@@ -215,11 +194,11 @@ vector<pair<__Instruction, string>> __CodeGenerator::__generateWhileStmtCode(__A
             |
             |---- __Expr
             |
-            |---- __Stmt
+            |---- __StmtList
     */
 
     auto codeList     = __generateExprCode(root->__subList[0], curFuncName);
-    auto stmtCodeList = __generateStmtCode(root->__subList[1], curFuncName);
+    auto stmtCodeList = __generateStmtListCode(root->__subList[1], curFuncName);
 
     /*
         START: while ...
@@ -929,7 +908,7 @@ unordered_map<string, vector<pair<__Instruction, string>>> __CodeGenerator::__cr
     };
 
     /*
-        __TokenType::__DeclList
+        __TokenType::__Program
             |
             |---- __Decl
             |
@@ -952,20 +931,15 @@ unordered_map<string, vector<pair<__Instruction, string>>> __CodeGenerator::__cr
                     |
                     |---- __TokenType::__Id
                     |
-                    |---- __Params
-                    |
-                    |---- __CompoundStmt
-            */
-            auto curFuncName = declPtr->__subList[1]->__tokenStr;
-
-            /*
-                __TokenType::__CompoundStmt
+                    |---- __ParamList | nullptr
                     |
                     |---- __LocalDecl
                     |
                     |---- __StmtList
             */
-            auto codeList = __generateStmtListCode(declPtr->__subList[3]->__subList[1], curFuncName);
+            auto curFuncName = declPtr->__subList[1]->__tokenStr;
+
+            auto codeList = __generateStmtListCode(declPtr->__subList[4], curFuncName);
 
             if (curFuncName != "main")
             {

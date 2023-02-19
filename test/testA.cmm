@@ -13,7 +13,10 @@ int CalcGreatestCommonDivisor(int lhs, int rhs)
     {
         return lhs;
     }
-    else return CalcGreatestCommonDivisor(rhs, lhs - lhs / rhs * rhs);
+    else
+    {
+        return CalcGreatestCommonDivisor(rhs, lhs - lhs / rhs * rhs);
+    }
 }
 
 

@@ -85,33 +85,12 @@ void __SyntaxAnalyzer::__Program(__AST *&root, __Token *&tokenPtr)
     /*
         EBNF:
 
-            Program ::= DeclList
+            Program ::= Decl { Decl }
 
 
         __AST:
 
-            __DeclList
-    */
-
-    __DeclList(root, tokenPtr);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// ENBF: DeclList
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void __SyntaxAnalyzer::__DeclList(__AST *&root, __Token *&tokenPtr)
-{
-    /*
-        EBNF:
-
-            DeclList ::= Decl { Decl }
-
-
-        __AST:
-
-            __TokenType::__DeclList
+            __TokenType::__Program
                 |
                 |---- __Decl
                 |
@@ -121,7 +100,7 @@ void __SyntaxAnalyzer::__DeclList(__AST *&root, __Token *&tokenPtr)
                 .
     */
 
-    root = new __AST(__TokenType::__DeclList, "DeclList", {nullptr});
+    root = new __AST(__TokenType::__Program, "Program", {nullptr});
 
     __Decl(root->__subList[0], tokenPtr);
 
@@ -268,7 +247,7 @@ void __SyntaxAnalyzer::__FuncDecl(__AST *&root, __Token *&tokenPtr)
     /*
         EBNF:
 
-            FuncDecl ::= Type ID '(' Params ')' CompoundStmt
+            FuncDecl ::= Type ID '(' ParamList ')' '{' LocalDecl StmtList '}'
 
 
         __AST:
@@ -279,12 +258,14 @@ void __SyntaxAnalyzer::__FuncDecl(__AST *&root, __Token *&tokenPtr)
                 |
                 |---- __TokenType::__Id
                 |
-                |---- __Params
+                |---- __ParamList | nullptr
                 |
-                |---- __CompoundStmt
+                |---- __LocalDecl
+                |
+                |---- __StmtList
     */
 
-    root = new __AST(__TokenType::__FuncDecl, "FuncDecl", {nullptr, nullptr, nullptr, nullptr});
+    root = new __AST(__TokenType::__FuncDecl, "FuncDecl", {nullptr, nullptr, nullptr, nullptr, nullptr});
 
     __Type(root->__subList[0], tokenPtr);
 
@@ -301,35 +282,17 @@ void __SyntaxAnalyzer::__FuncDecl(__AST *&root, __Token *&tokenPtr)
 
     __matchToken(__TokenType::__LeftRoundBracket, tokenPtr);
 
-    __Params(root->__subList[2], tokenPtr);
+    __ParamList(root->__subList[2], tokenPtr);
 
     __matchToken(__TokenType::__RightRoundBracket, tokenPtr);
 
-    __CompoundStmt(root->__subList[3], tokenPtr);
-}
+    __matchToken(__TokenType::__LeftCurlyBracket, tokenPtr);
 
+    __LocalDecl(root->__subList[3], tokenPtr);
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// ENBF: Params
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    __StmtList(root->__subList[4], tokenPtr);
 
-void __SyntaxAnalyzer::__Params(__AST *&root, __Token *&tokenPtr)
-{
-    /*
-        EBNF:
-
-            Params ::= [ ParamList ]
-
-
-        __AST:
-
-            __ParamList | nullptr
-    */
-
-    if (tokenPtr->__tokenType == __TokenType::__Int || tokenPtr->__tokenType == __TokenType::__Void)
-    {
-        __ParamList(root, tokenPtr);
-    }
+    __matchToken(__TokenType::__RightCurlyBracket, tokenPtr);
 }
 
 
@@ -342,7 +305,7 @@ void __SyntaxAnalyzer::__ParamList(__AST *&root, __Token *&tokenPtr)
     /*
         EBNF:
 
-            ParamList ::= Param { ',' Param }
+            ParamList ::= [ Param { ',' Param } ]
 
 
         __AST:
@@ -357,17 +320,20 @@ void __SyntaxAnalyzer::__ParamList(__AST *&root, __Token *&tokenPtr)
                 .
     */
 
-    root = new __AST(__TokenType::__ParamList, "ParamList", {nullptr});
-
-    __Param(root->__subList[0], tokenPtr);
-
-    while (tokenPtr->__tokenType == __TokenType::__Comma)
+    if (tokenPtr->__tokenType == __TokenType::__Int || tokenPtr->__tokenType == __TokenType::__Void)
     {
-        __matchToken(__TokenType::__Comma, tokenPtr);
+        root = new __AST(__TokenType::__ParamList, "ParamList", {nullptr});
 
-        root->__subList.push_back(nullptr);
+        __Param(root->__subList[0], tokenPtr);
 
-        __Param(root->__subList.back(), tokenPtr);
+        while (tokenPtr->__tokenType == __TokenType::__Comma)
+        {
+            __matchToken(__TokenType::__Comma, tokenPtr);
+
+            root->__subList.push_back(nullptr);
+
+            __Param(root->__subList.back(), tokenPtr);
+        }
     }
 }
 
@@ -413,39 +379,6 @@ void __SyntaxAnalyzer::__Param(__AST *&root, __Token *&tokenPtr)
         __matchToken(__TokenType::__LeftSquareBracket, tokenPtr);
         __matchToken(__TokenType::__RightSquareBracket, tokenPtr);
     }
-}
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// ENBF: CompoundStmt
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void __SyntaxAnalyzer::__CompoundStmt(__AST *&root, __Token *&tokenPtr)
-{
-    /*
-        EBNF:
-
-            CompoundStmt ::= '{' LocalDecl StmtList '}'
-
-
-        __AST:
-
-            __TokenType::__CompoundStmt
-                |
-                |---- __LocalDecl
-                |
-                |---- __StmtList
-    */
-
-    root = new __AST(__TokenType::__CompoundStmt, "CompoundStmt", {nullptr, nullptr});
-
-    __matchToken(__TokenType::__LeftCurlyBracket, tokenPtr);
-
-    __LocalDecl(root->__subList[0], tokenPtr);
-
-    __StmtList(root->__subList[1], tokenPtr);
-
-    __matchToken(__TokenType::__RightCurlyBracket, tokenPtr);
 }
 
 
@@ -532,7 +465,6 @@ void __SyntaxAnalyzer::__Stmt(__AST *&root, __Token *&tokenPtr)
         EBNF:
 
             Stmt ::= ExprStmt
-                   | CompoundStmt
                    | IfStmt
                    | WhileStmt
                    | ReturnStmt
@@ -540,7 +472,7 @@ void __SyntaxAnalyzer::__Stmt(__AST *&root, __Token *&tokenPtr)
 
         __AST:
 
-            __ExprStmt | __CompoundStmt | __IfStmt | __WhileStmt | __ReturnStmt
+            __ExprStmt | __IfStmt | __WhileStmt | __ReturnStmt
     */
 
     if (tokenPtr->__tokenType == __TokenType::__Semicolon        ||
@@ -549,10 +481,6 @@ void __SyntaxAnalyzer::__Stmt(__AST *&root, __Token *&tokenPtr)
         tokenPtr->__tokenType == __TokenType::__Number)
     {
         __ExprStmt(root, tokenPtr);
-    }
-    else if (tokenPtr->__tokenType == __TokenType::__LeftCurlyBracket)
-    {
-        __CompoundStmt(root, tokenPtr);
     }
     else if (tokenPtr->__tokenType == __TokenType::__If)
     {
@@ -610,7 +538,7 @@ void __SyntaxAnalyzer::__IfStmt(__AST *&root, __Token *&tokenPtr)
     /*
         EBNF:
 
-            IfStmt ::= if '(' Expr ')' Stmt [ else Stmt ]
+            IfStmt ::= if '(' Expr ')' '{' StmtList '}' [ else '{' StmtList '}' ]
 
 
         __AST:
@@ -619,9 +547,9 @@ void __SyntaxAnalyzer::__IfStmt(__AST *&root, __Token *&tokenPtr)
                 |
                 |---- __Expr
                 |
-                |---- __Stmt
+                |---- __StmtList
                 |
-                |---- [__Stmt]
+                |---- [__StmtList]
     */
 
     root = new __AST(__TokenType::__IfStmt, "IfStmt", {nullptr, nullptr});
@@ -633,15 +561,22 @@ void __SyntaxAnalyzer::__IfStmt(__AST *&root, __Token *&tokenPtr)
 
     __matchToken(__TokenType::__RightRoundBracket, tokenPtr);
 
-    __Stmt(root->__subList[1], tokenPtr);
+    __matchToken(__TokenType::__LeftCurlyBracket, tokenPtr);
+
+    __StmtList(root->__subList[1], tokenPtr);
+
+    __matchToken(__TokenType::__RightCurlyBracket, tokenPtr);
 
     if (tokenPtr->__tokenType == __TokenType::__Else)
     {
         __matchToken(__TokenType::__Else, tokenPtr);
+        __matchToken(__TokenType::__LeftCurlyBracket, tokenPtr);
 
         root->__subList.push_back(nullptr);
 
-        __Stmt(root->__subList[2], tokenPtr);
+        __StmtList(root->__subList[2], tokenPtr);
+
+        __matchToken(__TokenType::__RightCurlyBracket, tokenPtr);
     }
 }
 
@@ -655,7 +590,7 @@ void __SyntaxAnalyzer::__WhileStmt(__AST *&root, __Token *&tokenPtr)
     /*
         EBNF:
 
-            WhileStmt ::= while '(' Expr ')' Stmt
+            WhileStmt ::= while '(' Expr ')' '{' StmtList '}'
 
 
         __AST:
@@ -664,7 +599,7 @@ void __SyntaxAnalyzer::__WhileStmt(__AST *&root, __Token *&tokenPtr)
                 |
                 |---- __Expr
                 |
-                |---- __Stmt
+                |---- __StmtList
     */
 
     root = new __AST(__TokenType::__WhileStmt, "WhileStmt", {nullptr, nullptr});
@@ -675,8 +610,11 @@ void __SyntaxAnalyzer::__WhileStmt(__AST *&root, __Token *&tokenPtr)
     __Expr(root->__subList[0], tokenPtr);
 
     __matchToken(__TokenType::__RightRoundBracket, tokenPtr);
+    __matchToken(__TokenType::__LeftCurlyBracket, tokenPtr);
 
-    __Stmt(root->__subList[1], tokenPtr);
+    __StmtList(root->__subList[1], tokenPtr);
+
+    __matchToken(__TokenType::__RightCurlyBracket, tokenPtr);
 }
 
 
@@ -1085,9 +1023,9 @@ void __SyntaxAnalyzer::__Factor(__AST *&root, __Token *&tokenPtr)
         EBNF:
 
             Factor ::= '(' Expr ')'
-                     | Var
-                     | Call
                      | NUM
+                     | Call
+                     | Var
 
 
         __AST:

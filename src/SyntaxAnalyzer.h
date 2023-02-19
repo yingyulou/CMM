@@ -61,10 +61,6 @@ private:
     static void __Program(__AST *&root, __Token *&tokenPtr);
 
 
-    // ENBF: DeclList
-    static void __DeclList(__AST *&root, __Token *&tokenPtr);
-
-
     // ENBF: Decl
     static void __Decl(__AST *&root, __Token *&tokenPtr);
 
@@ -81,20 +77,12 @@ private:
     static void __FuncDecl(__AST *&root, __Token *&tokenPtr);
 
 
-    // ENBF: Params
-    static void __Params(__AST *&root, __Token *&tokenPtr);
-
-
     // ENBF: ParamList
     static void __ParamList(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: Param
     static void __Param(__AST *&root, __Token *&tokenPtr);
-
-
-    // ENBF: CompoundStmt
-    static void __CompoundStmt(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: LocalDecl

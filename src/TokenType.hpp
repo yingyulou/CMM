@@ -52,12 +52,11 @@ enum class __TokenType
     __END,                 // END
 
     // Ast
-    __DeclList,            // __AST: DeclList
+    __Program,             // __AST: Program
     __VarDecl,             // __AST: VarDecl
     __FuncDecl,            // __AST: FuncDecl
     __ParamList,           // __AST: ParamList
     __Param,               // __AST: Param
-    __CompoundStmt,        // __AST: CompoundStmt
     __LocalDecl,           // __AST: LocalDecl
     __StmtList,            // __AST: StmtList
     __IfStmt,              // __AST: IfStmt

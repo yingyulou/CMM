@@ -51,7 +51,7 @@ unordered_map<string, unordered_map<string, pair<int, int>>> __SemanticAnalyzer:
     int globalIdx = 0;
 
     /*
-        __TokenType::__DeclList
+        __TokenType::__Program
             |
             |---- __Decl
             |
@@ -74,18 +74,17 @@ unordered_map<string, unordered_map<string, pair<int, int>>> __SemanticAnalyzer:
                     |
                     |---- __TokenType::__Id
                     |
-                    |---- __Params
+                    |---- __ParamList | nullptr
                     |
-                    |---- __CompoundStmt
+                    |---- __LocalDecl
+                    |
+                    |---- __StmtList
             */
             int varIdx = 0;
             string funcName = declNodePtr->__subList[1]->__tokenStr;
 
             symbolTable[funcName];
 
-            /*
-                __ParamList | nullptr
-            */
             if (declNodePtr->__subList[2])
             {
                 /*
@@ -114,13 +113,6 @@ unordered_map<string, unordered_map<string, pair<int, int>>> __SemanticAnalyzer:
             }
 
             /*
-                __TokenType::__CompoundStmt
-                    |
-                    |---- __LocalDecl
-                    |
-                    |---- __StmtList
-
-
                 __TokenType::__LocalDecl
                     |
                     |---- [__VarDecl]
@@ -128,7 +120,7 @@ unordered_map<string, unordered_map<string, pair<int, int>>> __SemanticAnalyzer:
                     .
                     .
             */
-            for (auto varDeclPtr: declNodePtr->__subList[3]->__subList[0]->__subList)
+            for (auto varDeclPtr: declNodePtr->__subList[3]->__subList)
             {
                 /*
                     __TokenType::__VarDecl
