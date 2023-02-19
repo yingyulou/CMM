@@ -66,7 +66,7 @@ Here is the CMM language grammar in EBNF format:
 2. Decl ::= VarDecl
           | FuncDecl
 
-3. VarDecl ::= Type ID [ '[' NUM ']' ] ';'
+3. VarDecl ::= Type ID [ '[' Number ']' ] ';'
 
 4. Type ::= int
           | void
@@ -119,7 +119,7 @@ Here is the CMM language grammar in EBNF format:
             | '/'
 
 23. Factor ::= '(' Expr ')'
-             | NUM
+             | Number
              | Call
              | Var
 

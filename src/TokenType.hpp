@@ -52,23 +52,23 @@ enum class __TokenType
     __END,                 // END
 
     // Ast
-    __Program,             // __AST: Program
-    __VarDecl,             // __AST: VarDecl
-    __FuncDecl,            // __AST: FuncDecl
-    __ParamList,           // __AST: ParamList
-    __Param,               // __AST: Param
-    __LocalDecl,           // __AST: LocalDecl
-    __StmtList,            // __AST: StmtList
-    __IfStmt,              // __AST: IfStmt
-    __WhileStmt,           // __AST: WhileStmt
-    __ReturnStmt,          // __AST: ReturnStmt
-    __Expr,                // __AST: Expr
-    __Var,                 // __AST: Var
-    __SimpleExpr,          // __AST: SimpleExpr
-    __AddExpr,             // __AST: AddExpr
-    __Term,                // __AST: Term
-    __Call,                // __AST: Call
-    __ArgList,             // __AST: ArgList
+    __Program,             // AST: Program
+    __VarDecl,             // AST: VarDecl
+    __FuncDecl,            // AST: FuncDecl
+    __ParamList,           // AST: ParamList
+    __Param,               // AST: Param
+    __LocalDecl,           // AST: LocalDecl
+    __StmtList,            // AST: StmtList
+    __IfStmt,              // AST: IfStmt
+    __WhileStmt,           // AST: WhileStmt
+    __ReturnStmt,          // AST: ReturnStmt
+    __Expr,                // AST: Expr
+    __Var,                 // AST: Var
+    __SimpleExpr,          // AST: SimpleExpr
+    __AddExpr,             // AST: AddExpr
+    __Term,                // AST: Term
+    __Call,                // AST: Call
+    __ArgList,             // AST: ArgList
 };
 
 

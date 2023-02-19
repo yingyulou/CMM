@@ -107,6 +107,7 @@ void __SyntaxAnalyzer::__Program(__AST *&root, __Token *&tokenPtr)
     while (tokenPtr->__tokenType != __TokenType::__END)
     {
         root->__subList.push_back(nullptr);
+
         __Decl(root->__subList.back(), tokenPtr);
     }
 }
@@ -164,7 +165,7 @@ void __SyntaxAnalyzer::__VarDecl(__AST *&root, __Token *&tokenPtr)
     /*
         EBNF:
 
-            VarDecl ::= Type ID [ '[' NUMBER ']' ] ';'
+            VarDecl ::= Type ID [ '[' Number ']' ] ';'
 
 
         __AST:
@@ -285,11 +286,9 @@ void __SyntaxAnalyzer::__FuncDecl(__AST *&root, __Token *&tokenPtr)
     __ParamList(root->__subList[2], tokenPtr);
 
     __matchToken(__TokenType::__RightRoundBracket, tokenPtr);
-
     __matchToken(__TokenType::__LeftCurlyBracket, tokenPtr);
 
     __LocalDecl(root->__subList[3], tokenPtr);
-
     __StmtList(root->__subList[4], tokenPtr);
 
     __matchToken(__TokenType::__RightCurlyBracket, tokenPtr);
@@ -560,7 +559,6 @@ void __SyntaxAnalyzer::__IfStmt(__AST *&root, __Token *&tokenPtr)
     __Expr(root->__subList[0], tokenPtr);
 
     __matchToken(__TokenType::__RightRoundBracket, tokenPtr);
-
     __matchToken(__TokenType::__LeftCurlyBracket, tokenPtr);
 
     __StmtList(root->__subList[1], tokenPtr);
@@ -646,6 +644,7 @@ void __SyntaxAnalyzer::__ReturnStmt(__AST *&root, __Token *&tokenPtr)
         tokenPtr->__tokenType == __TokenType::__Number)
     {
         root->__subList.push_back(nullptr);
+
         __Expr(root->__subList.back(), tokenPtr);
     }
 
@@ -1023,7 +1022,7 @@ void __SyntaxAnalyzer::__Factor(__AST *&root, __Token *&tokenPtr)
         EBNF:
 
             Factor ::= '(' Expr ')'
-                     | NUM
+                     | Number
                      | Call
                      | Var
 
