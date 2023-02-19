@@ -10,11 +10,7 @@ namespace CMM
 {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-<<<<<<< HEAD
-// Enum Class TokenType
-=======
 // Enum Class __TokenType
->>>>>>> 0c0e907012a412af040951cada6b8da33e61e29a
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 enum class __TokenType
@@ -53,26 +49,27 @@ enum class __TokenType
     __RightCurlyBracket,   // }
 
     // End
-    __End,                 // End
+    __END,                 // END
 
     // Ast
-    __Program,             // AST: __Program
-    __VarDecl,             // AST: __VarDecl
-    __FuncDecl,            // AST: __FuncDecl
-    __ParamList,           // AST: __ParamList
-    __Param,               // AST: __Param
-    __LocalDecl,           // AST: __LocalDecl
-    __StmtList,            // AST: __StmtList
-    __IfStmt,              // AST: __IfStmt
-    __WhileStmt,           // AST: __WhileStmt
-    __ReturnStmt,          // AST: __ReturnStmt
-    __Expr,                // AST: __Expr
-    __Var,                 // AST: __Var
-    __SimpleExpr,          // AST: __SimpleExpr
-    __AddExpr,             // AST: __AddExpr
-    __Term,                // AST: __Term
-    __Call,                // AST: __Call
-    __ArgList,             // AST: __ArgList
+    __DeclList,            // __AST: DeclList
+    __VarDecl,             // __AST: VarDecl
+    __FuncDecl,            // __AST: FuncDecl
+    __ParamList,           // __AST: ParamList
+    __Param,               // __AST: Param
+    __CompoundStmt,        // __AST: CompoundStmt
+    __LocalDecl,           // __AST: LocalDecl
+    __StmtList,            // __AST: StmtList
+    __IfStmt,              // __AST: IfStmt
+    __WhileStmt,           // __AST: WhileStmt
+    __ReturnStmt,          // __AST: ReturnStmt
+    __Expr,                // __AST: Expr
+    __Var,                 // __AST: Var
+    __SimpleExpr,          // __AST: SimpleExpr
+    __AddExpr,             // __AST: AddExpr
+    __Term,                // __AST: Term
+    __Call,                // __AST: Call
+    __ArgList,             // __AST: ArgList
 };
 
 

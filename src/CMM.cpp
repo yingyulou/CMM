@@ -1,7 +1,7 @@
 /*
     CMM
     ===
-        CMM (C Minus Minus) Language Compiler And VM.
+        CMM (C Minus Minus) Language Compiler And __VM.
 */
 
 #include "CMM.hpp"

@@ -35,8 +35,8 @@ using std::endl;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Core::Core(int argc, char **argv):
-    __Argc(argc),
-    __Argv(argv) {}
+    __ARGC(argc),
+    __ARGV(argv) {}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,7 +73,7 @@ void Core::__inputArguments()
             "Input ASM File Path (For Running)");
 
     po::variables_map vm;
-    po::store(po::parse_command_line(__Argc, __Argv, desc), vm);
+    po::store(po::parse_command_line(__ARGC, __ARGV, desc), vm);
 
     if (vm.count("help"))
     {
@@ -93,21 +93,10 @@ void Core::__generateCode() const
 {
     if (!__cmmFilePath.empty())
     {
-        __LexicalAnalyzer lexicalAnalyzer(__cmmFilePath);
-
-        auto tokenList = lexicalAnalyzer.__lexicalAnalysis();
-
-        __SyntaxAnalyzer syntaxAnalyzer(tokenList);
-
-        auto root = syntaxAnalyzer.__syntaxAnalysis();
-
-        __SemanticAnalyzer semanticAnalyzer(root);
-
-        auto symbolTable = semanticAnalyzer.__semanticAnalysis();
-
-        __CodeGenerator codeGenerator(root, symbolTable);
-
-        auto codeList = codeGenerator.__generateCode();
+        auto tokenList   = __LexicalAnalyzer(__cmmFilePath).__lexicalAnalysis();
+        auto root        = __SyntaxAnalyzer(tokenList).__syntaxAnalysis();
+        auto symbolTable = __SemanticAnalyzer(root).__semanticAnalysis();
+        auto codeList    = __CodeGenerator(root, symbolTable).__generateCode();
 
         __IO::__outputInstruction(__outputFilePath, codeList);
 
@@ -126,9 +115,7 @@ void Core::__execCode() const
     {
         auto codeList = __IO::__parseInstructionFile(__asmFilePath);
 
-        __VM vm(codeList);
-
-        vm.__run();
+        __VM(codeList).__run();
     }
 }
 

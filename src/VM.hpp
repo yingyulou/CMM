@@ -35,21 +35,7 @@ __VM::__VM(const vector<pair<__Instruction, int>> &CS):
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-<<<<<<< HEAD
-// Run
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void VM::run()
-{
-    __run();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Exec Instruction
-=======
 // Exec __Instruction
->>>>>>> 0c0e907012a412af040951cada6b8da33e61e29a
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void __VM::__execInstruction(const pair<__Instruction, int> &instructionPair)
@@ -146,12 +132,12 @@ void __VM::__execInstruction(const pair<__Instruction, int> &instructionPair)
             break;
 
         case __Instruction::__ADDR:
-            __AX = (int)__SS.size() - instructionPair.second;
+            __AX = __SS.size() - instructionPair.second;
             break;
 
         case __Instruction::__CALL:
             __SS.push_back(__BP);
-            __BP = (int)__SS.size() - 2;
+            __BP = __SS.size() - 2;
             __SS.push_back(__IP);
             __IP += instructionPair.second - 1;
             break;

@@ -24,11 +24,7 @@ using std::vector;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-<<<<<<< HEAD
-// Class SyntaxAnalyzer
-=======
 // Class __SyntaxAnalyzer
->>>>>>> 0c0e907012a412af040951cada6b8da33e61e29a
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class __SyntaxAnalyzer
@@ -49,16 +45,24 @@ private:
     vector<__Token> __tokenList;
 
 
-    // Invalid Token
+    // Invalid __Token
     static void __invalidToken(const __Token *tokenPtr);
 
 
-    // Match Token
+    // Match __Token
     static void __matchToken(__TokenType tokenType, __Token *&tokenPtr);
+
+
+    // ENBF: Parse
+    static void __Parse(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: Program
     static void __Program(__AST *&root, __Token *&tokenPtr);
+
+
+    // ENBF: DeclList
+    static void __DeclList(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: Decl
@@ -77,12 +81,20 @@ private:
     static void __FuncDecl(__AST *&root, __Token *&tokenPtr);
 
 
+    // ENBF: Params
+    static void __Params(__AST *&root, __Token *&tokenPtr);
+
+
     // ENBF: ParamList
     static void __ParamList(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: Param
     static void __Param(__AST *&root, __Token *&tokenPtr);
+
+
+    // ENBF: CompoundStmt
+    static void __CompoundStmt(__AST *&root, __Token *&tokenPtr);
 
 
     // ENBF: LocalDecl
