@@ -1,7 +1,7 @@
 /*
     SemanticAnalyzer.hpp
     ====================
-        Class SemanticAnalyzer  implementation.
+        Class __SemanticAnalyzer  implementation.
 */
 
 #pragma once
@@ -30,11 +30,12 @@ using std::stoi;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-SemanticAnalyzer::SemanticAnalyzer(AST *root):
+__SemanticAnalyzer::__SemanticAnalyzer(__AST *root):
     __root(root) {}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+<<<<<<< HEAD
 // Getter: __symbolTable
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -49,98 +50,115 @@ unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::s
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::__semanticAnalysis() const
+=======
+// Get Symbol Table
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+unordered_map<string, unordered_map<string, pair<int, int>>> __SemanticAnalyzer::__semanticAnalysis() const
+>>>>>>> 0c0e907012a412af040951cada6b8da33e61e29a
 {
     /*
         symbolTable: Function Name => Variable Name => (Variable Number, Array Size)
     */
-    unordered_map<string, unordered_map<string, pair<int, int>>> symbolTable
-    {
-        {"__GLOBAL__", {}}
-    };
+    unordered_map<string, unordered_map<string, pair<int, int>>> symbolTable {{"__GLOBAL__", {}}};
 
     int globalIdx = 0;
 
     /*
-        TokenType::DeclList
-            |
-            |---- __Decl
-            |
-            |---- [__Decl]
-            .
-            .
-            .
+        __TokenType::__Program
+        |
+        |---- __Decl
+        |
+        |---- [__Decl]
+        .
+        .
+        .
     */
-    for (auto declNodePtr: __root->subList())
+    for (auto declNodePtr: __root->__subList)
     {
         /*
             __VarDecl | __FuncDecl
         */
-        if (declNodePtr->tokenType() == TokenType::FuncDecl)
+        if (declNodePtr->__tokenType == __TokenType::__VarDecl)
         {
             /*
-                TokenType::FuncDecl
-                    |
-                    |---- __Type
-                    |
-                    |---- TokenType::Id
-                    |
-                    |---- __Params
-                    |
-                    |---- __CompoundStmt
+                __TokenType::__VarDecl
+                |
+                |---- __Type
+                |
+                |---- __TokenType::__Id
+                |
+                |---- [__TokenType::__Number]
+            */
+            string varName = declNodePtr->__subList[1]->__tokenStr;
+
+            int varSize = declNodePtr->__subList.size() == 2 ? 0 : stoi(declNodePtr->__subList[2]->__tokenStr);
+
+            symbolTable["__GLOBAL__"][varName] = {globalIdx, varSize};
+            globalIdx += varSize + 1;
+        }
+        else
+        {
+            /*
+                __TokenType::__FuncDecl
+                |
+                |---- __Type
+                |
+                |---- __TokenType::__Id
+                |
+                |---- [__ParamList]
+                |
+                |---- __LocalDecl
+                |
+                |---- __StmtList
             */
             int varIdx = 0;
-            string funcName = declNodePtr->subList()[1]->tokenStr();
+            string funcName = declNodePtr->__subList[1]->__tokenStr;
 
             symbolTable[funcName];
 
             /*
-                __ParamList | nullptr
+                [__ParamList]
             */
-            if (declNodePtr->subList()[2])
+            if (declNodePtr->__subList[2])
             {
                 /*
-                    TokenType::ParamList
-                        |
-                        |---- __Param
-                        |
-                        |---- [__Param]
-                        .
-                        .
-                        .
+                    __TokenType::__ParamList
+                    |
+                    |---- __Param
+                    |
+                    |---- [__Param]
+                    .
+                    .
+                    .
                 */
-                for (auto paramPtr: declNodePtr->subList()[2]->subList())
+                for (auto paramPtr: declNodePtr->__subList[2]->__subList)
                 {
                     /*
-                        TokenType::Param
-                            |
-                            |---- __Type
-                            |
-                            |---- TokenType::Id
+                        __TokenType::__Param
+                        |
+                        |---- __Type
+                        |
+                        |---- __TokenType::__Id
                     */
-                    string varName = paramPtr->subList()[1]->tokenStr();
+                    string varName = paramPtr->__subList[1]->__tokenStr;
 
                     symbolTable[funcName][varName] = {varIdx++, 0};
                 }
             }
 
             /*
-                TokenType::CompoundStmt
-                    |
-                    |---- __LocalDecl
-                    |
-                    |---- __StmtList
-
-
-                TokenType::LocalDecl
-                    |
-                    |---- [__VarDecl]
-                    .
-                    .
-                    .
+                __TokenType::__LocalDecl
+                |
+                |---- [__VarDecl]
+                .
+                .
+                .
             */
-            for (auto varDeclPtr: declNodePtr->subList()[3]->subList()[0]->subList())
+            for (auto varDeclPtr: declNodePtr->__subList[3]->__subList)
             {
                 /*
+<<<<<<< HEAD
                     TokenType::VarDecl
                         |
                         |---- __Type
@@ -161,19 +179,27 @@ unordered_map<string, unordered_map<string, pair<int, int>>> SemanticAnalyzer::_
         {
             /*
                 TokenType::VarDecl
+=======
+                    __TokenType::__VarDecl
+>>>>>>> 0c0e907012a412af040951cada6b8da33e61e29a
                     |
                     |---- __Type
                     |
-                    |---- TokenType::Id
+                    |---- __TokenType::__Id
                     |
-                    |---- [TokenType::Number]
-            */
-            string varName = declNodePtr->subList()[1]->tokenStr();
+                    |---- [__TokenType::__Number]
+                */
+                string varName = varDeclPtr->__subList[1]->__tokenStr;
 
+<<<<<<< HEAD
             int varSize = declNodePtr->subList().size() == 2 ? 0 : stoi(declNodePtr->subList()[2]->tokenStr());
+=======
+                int varSize = varDeclPtr->__subList.size() == 2 ? 0 : stoi(varDeclPtr->__subList[2]->__tokenStr);
+>>>>>>> 0c0e907012a412af040951cada6b8da33e61e29a
 
-            symbolTable["__GLOBAL__"][varName] = {globalIdx, varSize};
-            globalIdx += varSize + 1;
+                symbolTable[funcName][varName] = {varIdx, varSize};
+                varIdx += varSize + 1;
+            }
         }
     }
 

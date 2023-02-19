@@ -1,14 +1,14 @@
 /*
-    VM.h
-    ====
-        Class __VM header.
+    Constants.h
+    ===========
+        Class __Constants header.
 */
 
 #pragma once
 
-#include <vector>
-#include <utility>
-#include "Instruction.hpp"
+#include <string>
+#include <unordered_map>
+#include "TokenType.hpp"
 
 namespace CMM
 {
@@ -17,46 +17,29 @@ namespace CMM
 // Using
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using std::vector;
-using std::pair;
+using std::string;
+using std::unordered_map;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-<<<<<<< HEAD
-// Class VM
-=======
-// Class __VM
->>>>>>> 0c0e907012a412af040951cada6b8da33e61e29a
+// Class __Constants
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class __VM
+class __Constants
 {
     // Friend
+    friend class __LexicalAnalyzer;
     friend class Core;
-
-
-public:
-
-    // Constructor
-    explicit __VM(const vector<pair<__Instruction, int>> &CS);
 
 
 private:
 
-    // Attribute
-    vector<pair<__Instruction, int>> __CS;
-    int __IP;
-    int __AX;
-    int __BP;
-    vector<int> __SS;
+    // Description Str
+    static const string __DESCRIPTION_STR;
 
 
-    // Exec __Instruction
-    void __execInstruction(const pair<__Instruction, int> &instructionPair);
-
-
-    // Run
-    void __run();
+    // Keyword Map
+    static const unordered_map<string, __TokenType> __KEYWORD_MAP;
 };
 
 

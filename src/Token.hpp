@@ -1,7 +1,7 @@
 /*
     Token.hpp
     =========
-        Struct Token implementation.
+        Struct __Token implementation.
 */
 
 #pragma once
@@ -24,12 +24,13 @@ using std::string;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Token::Token(TokenType tokenType, const string &tokenStr, int lineNo):
+__Token::__Token(__TokenType tokenType, const string &tokenStr, int lineNo):
     __tokenType(tokenType),
     __tokenStr (tokenStr),
     __lineNo   (lineNo) {}
 
 
+<<<<<<< HEAD
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Getter: __tokenType
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,4 +67,6 @@ int Token::lineNo() const
 }
 
 
+=======
+>>>>>>> 0c0e907012a412af040951cada6b8da33e61e29a
 }  // End namespace CMM

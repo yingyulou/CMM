@@ -37,8 +37,8 @@ public:
 private:
 
     // Attribute
-    int __ARGC;
-    char **__ARGV;
+    int __Argc;
+    char **__Argv;
     string __cmmFilePath;
     string __outputFilePath;
     string __asmFilePath;

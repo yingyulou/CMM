@@ -16,7 +16,7 @@
 #include "CodeGenerator.h"
 #include "IO.h"
 #include "VM.h"
-#include "Constants.hpp"
+#include "Constants.h"
 
 namespace CMM
 {
@@ -35,8 +35,8 @@ using std::endl;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Core::Core(int argc, char **argv):
-    __ARGC(argc),
-    __ARGV(argv) {}
+    __Argc(argc),
+    __Argv(argv) {}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,7 +57,7 @@ void Core::__inputArguments()
 {
     namespace po = boost::program_options;
 
-    po::options_description desc(DESCRIPTION_STR);
+    po::options_description desc(__Constants::__DESCRIPTION_STR);
 
     desc.add_options()
 
@@ -73,7 +73,7 @@ void Core::__inputArguments()
             "Input ASM File Path (For Running)");
 
     po::variables_map vm;
-    po::store(po::parse_command_line(__ARGC, __ARGV, desc), vm);
+    po::store(po::parse_command_line(__Argc, __Argv, desc), vm);
 
     if (vm.count("help"))
     {
@@ -93,23 +93,23 @@ void Core::__generateCode() const
 {
     if (!__cmmFilePath.empty())
     {
-        LexicalAnalyzer lexicalAnalyzer(__cmmFilePath);
+        __LexicalAnalyzer lexicalAnalyzer(__cmmFilePath);
 
-        auto tokenList = lexicalAnalyzer.lexicalAnalysis();
+        auto tokenList = lexicalAnalyzer.__lexicalAnalysis();
 
-        SyntaxAnalyzer syntaxAnalyzer(tokenList);
+        __SyntaxAnalyzer syntaxAnalyzer(tokenList);
 
-        auto root = syntaxAnalyzer.syntaxAnalysis();
+        auto root = syntaxAnalyzer.__syntaxAnalysis();
 
-        SemanticAnalyzer semanticAnalyzer(root);
+        __SemanticAnalyzer semanticAnalyzer(root);
 
-        auto symbolTable = semanticAnalyzer.semanticAnalysis();
+        auto symbolTable = semanticAnalyzer.__semanticAnalysis();
 
-        CodeGenerator codeGenerator(root, symbolTable);
+        __CodeGenerator codeGenerator(root, symbolTable);
 
-        auto codeList = codeGenerator.generateCode();
+        auto codeList = codeGenerator.__generateCode();
 
-        IO::outputInstruction(__outputFilePath, codeList);
+        __IO::__outputInstruction(__outputFilePath, codeList);
 
         delete root;
     }
@@ -124,11 +124,11 @@ void Core::__execCode() const
 {
     if (!__asmFilePath.empty())
     {
-        auto codeList = IO::parseInstructionFile(__asmFilePath);
+        auto codeList = __IO::__parseInstructionFile(__asmFilePath);
 
-        VM vm(codeList);
+        __VM vm(codeList);
 
-        vm.run();
+        vm.__run();
     }
 }
 

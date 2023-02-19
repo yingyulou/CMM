@@ -1,7 +1,7 @@
 /*
     SemanticAnalyzer.h
     ==================
-        Class SemanticAnalyzer header.
+        Class __SemanticAnalyzer header.
 */
 
 #pragma once
@@ -24,25 +24,34 @@ using std::pair;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+<<<<<<< HEAD
 // Class SemanticAnalyzer
+=======
+// Class __SemanticAnalyzer
+>>>>>>> 0c0e907012a412af040951cada6b8da33e61e29a
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class SemanticAnalyzer
+class __SemanticAnalyzer
 {
+    // Friend
+    friend class Core;
+
+
 public:
 
-    // Constructor
-    SemanticAnalyzer(AST *root = nullptr);
-
-
+<<<<<<< HEAD
     // Semantic Analysis
     unordered_map<string, unordered_map<string, pair<int, int>>> semanticAnalysis() const;
+=======
+    // Constructor
+    __SemanticAnalyzer(__AST *root = nullptr);
+>>>>>>> 0c0e907012a412af040951cada6b8da33e61e29a
 
 
 private:
 
     // Attribute
-    AST *__root;
+    __AST *__root;
 
 
     // Semantic Analysis

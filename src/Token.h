@@ -1,7 +1,7 @@
 /*
     Token.h
     =======
-        Struct Token header.
+        Struct __Token header.
 */
 
 #pragma once
@@ -20,34 +20,31 @@ using std::string;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+<<<<<<< HEAD
 // Class Token
+=======
+// Class __Token
+>>>>>>> 0c0e907012a412af040951cada6b8da33e61e29a
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class Token
+class __Token
 {
+    // Friend
+    friend class __LexicalAnalyzer;
+    friend class __AST;
+    friend class __SyntaxAnalyzer;
+
+
 public:
 
     // Constructor
-    explicit Token(TokenType tokenType, const string &tokenStr, int lineNo);
-
-
-    // Getter: __tokenType
-    TokenType tokenType() const;
-
-
-    // Getter: __tokenStr
-    string &tokenStr();
-    const string &tokenStr() const;
-
-
-    // Getter: __lineNo
-    int lineNo() const;
+    explicit __Token(__TokenType tokenType, const string &tokenStr, int lineNo);
 
 
 private:
 
     // Attribute
-    TokenType __tokenType;
+    __TokenType __tokenType;
     string __tokenStr;
     int __lineNo;
 };

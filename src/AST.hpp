@@ -1,7 +1,7 @@
 /*
     AST.hpp
     =======
-        Struct AST implementation.
+        Struct __AST implementation.
 */
 
 #pragma once
@@ -27,7 +27,11 @@ using std::vector;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+<<<<<<< HEAD
 AST::AST(TokenType tokenType, const string &tokenStr, const vector<AST *> &subList, int lineNo):
+=======
+__AST::__AST(__TokenType tokenType, const string &tokenStr, const vector<__AST *> &subList, int lineNo):
+>>>>>>> 0c0e907012a412af040951cada6b8da33e61e29a
     __tokenType(tokenType),
     __tokenStr (tokenStr),
     __subList  (subList),
@@ -38,13 +42,14 @@ AST::AST(TokenType tokenType, const string &tokenStr, const vector<AST *> &subLi
 // Constructor (With tokenPtr)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-AST::AST(const Token *tokenPtr):
-    __tokenType(tokenPtr->tokenType()),
-    __tokenStr (tokenPtr->tokenStr()),
-    __lineNo   (tokenPtr->lineNo()) {}
+__AST::__AST(const __Token *tokenPtr):
+    __tokenType(tokenPtr->__tokenType),
+    __tokenStr (tokenPtr->__tokenStr),
+    __lineNo   (tokenPtr->__lineNo) {}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+<<<<<<< HEAD
 // Getter: __tokenType
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -97,10 +102,12 @@ int AST::lineNo() const
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+=======
+>>>>>>> 0c0e907012a412af040951cada6b8da33e61e29a
 // Destructor
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-AST::~AST()
+__AST::~__AST()
 {
     for (auto subPtr: __subList)
     {

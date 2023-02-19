@@ -1,7 +1,7 @@
 /*
     TokenType.hpp
     =============
-        Enum class TokenType implementation.
+        Enum class __TokenType implementation.
 */
 
 #pragma once
@@ -10,66 +10,69 @@ namespace CMM
 {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+<<<<<<< HEAD
 // Enum Class TokenType
+=======
+// Enum Class __TokenType
+>>>>>>> 0c0e907012a412af040951cada6b8da33e61e29a
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-enum class TokenType
+enum class __TokenType
 {
     // Word
-    Id,                  // Id
-    Number,              // Number
+    __Id,                  // Id
+    __Number,              // Number
 
     // Keyword
-    Void,                // void
-    Int,                 // int
-    If,                  // if
-    Else,                // else
-    While,               // while
-    Return,              // return
+    __Void,                // void
+    __Int,                 // int
+    __If,                  // if
+    __Else,                // else
+    __While,               // while
+    __Return,              // return
 
     // Operator
-    Plus,                // +
-    Minus,               // -
-    Multiply,            // *
-    Divide,              // /
-    Less,                // <
-    LessEqual,           // <=
-    Greater,             // >
-    GreaterEqual,        // >=
-    Equal,               // ==
-    NotEqual,            // !=
-    Assign,              // =
-    Semicolon,           // ;
-    Comma,               // ,
-    LeftRoundBracket,    // (
-    RightRoundBracket,   // )
-    LeftSquareBracket,   // [
-    RightSquareBracket,  // ]
-    LeftCurlyBracket,    // {
-    RightCurlyBracket,   // }
+    __Plus,                // +
+    __Minus,               // -
+    __Multiply,            // *
+    __Divide,              // /
+    __Less,                // <
+    __LessEqual,           // <=
+    __Greater,             // >
+    __GreaterEqual,        // >=
+    __Equal,               // ==
+    __NotEqual,            // !=
+    __Assign,              // =
+    __Semicolon,           // ;
+    __Comma,               // ,
+    __LeftRoundBracket,    // (
+    __RightRoundBracket,   // )
+    __LeftSquareBracket,   // [
+    __RightSquareBracket,  // ]
+    __LeftCurlyBracket,    // {
+    __RightCurlyBracket,   // }
 
     // End
-    END,                 // END
+    __End,                 // End
 
     // Ast
-    DeclList,            // AST: DeclList
-    VarDecl,             // AST: VarDecl
-    FuncDecl,            // AST: FuncDecl
-    ParamList,           // AST: ParamList
-    Param,               // AST: Param
-    CompoundStmt,        // AST: CompoundStmt
-    LocalDecl,           // AST: LocalDecl
-    StmtList,            // AST: StmtList
-    IfStmt,              // AST: IfStmt
-    WhileStmt,           // AST: WhileStmt
-    ReturnStmt,          // AST: ReturnStmt
-    Expr,                // AST: Expr
-    Var,                 // AST: Var
-    SimpleExpr,          // AST: SimpleExpr
-    AddExpr,             // AST: AddExpr
-    Term,                // AST: Term
-    Call,                // AST: Call
-    ArgList,             // AST: ArgList
+    __Program,             // AST: __Program
+    __VarDecl,             // AST: __VarDecl
+    __FuncDecl,            // AST: __FuncDecl
+    __ParamList,           // AST: __ParamList
+    __Param,               // AST: __Param
+    __LocalDecl,           // AST: __LocalDecl
+    __StmtList,            // AST: __StmtList
+    __IfStmt,              // AST: __IfStmt
+    __WhileStmt,           // AST: __WhileStmt
+    __ReturnStmt,          // AST: __ReturnStmt
+    __Expr,                // AST: __Expr
+    __Var,                 // AST: __Var
+    __SimpleExpr,          // AST: __SimpleExpr
+    __AddExpr,             // AST: __AddExpr
+    __Term,                // AST: __Term
+    __Call,                // AST: __Call
+    __ArgList,             // AST: __ArgList
 };
 
 
