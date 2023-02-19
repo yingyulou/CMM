@@ -71,7 +71,7 @@ Here is the CMM language grammar in EBNF format:
 4. Type ::= int
           | void
 
-5. FuncDecl ::= Type ID '(' ParamList  ')' '{' LocalDecl StmtList '}'
+5. FuncDecl ::= Type ID '(' ParamList ')' '{' LocalDecl StmtList '}'
 
 6. ParamList ::= [ Param { ',' Param } ]
 
