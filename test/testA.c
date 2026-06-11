@@ -1,13 +1,8 @@
-/*
-    A program to perform Euclid's
-    Algorithm to compute greatest common divisor.
-*/
-
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Calc Greatest Common Divisor
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
-int CalcGreatestCommonDivisor(int lhs, int rhs)
+int calcGreatestCommonDivisor(int lhs, int rhs)
 {
     if (rhs == 0)
     {
@@ -15,13 +10,13 @@ int CalcGreatestCommonDivisor(int lhs, int rhs)
     }
     else
     {
-        return CalcGreatestCommonDivisor(rhs, lhs - lhs / rhs * rhs);
+        return calcGreatestCommonDivisor(rhs, lhs - lhs / rhs * rhs);
     }
 }
 
 
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Main Program Define
+// Main
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 int main()
@@ -32,5 +27,5 @@ int main()
     lhs = input();
     rhs = input();
 
-    output(CalcGreatestCommonDivisor(lhs, rhs));
+    output(calcGreatestCommonDivisor(lhs, rhs));
 }

@@ -36,25 +36,15 @@ make clean
 Command "CMM -h" or "CMM --help" is used to get the help information:
 
 ```
-========================================================================================================================
-
-CMM
-===
-
-    CMM (C Minus Minus) Language Compiler And __VM.
-
-========================================================================================================================
-
-Usage:
-  -h [ --help ]         show this help message and exit
-  -i arg                Input CMM File Path
-  -o arg (=a.out)       Output ASM File Path
-  -r arg                Input ASM File Path (For Running)
+  -h [ --help ]          Show this help message and exit
+  --input-file-path arg  Input cmm file path
+  --output-file-path arg Output asm file path
+  --asm-file-path arg    Input asm file path for running
 ```
 
 ## Sample files
 
-There are two sample code files written by the CMM language in the ```CMM/test/testA.cmm``` and the ```CMM/test/testB.cmm```.
+There are two sample code files written by the CMM language in the ```CMM/test/testA.c``` and the ```CMM/test/testB.c```.
 
 ## CMM Language Grammar
 
@@ -151,28 +141,28 @@ Here is the instruction set and the fake code of each instruction of the CMM lan
 
 | Instruction | Fake Code                                         |
 | :---------: | :-----------------------------------------------: |
-| LDC N       | AX = N                                            |
-| LD          | AX = SS[BP - AX]                                  |
-| ALD         | AX = SS[AX]                                       |
-| ST          | SS[BP - AX] = SS.TOP()                            |
-| AST         | SS[AX] = SS.TOP()                                 |
-| PUSH        | SS.PUSH(AX)                                       |
-| POP         | SS.POP()                                          |
-| JMP N       | IP += N                                           |
-| JZ N        | if (AX == 0) IP += N                              |
-| ADD         | AX = SS.TOP() + AX                                |
-| SUB         | AX = SS.TOP() - AX                                |
-| MUL         | AX = SS.TOP() * AX                                |
-| DIV         | AX = SS.TOP() / AX                                |
-| LT          | AX = SS.TOP() < AX                                |
-| LE          | AX = SS.TOP() <= AX                               |
-| GT          | AX = SS.TOP() > AX                                |
-| GE          | AX = SS.TOP() >= AX                               |
-| EQ          | AX = SS.TOP() == AX                               |
-| NE          | AX = SS.TOP() != AX                               |
-| IN          | scanf("%d", &AX)                                  |
-| OUT         | printf("%d\n", AX)                                |
-| ADDR N      | AX = SS.SIZE() - N                                |
-| CALL N      | SS.PUSH(BP); BP = SS.SIZE(); SS.PUSH(IP); IP += N |
-| RET         | IP = SS.POP(); BP = SS.POP()                      |
+| ldc n       | ax = n                                            |
+| ld          | ax = ss[bp - ax]                                  |
+| ald         | ax = ss[ax]                                       |
+| st          | ss[bp - ax] = ss.top()                            |
+| ast         | ss[ax] = ss.top()                                 |
+| push        | ss.push(ax)                                       |
+| pop         | ss.pop()                                          |
+| jmp n       | ip += n                                           |
+| jz n        | if (ax == 0) ip += n                              |
+| add         | ax = ss.top() + ax                                |
+| sub         | ax = ss.top() - ax                                |
+| mul         | ax = ss.top() * ax                                |
+| div         | ax = ss.top() / ax                                |
+| lt          | ax = ss.top() < ax                                |
+| le          | ax = ss.top() <= ax                               |
+| gt          | ax = ss.top() > ax                                |
+| ge          | ax = ss.top() >= ax                               |
+| eq          | ax = ss.top() == ax                               |
+| ne          | ax = ss.top() != ax                               |
+| in          | scanf("%d", &ax)                                  |
+| out         | printf("%d\n", ax)                                |
+| lea n       | ax = ss.size() - n                                |
+| call n      | ss.push(bp); bp = ss.size(); ss.push(ip); ip += n |
+| ret         | ip = ss.pop(); bp = ss.pop()                      |
 

@@ -1,10 +1,4 @@
-/*
-    CMM
-    ===
-        CMM (C Minus Minus) Language Compiler And __VM.
-*/
-
-#include "CMM.hpp"
+#include "Kernel.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Main
@@ -12,5 +6,5 @@
 
 int main(int argc, char **argv)
 {
-    CMM::Core(argc, argv).main();
+    CMM::__Kernel(argc, argv)();
 }

@@ -6,12 +6,10 @@
 
 #pragma once
 
+#include <string>
 #include <vector>
-#include <utility>
+#include <fstream>
 #include <stdexcept>
-#include <cstdio>
-#include "VM.h"
-#include "Instruction.hpp"
 
 namespace CMM
 {
@@ -20,152 +18,187 @@ namespace CMM
 // Using
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+using std::string;
 using std::vector;
-using std::pair;
+using std::ifstream;
 using std::runtime_error;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Constructor
+// Class __VM
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-__VM::__VM(const vector<pair<__Instruction, int>> &CS):
-    __CS(CS),
-    __IP(0) {}
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Exec __Instruction
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void __VM::__execInstruction(const pair<__Instruction, int> &instructionPair)
+class __VM
 {
-    switch (instructionPair.first)
+public:
+
+    // Constructor
+    explicit __VM(const string &inputFilePath):
+        __inputFilePath(inputFilePath) {}
+
+
+    // operator()
+    void operator()()
     {
-        case __Instruction::__LDC:
-            __AX = instructionPair.second;
-            break;
+        __main();
+    }
 
-        case __Instruction::__LD:
-            __AX = __SS[__BP - __AX];
-            break;
 
-        case __Instruction::__ALD:
-            __AX = __SS[__AX];
-            break;
+private:
 
-        case __Instruction::__ST:
-            __SS[__BP - __AX] = __SS.back();
-            break;
+    // Attribute
+    string __inputFilePath;
+    vector<string> __CS;
+    size_t __IP;
+    vector<int32_t> __SS;
+    int32_t __AX;
+    int32_t __BP;
 
-        case __Instruction::__AST:
-            __SS[__AX] = __SS.back();
-            break;
 
-        case __Instruction::__PUSH:
-            __SS.push_back(__AX);
-            break;
+    // Construct __CS
+    void __constructCS()
+    {
+        ifstream fdIn(__inputFilePath);
 
-        case __Instruction::__POP:
-            __SS.pop_back();
-            break;
+        if (!fdIn)
+        {
+            throw runtime_error("Invalid " + __inputFilePath);
+        }
 
-        case __Instruction::__JMP:
-            __IP += instructionPair.second - 1;
-            break;
+        for (string line; getline(fdIn, line); __CS.push_back(line));
+    }
 
-        case __Instruction::__JZ:
 
-            if (!__AX)
+    // Exec Code
+    void __execCode()
+    {
+        for (__IP = 0; __IP < __CS.size(); __IP++)
+        {
+            if (!__CS[__IP].compare(0, 4, "ldc "))
             {
-                __IP += instructionPair.second - 1;
+                __AX = stoll(__CS[__IP].substr(4));
             }
-
-            break;
-
-        case __Instruction::__ADD:
-            __AX = __SS.back() + __AX;
-            break;
-
-        case __Instruction::__SUB:
-            __AX = __SS.back() - __AX;
-            break;
-
-        case __Instruction::__MUL:
-            __AX = __SS.back() * __AX;
-            break;
-
-        case __Instruction::__DIV:
-            __AX = __SS.back() / __AX;
-            break;
-
-        case __Instruction::__LT:
-            __AX = __SS.back() < __AX;
-            break;
-
-        case __Instruction::__LE:
-            __AX = __SS.back() <= __AX;
-            break;
-
-        case __Instruction::__GT:
-            __AX = __SS.back() > __AX;
-            break;
-
-        case __Instruction::__GE:
-            __AX = __SS.back() >= __AX;
-            break;
-
-        case __Instruction::__EQ:
-            __AX = __SS.back() == __AX;
-            break;
-
-        case __Instruction::__NE:
-            __AX = __SS.back() != __AX;
-            break;
-
-        case __Instruction::__IN:
-            scanf("%d", &__AX);
-            break;
-
-        case __Instruction::__OUT:
-            printf("%d\n", __AX);
-            break;
-
-        case __Instruction::__ADDR:
-            __AX = __SS.size() - instructionPair.second;
-            break;
-
-        case __Instruction::__CALL:
-            __SS.push_back(__BP);
-            __BP = __SS.size() - 2;
-            __SS.push_back(__IP);
-            __IP += instructionPair.second - 1;
-            break;
-
-        case __Instruction::__RET:
-            __IP = __SS.back();
-            __SS.pop_back();
-            __BP = __SS.back();
-            __SS.pop_back();
-            break;
-
-        default:
-            throw runtime_error("Invalid __Instruction value");
+            else if (__CS[__IP] == "ld")
+            {
+                __AX = __SS[__BP - __AX];
+            }
+            else if (__CS[__IP] == "ald")
+            {
+                __AX = __SS[__AX];
+            }
+            else if (__CS[__IP] == "st")
+            {
+                __SS[__BP - __AX] = __SS.back();
+            }
+            else if (__CS[__IP] == "ast")
+            {
+                __SS[__AX] = __SS.back();
+            }
+            else if (__CS[__IP] == "push")
+            {
+                __SS.push_back(__AX);
+            }
+            else if (__CS[__IP] == "pop")
+            {
+                __SS.pop_back();
+            }
+            else if (!__CS[__IP].compare(0, 4, "jmp "))
+            {
+                __IP += stoll(__CS[__IP].substr(4)) - 1;
+            }
+            else if (!__CS[__IP].compare(0, 3, "jz "))
+            {
+                if (!__AX)
+                {
+                    __IP += stoll(__CS[__IP].substr(3)) - 1;
+                }
+            }
+            else if (__CS[__IP] == "add")
+            {
+                __AX = __SS.back() + __AX;
+            }
+            else if (__CS[__IP] == "sub")
+            {
+                __AX = __SS.back() - __AX;
+            }
+            else if (__CS[__IP] == "mul")
+            {
+                __AX = __SS.back() * __AX;
+            }
+            else if (__CS[__IP] == "div")
+            {
+                __AX = __SS.back() / __AX;
+            }
+            else if (__CS[__IP] == "lt")
+            {
+                __AX = __SS.back() < __AX;
+            }
+            else if (__CS[__IP] == "le")
+            {
+                __AX = __SS.back() <= __AX;
+            }
+            else if (__CS[__IP] == "gt")
+            {
+                __AX = __SS.back() > __AX;
+            }
+            else if (__CS[__IP] == "ge")
+            {
+                __AX = __SS.back() >= __AX;
+            }
+            else if (__CS[__IP] == "eq")
+            {
+                __AX = __SS.back() == __AX;
+            }
+            else if (__CS[__IP] == "ne")
+            {
+                __AX = __SS.back() != __AX;
+            }
+            else if (__CS[__IP] == "in")
+            {
+                scanf("%d", &__AX);
+            }
+            else if (__CS[__IP] == "out")
+            {
+                printf("%d\n", __AX);
+            }
+            else if (!__CS[__IP].compare(0, 5, "addr "))
+            {
+                __AX = __SS.size() - stoll(__CS[__IP].substr(5));
+            }
+            else if (!__CS[__IP].compare(0, 5, "call "))
+            {
+                __SS.push_back(__BP);
+                __BP = __SS.size() - 2;
+                __SS.push_back(__IP);
+                __IP += stoll(__CS[__IP].substr(5)) - 1;
+            }
+            else if (__CS[__IP] == "ret")
+            {
+                __IP = __SS.back();
+                __SS.pop_back();
+                __BP = __SS.back();
+                __SS.pop_back();
+            }
+            else
+            {
+                throw runtime_error("Invalid instruction");
+            }
+        }
     }
-}
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Run
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void __VM::__run()
-{
-    for (__IP = 0; __IP < (int)__CS.size(); __IP++)
+    // Main
+    void __main()
     {
-        __execInstruction(__CS[__IP]);
+        if (__inputFilePath.empty())
+        {
+            return;
+        }
+
+        __constructCS();
+        __execCode();
     }
-}
+};
 
 
 }  // End namespace CMM
